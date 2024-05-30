@@ -1,0 +1,49 @@
+<FlexTree>
+  <親集約 is="write-model">
+    <!--ID-->
+    <ID is="uuid" />
+    <!--文字列系-->
+    <単語 is="word" />
+    <文章 is="sentence" />
+    <!--数値系-->
+    <整数 is="int" />
+    <実数 is="decimal" />
+    <!--日付系-->
+    <日付時刻 is="datetime" />
+    <日付 is="date" />
+    <年月 is="year-month" />
+    <年 is="year" />
+    <!--その他-->
+    <参照 is="ref-to:参照先" />
+    <真偽値 is="bool" />
+    <列挙体 is="MyEnum" />
+    <Children is="array">
+      <!--ID-->
+      <ID is="uuid" />
+      <!--文字列系-->
+      <単語 is="word" />
+      <文章 is="sentence" />
+      <!--数値系-->
+      <整数 is="int" />
+      <実数 is="numeric" />
+      <!--日付系-->
+      <日付時刻 is="datetime" />
+      <日付 is="date" />
+      <年月 is="year-month" />
+      <年 is="year" />
+      <!--その他-->
+      <参照 is="ref-to:参照先" />
+      <真偽値 is="bool" />
+      <列挙体 is="MyEnum" />
+    </Children>
+  </親集約>
+  <MyEnum is="enum">
+    <選択肢1 />
+    <選択肢2 />
+    <選択肢3 />
+  </MyEnum>
+  <参照先 is="write-model">
+    <参照先ID is="uuid" />
+    <Name is="name" />
+  </参照先>
+</FlexTree>
