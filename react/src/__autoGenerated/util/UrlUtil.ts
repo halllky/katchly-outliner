@@ -30,6 +30,21 @@ export const getAttrsSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'v
   }
 }
 
+export const getRowOrderSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+  if (!key) {
+    return ''
+  }
+  if (mode === 'new') {
+    return `/x29a9c912e5efa23f5781a3a7e18e9808/new/${window.encodeURI(`${key}`)}`
+  }
+  const [Row_ID] = JSON.parse(key) as [string | undefined]
+  if (mode === 'view') {
+    return `/x29a9c912e5efa23f5781a3a7e18e9808/detail/${window.encodeURI(`${Row_ID}`)}`
+  } else {
+    return `/x29a9c912e5efa23f5781a3a7e18e9808/edit/${window.encodeURI(`${Row_ID}`)}`
+  }
+}
+
 export const getRowTypeSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''

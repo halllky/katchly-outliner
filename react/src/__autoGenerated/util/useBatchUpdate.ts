@@ -11,6 +11,7 @@ export type BatchUpdateState = {
 }
 export type BatchUpdateItem
   = { type: 'Row', act: ActionType, item: Types.RowSaveCommand }
+  | { type: 'RowOrder', act: ActionType, item: Types.RowOrderSaveCommand }
   | { type: 'RowType', act: ActionType, item: Types.RowTypeSaveCommand }
 export type ActionType = 'a' | 'm' | 'd' // add, modify, delete
 

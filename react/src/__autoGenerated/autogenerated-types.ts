@@ -37,6 +37,7 @@ export type AttrsSearchCondition = {
 }
 export type Row_RowTypeSearchCondition = {
   ID?: string
+  RowTypeName?: string
 }
 export type Attrs_ColTypeSearchCondition = {
   Parent: Attrs_ColType_ParentSearchCondition
@@ -45,6 +46,7 @@ export type Attrs_ColTypeSearchCondition = {
 }
 export type Attrs_ColType_ParentSearchCondition = {
   ID?: string
+  RowTypeName?: string
 }
 
 export const createRowSearchCondition = (): RowSearchCondition => ({
@@ -74,6 +76,7 @@ export type RowDisplayData = {
     RowType?: RowTypeRefInfo
   }
   child_Attrs?: AttrsDisplayData[]
+  ref_from_Row_RowOrder?: RowOrderDisplayData
 }
 /** Attrsの画面表示用データ */
 export type AttrsDisplayData = {
@@ -106,8 +109,22 @@ export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => 
     },
   }
 
+  const item1: Util.LocalRepositoryItem<RowOrderSaveCommand> | undefined = displayData?.ref_from_Row_RowOrder === undefined
+    ? undefined
+    : {
+      itemKey: displayData.ref_from_Row_RowOrder.localRepositoryItemKey,
+      existsInRemoteRepository: displayData.ref_from_Row_RowOrder.existsInRemoteRepository,
+      willBeChanged: displayData.ref_from_Row_RowOrder.willBeChanged,
+      willBeDeleted: displayData.ref_from_Row_RowOrder.willBeDeleted,
+      item: {
+        Row: displayData?.ref_from_Row_RowOrder?.own_members?.Row?.__instanceKey,
+        Order: displayData?.ref_from_Row_RowOrder?.own_members?.Order,
+      },
+    }
+
   return [
     item0,
+    item1,
   ] as const
 }
 
@@ -141,9 +158,87 @@ export type AttrsRefInfo = {
 }
 
 
+// ------------------ RowOrder ------------------
+export type RowOrderSaveCommand = {
+  Row?: Util.ItemKey
+  Order?: number
+}
+
+export const createRowOrder = (): RowOrderSaveCommand => ({
+})
+
+export type RowOrderSearchCondition = {
+  Row: RowOrder_RowSearchCondition
+  Order: { From?: number, To?: number }
+}
+export type RowOrder_RowSearchCondition = {
+  ID?: string
+  Parent?: string
+  Label?: string
+  RowType: RowOrder_Row_RowTypeSearchCondition
+}
+export type RowOrder_Row_RowTypeSearchCondition = {
+  ID?: string
+  RowTypeName?: string
+}
+
+export const createRowOrderSearchCondition = (): RowOrderSearchCondition => ({
+    Row: createRowOrder_RowSearchCondition(),
+    Order: {},
+})
+export const createRowOrder_RowSearchCondition = (): RowOrder_RowSearchCondition => ({
+    RowType: createRowOrder_Row_RowTypeSearchCondition(),
+})
+export const createRowOrder_Row_RowTypeSearchCondition = (): RowOrder_Row_RowTypeSearchCondition => ({
+})
+
+/** RowOrderの画面表示用データ */
+export type RowOrderDisplayData = {
+  localRepositoryItemKey: Util.ItemKey
+  existsInRemoteRepository: boolean
+  willBeChanged: boolean
+  willBeDeleted: boolean
+  own_members: {
+    Row?: RowRefInfo
+    Order?: number
+  }
+}
+
+/** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
+export const convertRowOrderToLocalRepositoryItem = (displayData: RowOrderDisplayData) => {
+  const item0: Util.LocalRepositoryItem<RowOrderSaveCommand> = {
+    itemKey: displayData.localRepositoryItemKey,
+    existsInRemoteRepository: displayData.existsInRemoteRepository,
+    willBeChanged: displayData.willBeChanged,
+    willBeDeleted: displayData.willBeDeleted,
+    item: {
+      Row: displayData?.own_members?.Row?.__instanceKey,
+      Order: displayData?.own_members?.Order,
+    },
+  }
+
+  return [
+    item0,
+  ] as const
+}
+
+/** RowOrderを参照する他のデータの画面上に表示されるRowOrderのデータ型。 */
+export type RowOrderRefInfo = {
+  /** RowOrderのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のRowOrderをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+  __instanceKey?: Util.ItemKey
+
+  Row?: {
+    ID?: string,
+    Label?: string,
+  },
+}
+
+
 // ------------------ RowType ------------------
 export type RowTypeSaveCommand = {
   ID?: string
+  RowTypeName?: string
   Columns?: ColumnsSaveCommand[]
 }
 
@@ -163,6 +258,7 @@ export const createColumns = (): ColumnsSaveCommand => ({
 
 export type RowTypeSearchCondition = {
   ID?: string
+  RowTypeName?: string
 }
 export type ColumnsSearchCondition = {
   ColumnId?: string
@@ -182,6 +278,7 @@ export type RowTypeDisplayData = {
   willBeDeleted: boolean
   own_members: {
     ID?: string
+    RowTypeName?: string
   }
   child_Columns?: ColumnsDisplayData[]
 }
@@ -206,6 +303,7 @@ export const convertRowTypeToLocalRepositoryItem = (displayData: RowTypeDisplayD
     willBeDeleted: displayData.willBeDeleted,
     item: {
       ID: displayData?.own_members?.ID,
+      RowTypeName: displayData?.own_members?.RowTypeName,
       Columns: displayData.child_Columns?.map(xColumns => ({
         ColumnId: xColumns?.own_members?.ColumnId,
         ColumnName: xColumns?.own_members?.ColumnName,

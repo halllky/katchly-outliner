@@ -24,10 +24,10 @@ const Page = () => {
   const [, dispatchToast] = Util.useToastContext()
 
   // 検索条件
-  const [filter, setFilter] = useState<AggregateType.RowSearchCondition>(() => AggregateType.createRowSearchCondition())
+  const [filter, setFilter] = useState<AggregateType.RowOrderSearchCondition>(() => AggregateType.createRowOrderSearchCondition())
   const [currentPage, dispatchPaging] = useReducer(pagingReducer, { pageIndex: 0 })
 
-  const rhfSearchMethods = Util.useFormEx<AggregateType.RowSearchCondition>({})
+  const rhfSearchMethods = Util.useFormEx<AggregateType.RowOrderSearchCondition>({})
   const getConditionValues = rhfSearchMethods.getValues
   const registerExCondition = rhfSearchMethods.registerEx
 
@@ -37,7 +37,7 @@ const Page = () => {
     skip: currentPage.pageIndex * 20,
     take: 20,
   }), [filter, currentPage])
-  const { load, commit } = Util.useRowRepository(editRange)
+  const { load, commit } = Util.useRowOrderRepository(editRange)
 
   const reactHookFormMethods = Util.useFormEx<{ currentPageItems: GridRow[] }>({})
   const { control, registerEx, handleSubmit, reset } = reactHookFormMethods
@@ -57,19 +57,6 @@ const Page = () => {
   }, [getConditionValues])
 
   // データ編集
-  const handleAdd: React.MouseEventHandler<HTMLButtonElement> = useCallback(async () => {
-    const newRow: AggregateType.RowDisplayData = {
-      localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
-      existsInRemoteRepository: false,
-      willBeChanged: true,
-      willBeDeleted: false,
-      own_members: {
-        ID: UUID.generate(),
-      },
-    }
-    append(newRow)
-  }, [append])
-
   const handleUpdateRow = useCallback(async (index: number, row: GridRow) => {
     update(index, { ...row, willBeChanged: true })
   }, [update])
@@ -97,7 +84,7 @@ const Page = () => {
       cell: cellProps => {
         const row = cellProps.row.original.item
         const state = Util.getLocalRepositoryState(row)
-        const singleViewUrl = Util.getRowSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
+        const singleViewUrl = Util.getRowOrderSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
           <div className="flex items-center gap-1 pl-1">
             <Link to={singleViewUrl} className="text-link">詳細</Link>
@@ -110,100 +97,9 @@ const Page = () => {
     },
     {
       id: 'col1',
-      header: 'Parent',
-      cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.Parent
-        return (
-          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-            {value}
-            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-          </span>
-        )
-      },
-      accessorFn: data => data.item.own_members?.Parent,
-      setValue: (row, value) => row.item.own_members.Parent = value,
-      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
-    },
-    {
-      id: 'col2',
-      header: 'Label',
-      cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.Label
-        return (
-          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-            {value}
-            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-          </span>
-        )
-      },
-      accessorFn: data => data.item.own_members?.Label,
-      setValue: (row, value) => row.item.own_members.Label = value,
-      cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
-    },
-    {
-      id: 'col3',
-      header: 'RowType',
-      cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.RowType
-        const formatted = `${value?.ID ?? ''}`
-        return (
-          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-            {formatted}
-            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-          </span>
-        )
-      },
-      accessorFn: data => data.item.own_members?.RowType,
-      setValue: (row, value) => row.item.own_members.RowType = value,
-      cellEditor: (props, ref) => <Input.ComboBoxRowType ref={ref} {...props} />,
-    },
-    {
-      id: 'ref-from-ref_from_Row_RowOrder',
-      header: '',
-      cell: ({ row }) => {
-      
-        const createRowOrder = useCallback(() => {
-          if (row.original.item) {
-            row.original.item.ref_from_Row_RowOrder = {
-              localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
-              existsInRemoteRepository: false,
-              willBeChanged: true,
-              willBeDeleted: false,
-              own_members: {
-                Row: {
-                  __instanceKey: row.original.item.localRepositoryItemKey,
-                },
-              },
-            }
-            update(row.index, { ...row.original.item })
-          }
-        }, [row.index])
-      
-        const deleteRowOrder = useCallback(() => {
-          if (row.original.item.ref_from_Row_RowOrder) {
-            row.original.item.ref_from_Row_RowOrder.willBeDeleted = true
-            update(row.index, { ...row.original.item })
-          }
-        }, [row.index])
-      
-        const RowOrder = row.original.item.ref_from_Row_RowOrder
-      
-        return <>
-          {(RowOrder === undefined || RowOrder.willBeDeleted) && (
-            <Input.Button icon={PlusIcon} onClick={createRowOrder}>作成</Input.Button>
-          )}
-          {(RowOrder !== undefined && !RowOrder.willBeDeleted) && (
-            <Input.Button icon={XMarkIcon} onClick={deleteRowOrder}>削除</Input.Button>
-          )}
-        </>
-      },
-      headerGroupName: 'RowOrder',
-    },
-    {
-      id: 'col4',
       header: 'Order',
       cell: cellProps => {
-        const value = cellProps.row.original.item.ref_from_Row_RowOrder?.own_members?.Order
+        const value = cellProps.row.original.item.own_members?.Order
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -211,15 +107,9 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.ref_from_Row_RowOrder?.own_members?.Order,
-      setValue: (row, value) => {
-        if (row.item.ref_from_Row_RowOrder) {
-          row.item.ref_from_Row_RowOrder.own_members.Order = value
-          row.item.ref_from_Row_RowOrder.willBeChanged = true
-        }
-      },
+      accessorFn: data => data.item.own_members?.Order,
+      setValue: (row, value) => row.item.own_members.Order = value,
       cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,
-      headerGroupName: 'RowOrder',
     },
   ], [update])
 
@@ -230,11 +120,10 @@ const Page = () => {
         <form className="flex flex-col gap-2">
           <div className="flex gap-2 justify-start">
             <h1 className="text-base font-semibold select-none py-1">
-              Row
+              RowOrder
             </h1>
             <Input.Button onClick={handleReload}>再読み込み</Input.Button>
             <div className="basis-4"></div>
-            <Input.Button onClick={handleAdd}>追加</Input.Button>
             <Input.Button onClick={handleRemove}>削除</Input.Button>
             <Input.IconButton fill icon={BookmarkSquareIcon} onClick={onSave}>一時保存</Input.IconButton>
           </div>
@@ -242,15 +131,22 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="Parent">
-              <Input.Word {...registerExCondition(`Parent`)} />
+            <VForm.Item label="Order">
+              <Input.Num {...registerExCondition(`Order.From`)} />
+              <span className="select-none">～</span>
+              <Input.Num {...registerExCondition(`Order.To`)} />
             </VForm.Item>
-            <VForm.Item label="Label">
-              <Input.Description {...registerExCondition(`Label`)} />
-            </VForm.Item>
+            <VForm.Container label="Row">
+              <VForm.Item label="Parent">
+                <Input.Word {...registerExCondition(`Row.Parent`)} />
+              </VForm.Item>
+              <VForm.Item label="Label">
+                <Input.Description {...registerExCondition(`Row.Label`)} />
+              </VForm.Item>
+            </VForm.Container>
             <VForm.Container label="RowType">
               <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`RowType.RowTypeName`)} />
+                <Input.Word {...registerExCondition(`Row.RowType.RowTypeName`)} />
               </VForm.Item>
             </VForm.Container>
           </VForm.Container>
@@ -272,7 +168,7 @@ const Page = () => {
   )
 }
 
-type GridRow = AggregateType.RowDisplayData
+type GridRow = AggregateType.RowOrderDisplayData
 
 // TODO: utilに持っていく
 type PageState = { pageIndex: number, loaded?: boolean }

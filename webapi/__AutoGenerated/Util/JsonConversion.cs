@@ -16,6 +16,7 @@ namespace Katchly {
 
             option.Converters.Add(new CustomJsonConverters.RowKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.AttrsKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.RowOrderKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
         }
@@ -191,6 +192,41 @@ namespace Katchly.CustomJsonConverters {
                     value.Parent?.ID,
                     value.ColType?.Parent?.ID,
                     value.ColType?.ColumnId,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="RowOrderKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class RowOrderKeysJsonValueConverter : JsonConverter<RowOrderKeys?> {
+        public override RowOrderKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var Row_IDValue = objArray.ElementAtOrDefault(0);
+            if (Row_IDValue != null && Row_IDValue is not string)
+                throw new InvalidOperationException($"RowOrderKeysの値の変換に失敗しました。Row_IDの位置の値がstring型ではありません: {Row_IDValue}");
+    
+            return new RowOrderKeys {
+                Row = new() {
+                    ID = (string?)Row_IDValue,
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, RowOrderKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Row?.ID,
                 ];
                 var jsonArray = objArray.ToJson();
                 writer.WriteStringValue(jsonArray);

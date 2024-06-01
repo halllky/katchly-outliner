@@ -14,8 +14,14 @@
     </Attrs>
   </Row>
 
+  <RowOrder is="write-model">
+    <Row is="ref-to:Row key" />
+    <Order is="decimal" />
+  </RowOrder>
+
   <RowType is="write-model">
     <ID is="uuid"/>
+    <RowTypeName is="word" />
     <Columns is="array">
       <ColumnId is="uuid" />
       <ColumnName is="word" />

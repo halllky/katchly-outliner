@@ -108,6 +108,22 @@ const Page = () => {
       size: 64,
       enableResizing: false,
     },
+    {
+      id: 'col1',
+      header: 'RowTypeName',
+      cell: cellProps => {
+        const value = cellProps.row.original.item.own_members?.RowTypeName
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: data => data.item.own_members?.RowTypeName,
+      setValue: (row, value) => row.item.own_members.RowTypeName = value,
+      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
+    },
   ], [update])
 
   return (
@@ -129,6 +145,9 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
+            <VForm.Item label="RowTypeName">
+              <Input.Word {...registerExCondition(`RowTypeName`)} />
+            </VForm.Item>
           </VForm.Container>
         </form>
       </FormProvider>

@@ -10,111 +10,151 @@ export const useDummyDataGenerator = () => {
 
     const data72624326 = AggregateType.createRowType()
     
+    data72624326.RowTypeName = 'TTTTTTTTTT'
     
     
     data72624326.Columns = [AggregateType.createColumns()]
     
-    data72624326.Columns[0].ColumnName = 'TTTTTTTTTT'
+    data72624326.Columns[0].ColumnName = 'OOOOOOOOOO'
     
     const response81732535 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data72624326)
     if (!response81732535.ok) return false
     
-    const data55816118 = AggregateType.createRowType()
+    const data20603315 = AggregateType.createRowType()
+    
+    data20603315.RowTypeName = 'XXXXXXXXXX'
     
     
+    data20603315.Columns = [AggregateType.createColumns()]
     
-    data55816118.Columns = [AggregateType.createColumns()]
+    data20603315.Columns[0].ColumnName = 'LLLLLLLLLL'
     
-    data55816118.Columns[0].ColumnName = 'OOOOOOOOOO'
+    const response55888478 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data20603315)
+    if (!response55888478.ok) return false
     
-    const response20603315 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data55816118)
-    if (!response20603315.ok) return false
+    const data97754974 = AggregateType.createRowType()
     
-    const data90602705 = AggregateType.createRowType()
-    
-    
-    
-    data90602705.Columns = [AggregateType.createColumns()]
-    
-    data90602705.Columns[0].ColumnName = 'ZZZZZZZZZZ'
-    
-    const response44217786 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data90602705)
-    if (!response44217786.ok) return false
-    
-    const data27370445 = AggregateType.createRowType()
+    data97754974.RowTypeName = 'HHHHHHHHHH'
     
     
+    data97754974.Columns = [AggregateType.createColumns()]
     
-    data27370445.Columns = [AggregateType.createColumns()]
+    data97754974.Columns[0].ColumnName = 'MMMMMMMMMM'
     
-    data27370445.Columns[0].ColumnName = 'MMMMMMMMMM'
+    const response27370445 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data97754974)
+    if (!response27370445.ok) return false
     
-    const response29190628 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data27370445)
-    if (!response29190628.ok) return false
+    const data63265906 = AggregateType.createRowType()
     
-    const data63265906 = AggregateType.createRow()
-    
-    data63265906.Parent = 'ZZZZZZZZZZ'
-    data63265906.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response03036699 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data63265906.RowType = response03036699.ok ? response03036699.data[0].__instanceKey : undefined
+    data63265906.RowTypeName = 'ZZZZZZZZZZ'
     
     
-    data63265906.Attrs = [AggregateType.createAttrs()]
-    const response86237014 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data63265906.Attrs[0].ColType = response86237014.ok ? response86237014.data[0].__instanceKey : undefined
-    data63265906.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data63265906.Columns = [AggregateType.createColumns()]
     
-    const response46951187 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data63265906)
+    data63265906.Columns[0].ColumnName = 'AAAAAAAAAA'
+    
+    const response46951187 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data63265906)
     if (!response46951187.ok) return false
     
-    const data99534707 = AggregateType.createRow()
+    const data86237014 = AggregateType.createRow()
     
-    data99534707.Parent = 'IIIIIIIIII'
-    data99534707.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response81690790 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data99534707.RowType = response81690790.ok ? response81690790.data[1].__instanceKey : undefined
-    
-    
-    data99534707.Attrs = [AggregateType.createAttrs()]
-    const response84805177 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data99534707.Attrs[0].ColType = response84805177.ok ? response84805177.data[1].__instanceKey : undefined
-    data99534707.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    
-    const response67718114 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data99534707)
-    if (!response67718114.ok) return false
-    
-    const data99190216 = AggregateType.createRow()
-    
-    data99190216.Parent = 'SSSSSSSSSS'
-    data99190216.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response52628413 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data99190216.RowType = response52628413.ok ? response52628413.data[2].__instanceKey : undefined
+    data86237014.Parent = 'RRRRRRRRRR'
+    data86237014.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response31459178 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data86237014.RowType = response31459178.ok ? response31459178.data[0].__instanceKey : undefined
     
     
-    data99190216.Attrs = [AggregateType.createAttrs()]
-    const response93401864 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data99190216.Attrs[0].ColType = response93401864.ok ? response93401864.data[2].__instanceKey : undefined
-    data99190216.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data86237014.Attrs = [AggregateType.createAttrs()]
+    const response81690790 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data86237014.Attrs[0].ColType = response81690790.ok ? response81690790.data[0].__instanceKey : undefined
+    data86237014.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    const response03262519 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data99190216)
-    if (!response03262519.ok) return false
+    const response99534707 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data86237014)
+    if (!response99534707.ok) return false
     
-    const data68762027 = AggregateType.createRow()
+    const data84805177 = AggregateType.createRow()
     
-    data68762027.Parent = 'CCCCCCCCCC'
-    data68762027.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response18712457 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data68762027.RowType = response18712457.ok ? response18712457.data[3].__instanceKey : undefined
+    data84805177.Parent = 'AAAAAAAAAA'
+    data84805177.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response69994197 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data84805177.RowType = response69994197.ok ? response69994197.data[1].__instanceKey : undefined
     
     
-    data68762027.Attrs = [AggregateType.createAttrs()]
-    const response45332718 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data68762027.Attrs[0].ColType = response45332718.ok ? response45332718.data[3].__instanceKey : undefined
-    data68762027.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data84805177.Attrs = [AggregateType.createAttrs()]
+    const response52628413 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data84805177.Attrs[0].ColType = response52628413.ok ? response52628413.data[1].__instanceKey : undefined
+    data84805177.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    const response54681542 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data68762027)
-    if (!response54681542.ok) return false
+    const response99190216 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data84805177)
+    if (!response99190216.ok) return false
+    
+    const data93401864 = AggregateType.createRow()
+    
+    data93401864.Parent = 'OOOOOOOOOO'
+    data93401864.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response08110994 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data93401864.RowType = response08110994.ok ? response08110994.data[2].__instanceKey : undefined
+    
+    
+    data93401864.Attrs = [AggregateType.createAttrs()]
+    const response18712457 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data93401864.Attrs[0].ColType = response18712457.ok ? response18712457.data[2].__instanceKey : undefined
+    data93401864.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    const response68762027 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data93401864)
+    if (!response68762027.ok) return false
+    
+    const data45332718 = AggregateType.createRow()
+    
+    data45332718.Parent = 'ZZZZZZZZZZ'
+    data45332718.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response64269746 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data45332718.RowType = response64269746.ok ? response64269746.data[3].__instanceKey : undefined
+    
+    
+    data45332718.Attrs = [AggregateType.createAttrs()]
+    const response76296358 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data45332718.Attrs[0].ColType = response76296358.ok ? response76296358.data[3].__instanceKey : undefined
+    data45332718.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    const response29717186 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data45332718)
+    if (!response29717186.ok) return false
+    
+    const data03039429 = AggregateType.createRowOrder()
+    const response34314184 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data03039429.Row = response34314184.ok ? response34314184.data[0].__instanceKey : undefined
+    data03039429.Order = 957454.50
+    
+    
+    const response38100450 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data03039429)
+    if (!response38100450.ok) return false
+    
+    const data71597250 = AggregateType.createRowOrder()
+    const response27345148 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data71597250.Row = response27345148.ok ? response27345148.data[1].__instanceKey : undefined
+    data71597250.Order = 907097.78
+    
+    
+    const response11895772 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data71597250)
+    if (!response11895772.ok) return false
+    
+    const data33716033 = AggregateType.createRowOrder()
+    const response14682503 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data33716033.Row = response14682503.ok ? response14682503.data[2].__instanceKey : undefined
+    data33716033.Order = 221314.40
+    
+    
+    const response45720878 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data33716033)
+    if (!response45720878.ok) return false
+    
+    const data71872682 = AggregateType.createRowOrder()
+    const response48796804 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data71872682.Row = response48796804.ok ? response48796804.data[3].__instanceKey : undefined
+    data71872682.Order = 194913.86
+    
+    
+    const response61983027 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data71872682)
+    if (!response61983027.ok) return false
     
 
     return true

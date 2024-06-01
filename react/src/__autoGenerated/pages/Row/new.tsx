@@ -119,6 +119,67 @@ const RowView = ({ }: {
         </VForm.Item>
         <AttrsView />
       </VForm.Container>
+      <Row_RowOrderView />
+    </>
+  )
+}
+const Row_RowOrderView = ({ }: {
+}) => {
+  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.RowDisplayData>()
+  const item = watch(`ref_from_Row_RowOrder`)
+  const state = item ? Util.getLocalRepositoryState(item) : undefined
+
+  const handleCreate = useCallback(() => {
+    setValue(`ref_from_Row_RowOrder`, {
+      localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
+      existsInRemoteRepository: false,
+      willBeChanged: true,
+      willBeDeleted: false,
+      own_members: {
+        Row: {
+          __instanceKey: getValues()?.localRepositoryItemKey,
+        },
+      },
+    })
+  }, [getValues, setValue])
+  const handleDelete = useCallback(() => {
+    const current = getValues(`ref_from_Row_RowOrder`)
+    if (current) setValue(`ref_from_Row_RowOrder`, { ...current, willBeDeleted: true })
+  }, [setValue, getValues])
+  const handleRedo = useCallback(() => {
+    const current = getValues(`ref_from_Row_RowOrder`)
+    if (current) setValue(`ref_from_Row_RowOrder`, { ...current, willBeDeleted: false })
+  }, [setValue, getValues])
+
+  return (
+    <>
+      <VForm.Container
+        leftColumnMinWidth="10.4rem"
+        label="RowOrder"
+        labelSide={(state === '' || state === '+' || state === '*') && (
+          <Input.Button icon={XMarkIcon} onClick={handleDelete}>削除</Input.Button>
+        )}
+        className="pt-4"
+      >
+        {state === undefined && (
+          <VForm.Item wide>
+            <Input.Button icon={PlusIcon} onClick={handleCreate}>作成</Input.Button>
+          </VForm.Item>
+        )}
+        {state === '-' && (
+          <VForm.Item wide>
+            <Input.Button icon={ArrowUturnLeftIcon} onClick={handleRedo}>元に戻す</Input.Button>
+          </VForm.Item>
+        )}
+        {(state === '' || state === '+' || state === '*') && (
+          <>
+            <input type="hidden" {...register(`ref_from_Row_RowOrder.own_members.Row`)} />
+            <VForm.Item label="Order">
+              <Input.Num {...registerEx(`ref_from_Row_RowOrder.own_members.Order`)} />
+            </VForm.Item>
+          </>
+        )}
+      </VForm.Container>
     </>
   )
 }

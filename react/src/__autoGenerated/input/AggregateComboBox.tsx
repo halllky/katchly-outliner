@@ -49,6 +49,29 @@ export const ComboBoxAttrs = defineCustomComponent<Types.AttrsRefInfo>((props, r
     />
   )
 })
+export const ComboBoxRowOrder = defineCustomComponent<Types.RowOrderRefInfo>((props, ref) => {
+  const [queryKey, setQueryKey] = useState<string>('combo-x29a9c912e5efa23f5781a3a7e18e9808::')
+  const { get } = Util.useHttpRequest()
+  const query = useCallback(async (keyword: string | undefined): Promise<Types.RowOrderRefInfo[]> => {
+    setQueryKey(`combo-x29a9c912e5efa23f5781a3a7e18e9808::${keyword ?? ''}`)
+    const response = await get<Types.RowOrderRefInfo []>(`/api/RowOrder/list-by-keyword`, { keyword })
+    if (!response.ok) return []
+    return response.data
+  }, [get])
+
+  return (
+    <AsyncComboBox
+      {...props}
+      ref={ref}
+      queryKey={queryKey}
+      query={query}
+      emitValueSelector={item => item}
+      matchingKeySelectorFromEmitValue={item => item.__instanceKey}
+      matchingKeySelectorFromOption={item => item.__instanceKey}
+      textSelector={item => `${item.Row?.ID ?? ''}`}
+    />
+  )
+})
 export const ComboBoxRowType = defineCustomComponent<Types.RowTypeRefInfo>((props, ref) => {
   const [queryKey, setQueryKey] = useState<string>('combo-x482f568abd9568fda9b360b0bf991835::')
   const { get } = Util.useHttpRequest()

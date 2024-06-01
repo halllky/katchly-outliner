@@ -263,6 +263,10 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.RowType?.ID)) {
                 query = query.Where(x => x.RowType.ID == filter.RowType.ID);
             }
+            if (!string.IsNullOrWhiteSpace(filter?.RowType?.RowTypeName)) {
+                var trimmed = filter.RowType.RowTypeName.Trim();
+                query = query.Where(x => x.RowType.RowTypeName.Contains(trimmed));
+            }
         
             // 順番
             query = query
@@ -425,6 +429,7 @@ namespace Katchly {
     }
     public class Row_RowTypeSearchCondition {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
     }
     public class Attrs_ColTypeSearchCondition {
         public Attrs_ColType_ParentSearchCondition Parent { get; set; } = new();
@@ -433,6 +438,7 @@ namespace Katchly {
     }
     public class Attrs_ColType_ParentSearchCondition {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
     }
     public class RowKeys {
         [Key]
@@ -455,6 +461,7 @@ namespace Katchly {
     
         public virtual RowTypeDbEntity? RowType { get; set; }
         public virtual ICollection<AttrsDbEntity> Attrs { get; set; }
+        public virtual RowOrderDbEntity? RefferedBy_RowOrderDbEntity_Row { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(RowDbEntity entity) {
@@ -492,6 +499,7 @@ namespace Katchly {
         public bool willBeDeleted { get; set; }
         public RowDisplayDataOwnMembers own_members { get; set; } = new();
         public List<AttrsDisplayData> child_Attrs { get; set; }
+        public RowOrderDisplayData? ref_from_Row_RowOrder { get; set; }
     
         public static RowDisplayData FromDbEntity(RowDbEntity dbEntity) {
             var displayData = new RowDisplayData {
@@ -526,6 +534,9 @@ namespace Katchly {
                         Value = x0?.Value,
                     },
                 }).ToList() ?? [],
+                ref_from_Row_RowOrder = dbEntity?.RefferedBy_RowOrderDbEntity_Row == null
+                    ? null
+                    : RowOrderDisplayData.FromDbEntity(dbEntity.RefferedBy_RowOrderDbEntity_Row),
             };
             return displayData;
         }
@@ -651,6 +662,12 @@ namespace Katchly {
                         e.Attrs_ID,
                     })
                     .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.RefferedBy_RowOrderDbEntity_Row)
+                    .WithOne(e => e.Row)
+                    .HasForeignKey<RowOrderDbEntity>(e => new {
+                        e.Row_ID,
+                    })
+                    .OnDelete(DeleteBehavior.NoAction);
             });
             modelBuilder.Entity<Katchly.AttrsDbEntity>(entity => {
             

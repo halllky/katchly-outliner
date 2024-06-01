@@ -73,6 +73,8 @@ export const useRowTypeRepository = (editRange?
         // const item = cursor.value.item as AggregateType.RowTypeDisplayData
         // if (editRange.filter.ID !== undefined
         //   && item.ID !== editRange.filter.ID) return
+        // if (editRange.filter.RowTypeName !== undefined
+        //   && item.RowTypeName !== editRange.filter.RowTypeName) return
         localItems.push(cursor.value.item as AggregateType.RowTypeDisplayData)
       })
     }
@@ -130,10 +132,34 @@ export const useRowRepository = (editRange?
   const { reload: reloadContext } = useLocalRepositoryContext()
   const { ready: ready2, openCursor, queryToTable } = useIndexedDbLocalRepositoryTable()
 
+  // RowOrderのローカルリポジトリとリモートリポジトリへのデータ読み書き処理
+  const RowOrderfilter: { filter: AggregateType.RowOrderSearchCondition } = useMemo(() => {
+    const f = AggregateType.createRowOrderSearchCondition()
+    if (typeof editRange === 'string') {
+      // 新規作成データ(未コミット)の編集の場合
+    } else if (Array.isArray(editRange)) {
+      const [ID] = editRange
+      f.Row.ID = ID
+    } else if (editRange) {
+      f.Row.ID = editRange.filter.ID
+      f.Row.Parent = editRange.filter.Parent
+      f.Row.Label = editRange.filter.Label
+      f.Row.RowType.ID = editRange.filter.RowType?.ID
+    }
+    return { filter: f }
+  }, [editRange])
+  const {
+    ready: RowOrderIsReady,
+    load: loadRowOrder,
+    commit: commitRowOrder,
+  } = useRowOrderRepository(RowOrderfilter)
+
   const load = useCallback(async (): Promise<AggregateType.RowDisplayData[] | undefined> => {
     if (!ready2) return
     if (editRange === undefined) return // 画面表示直後の検索条件が決まっていない場合など
 
+    const loadedRowOrder = await loadRowOrder()
+    if (!loadedRowOrder) return // RowOrderの読み込み完了まで待機
 
     let remoteItems: AggregateType.RowDisplayData[]
     let localItems: AggregateType.RowDisplayData[]
@@ -184,6 +210,8 @@ export const useRowRepository = (editRange?
         //   && item.Label !== editRange.filter.Label) return
         // if (editRange.filter.RowType?.ID !== undefined
         //   && item.RowType?.ID !== editRange.filter.RowType.ID) return
+        // if (editRange.filter.RowType?.RowTypeName !== undefined
+        //   && item.RowType?.RowTypeName !== editRange.filter.RowType.RowTypeName) return
         localItems.push(cursor.value.item as AggregateType.RowDisplayData)
       })
     }
@@ -194,13 +222,23 @@ export const useRowRepository = (editRange?
       remoteItems, remote => remote.localRepositoryItemKey,
     ).map<AggregateType.RowDisplayData>(pair => pair.left ?? pair.right)
 
+    // RowOrderSaveCommandをRowSaveCommandに合成する
+    for (const item of remoteAndLocal) {
+      item.ref_from_Row_RowOrder = loadedRowOrder.find(y => y.own_members.Row === item.localRepositoryItemKey)
+    }
+
     return remoteAndLocal
 
-  }, [editRange, get, post, queryToTable, openCursor])
+  }, [editRange, get, post, queryToTable, openCursor, loadRowOrder])
 
   /** 引数に渡されたデータをローカルリポジトリに登録します。 */
   const commit = useCallback(async (...items: AggregateType.RowDisplayData[]) => {
     for (const newValue of items) {
+      if (newValue.ref_from_Row_RowOrder) {
+        await commitRowOrder(newValue.ref_from_Row_RowOrder)
+        delete newValue.ref_from_Row_RowOrder
+      }
+
       if (newValue.willBeDeleted && !newValue.existsInRemoteRepository) {
         await queryToTable(table => table.delete(['Row', newValue.localRepositoryItemKey]))
 
@@ -209,6 +247,120 @@ export const useRowRepository = (editRange?
           dataTypeKey: 'Row',
           itemKey: newValue.localRepositoryItemKey,
           itemName: `${newValue.own_members?.Label}`,
+          item: newValue,
+          existsInRemoteRepository: newValue.existsInRemoteRepository,
+          willBeChanged: newValue.willBeChanged,
+          willBeDeleted: newValue.willBeDeleted,
+        }))
+      }
+    }
+
+    await reloadContext() // 更新があったことをサイドメニューに知らせる
+  }, [reloadContext, queryToTable, commitRowOrder])
+
+  return {
+    ready: ready2 && RowOrderIsReady,
+    load,
+    commit,
+  }
+}
+/** RowOrderデータの読み込みと保存を行います。 */
+export const useRowOrderRepository = (editRange?
+  // データ新規作成の場合
+  : ItemKey
+  // 複数件編集の場合
+  | { filter: AggregateType.RowOrderSearchCondition, skip?: number, take?: number }
+  // 1件編集の場合
+  | [Row_ID: string | undefined]
+) => {
+
+  const [, dispatchMsg] = useMsgContext()
+  const { get, post } = useHttpRequest()
+  const { reload: reloadContext } = useLocalRepositoryContext()
+  const { ready: ready2, openCursor, queryToTable } = useIndexedDbLocalRepositoryTable()
+
+  const load = useCallback(async (): Promise<AggregateType.RowOrderDisplayData[] | undefined> => {
+    if (!ready2) return
+    if (editRange === undefined) return // 画面表示直後の検索条件が決まっていない場合など
+
+
+    let remoteItems: AggregateType.RowOrderDisplayData[]
+    let localItems: AggregateType.RowOrderDisplayData[]
+
+    if (typeof editRange === 'string') {
+      // 新規作成データの検索。
+      // まだリモートに存在しないためローカルにのみ検索をかける
+      remoteItems = []
+      const found = await queryToTable(table => table.get(['RowOrder', editRange]))
+      localItems = found ? [found.item as AggregateType.RowOrderDisplayData] : []
+
+    } else if (Array.isArray(editRange)) {
+      // 既存データのキーによる検索（リモートリポジトリ）
+      if (editRange[0] === undefined) {
+        remoteItems = []
+      } else {
+        const res = await get(`/api/RowOrder/detail/${window.encodeURI(editRange[0].toString())}`)
+        remoteItems = res.ok
+          ? [res.data as AggregateType.RowOrderDisplayData]
+          : []
+      }
+
+      // 既存データのキーによる検索（ローカルリポジトリ）
+      const itemKey = JSON.stringify(editRange)
+      const found = await queryToTable(table => table.get(['RowOrder', itemKey]))
+      localItems = found ? [found.item as AggregateType.RowOrderDisplayData] : []
+
+    } else {
+      // 既存データの検索条件による検索（リモートリポジトリ）
+      const searchParam = new URLSearchParams()
+      if (editRange.skip !== undefined) searchParam.append('skip', editRange.skip.toString())
+      if (editRange.take !== undefined) searchParam.append('take', editRange.take.toString())
+      const url = `/api/RowOrder/load?${searchParam}`
+      const res = await post<AggregateType.RowOrderDisplayData[]>(url, editRange.filter)
+      remoteItems = res.ok ? res.data : []
+
+      // 既存データの検索条件による検索（ローカルリポジトリ）
+      localItems = []
+      await openCursor('readonly', cursor => {
+        if (cursor.value.dataTypeKey !== 'RowOrder') return
+        // TODO: ローカルリポジトリのデータは参照先のキーと名前しか持っていないのでfilterでそれらが検索条件に含まれていると正確な範囲がとれない
+        // const item = cursor.value.item as AggregateType.RowOrderDisplayData
+        // if (editRange.filter.Row?.ID !== undefined
+        //   && item.Row?.ID !== editRange.filter.Row.ID) return
+        // if (editRange.filter.Row?.Parent !== undefined
+        //   && item.Row?.Parent !== editRange.filter.Row.Parent) return
+        // if (editRange.filter.Row?.Label !== undefined
+        //   && item.Row?.Label !== editRange.filter.Row.Label) return
+        // if (editRange.filter.Row?.RowType?.ID !== undefined
+        //   && item.Row?.RowType?.ID !== editRange.filter.Row.RowType.ID) return
+        // if (editRange.filter.Row?.RowType?.RowTypeName !== undefined
+        //   && item.Row?.RowType?.RowTypeName !== editRange.filter.Row.RowType.RowTypeName) return
+        //
+        localItems.push(cursor.value.item as AggregateType.RowOrderDisplayData)
+      })
+    }
+
+    // ローカルリポジトリにあるデータはそちらを優先的に表示する
+    const remoteAndLocal =  crossJoin(
+      localItems, local => local.localRepositoryItemKey,
+      remoteItems, remote => remote.localRepositoryItemKey,
+    ).map<AggregateType.RowOrderDisplayData>(pair => pair.left ?? pair.right)
+
+    return remoteAndLocal
+
+  }, [editRange, get, post, queryToTable, openCursor])
+
+  /** 引数に渡されたデータをローカルリポジトリに登録します。 */
+  const commit = useCallback(async (...items: AggregateType.RowOrderDisplayData[]) => {
+    for (const newValue of items) {
+      if (newValue.willBeDeleted && !newValue.existsInRemoteRepository) {
+        await queryToTable(table => table.delete(['RowOrder', newValue.localRepositoryItemKey]))
+
+      } else if (newValue.willBeChanged || newValue.willBeDeleted) {
+        await queryToTable(table => table.put({
+          dataTypeKey: 'RowOrder',
+          itemKey: newValue.localRepositoryItemKey,
+          itemName: ``,
           item: newValue,
           existsInRemoteRepository: newValue.existsInRemoteRepository,
           willBeChanged: newValue.willBeChanged,

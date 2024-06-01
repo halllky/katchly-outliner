@@ -27,6 +27,30 @@ namespace Katchly {
     /// <summary>
     /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス
     /// </summary>
+    public class RowOrderBatchUpdateParameter {
+        private readonly List<BatchUpdateData> _data = new();
+    
+        public RowOrderBatchUpdateParameter Add(RowOrderCreateCommand cmd) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Add, Data = cmd });
+            return this;
+        }
+        public RowOrderBatchUpdateParameter Modify(RowOrderSaveCommand item) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Modify, Data = item });
+            return this;
+        }
+        public RowOrderBatchUpdateParameter Delete(string? Row_ID) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Delete, Data = new object[] { Row_ID } });
+            return this;
+        }
+        public BatchUpdateParameter Build() => new BatchUpdateParameter {
+            DataType = "RowOrder",
+            Items = _data.ToList(),
+        };
+    }
+    
+    /// <summary>
+    /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス
+    /// </summary>
     public class RowTypeBatchUpdateParameter {
         private readonly List<BatchUpdateData> _data = new();
     

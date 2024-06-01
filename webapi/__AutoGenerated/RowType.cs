@@ -228,6 +228,10 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.ID)) {
                 query = query.Where(x => x.ID == filter.ID);
             }
+            if (!string.IsNullOrWhiteSpace(filter?.RowTypeName)) {
+                var trimmed = filter.RowTypeName.Trim();
+                query = query.Where(x => x.RowTypeName.Contains(trimmed));
+            }
         
             // 順番
             query = query
@@ -293,6 +297,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowTypeCreateCommand {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
         public List<ColumnsSaveCommand>? Columns { get; set; }
     
         /// <summary>
@@ -301,6 +306,7 @@ namespace Katchly {
         public Katchly.RowTypeDbEntity ToDbEntity() {
             return new Katchly.RowTypeDbEntity {
                 ID = this.ID,
+                RowTypeName = this.RowTypeName,
                 Columns = this.Columns?.Select(item1 => new Katchly.ColumnsDbEntity {
                     Columns_ID = this.ID,
                     ColumnId = item1.ColumnId,
@@ -314,6 +320,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowTypeSaveCommand {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
         public List<ColumnsSaveCommand>? Columns { get; set; }
     
         /// <summary>
@@ -322,6 +329,7 @@ namespace Katchly {
         public Katchly.RowTypeDbEntity ToDbEntity() {
             return new Katchly.RowTypeDbEntity {
                 ID = this.ID,
+                RowTypeName = this.RowTypeName,
                 Columns = this.Columns?.Select(item1 => new Katchly.ColumnsDbEntity {
                     Columns_ID = this.ID,
                     ColumnId = item1.ColumnId,
@@ -335,6 +343,7 @@ namespace Katchly {
         public static RowTypeSaveCommand FromDbEntity(Katchly.RowTypeDbEntity entity) {
             var instance = new RowTypeSaveCommand {
                 ID = entity.ID,
+                RowTypeName = entity.RowTypeName,
                 Columns = entity.Columns?.Select(item => new ColumnsSaveCommand() {
                     ColumnId = item.ColumnId,
                     ColumnName = item.ColumnName,
@@ -353,6 +362,7 @@ namespace Katchly {
     }
     public class RowTypeSearchCondition {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
     }
     public class ColumnsSearchCondition {
         public string? ColumnId { get; set; }
@@ -373,6 +383,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowTypeDbEntity {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
     
         public virtual ICollection<ColumnsDbEntity> Columns { get; set; }
         public virtual ICollection<RowDbEntity> RefferedBy_RowDbEntity_RowType { get; set; }
@@ -420,6 +431,7 @@ namespace Katchly {
                 willBeDeleted = false,
                 own_members = new() {
                     ID = dbEntity?.ID,
+                    RowTypeName = dbEntity?.RowTypeName,
                 },
                 child_Columns = dbEntity?.Columns?.Select(x0 => new ColumnsDisplayData {
                     localRepositoryItemKey = new object?[] { dbEntity.ID, x0?.ColumnId }.ToJson(),
@@ -437,6 +449,7 @@ namespace Katchly {
     }
     public class RowTypeDisplayDataOwnMembers {
         public string? ID { get; set; }
+        public string? RowTypeName { get; set; }
     }
     /// <summary>
     /// Columnsの画面表示用データ
@@ -525,6 +538,8 @@ namespace Katchly {
             
                 entity.Property(e => e.ID)
                     .IsRequired(true);
+                entity.Property(e => e.RowTypeName)
+                    .IsRequired(false);
             
                 entity.HasMany(e => e.Columns)
                     .WithOne(e => e.Parent)

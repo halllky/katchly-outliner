@@ -9,6 +9,7 @@ namespace Katchly {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             this.OnModelCreating_NIJOBackgroundTaskEntity(modelBuilder);
             this.OnModelCreating_Row(modelBuilder);
+            this.OnModelCreating_RowOrder(modelBuilder);
             this.OnModelCreating_RowType(modelBuilder);
         }
 

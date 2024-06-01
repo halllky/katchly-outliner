@@ -59,6 +59,29 @@ export const useLocalRepositoryCommitHandling = () => {
         return { commit: false }
       }
     }],
+    ['RowOrder', async (localReposItem: LocalRepositoryStoredItem<AggregateType.RowOrderDisplayData>) => {
+      const [{ item: saveItem }] = AggregateType.convertRowOrderToLocalRepositoryItem(localReposItem.item)
+      const state = getLocalRepositoryState(localReposItem)
+      if (state === '+') {
+        const url = `/api/RowOrder/create`
+        const response = await post<AggregateType.RowOrderDisplayData>(url, saveItem)
+        return { commit: response.ok }
+    
+      } else if (state === '*') {
+        const url = `/api/RowOrder/update`
+        const response = await post<AggregateType.RowOrderDisplayData>(url, saveItem)
+        return { commit: response.ok }
+    
+      } else if (state === '-') {
+        const url = `/api/RowOrder/delete`
+        const response = await httpDelete(url, saveItem)
+        return { commit: response.ok }
+    
+      } else {
+        dispatchMsg(msg => msg.error(`'${saveItem}' の状態 '${state}' が不正です。`))
+        return { commit: false }
+      }
+    }],
   ]), [post, httpDelete, dispatchMsg, dispatchToast])
 
   return useCallback(async (

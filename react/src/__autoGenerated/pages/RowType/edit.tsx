@@ -119,6 +119,9 @@ const RowTypeView = ({ }: {
     <>
       <VForm.Container leftColumnMinWidth="14.0rem">
         <input type="hidden" {...register(`own_members.ID`)} />
+        <VForm.Item label="RowTypeName">
+          <Input.Word {...registerEx(`own_members.RowTypeName`)} />
+        </VForm.Item>
         <ColumnsView />
       </VForm.Container>
     </>
