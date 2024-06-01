@@ -69,7 +69,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
     activeCellBorderProps,
     getSelectedRows,
     getSelectedIndexes,
-  } = useSelection<T>(editing, api)
+  } = useSelection<T>(api)
 
   const {
     columnSizeVars,
@@ -101,26 +101,25 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
   }, [])
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = useCallback(e => {
-    // console.log(e.key)
-    if (e.key === ' ' && !editing) {
+    // セル編集中の場合のキーハンドリングはCellEditor側で行う
+    if (editing) return
+
+    // 選択に関する操作
+    handleSelectionKeyDown(e)
+    if (e.defaultPrevented) return
+
+    if (e.key === ' ') {
       for (const row of getSelectedRows()) row.toggleExpanded()
       e.preventDefault()
       return
-    } else if (e.key === 'Escape' && editing) {
-      cancelEditing()
-      e.preventDefault()
-      return
-    } else if (e.key === 'F2' && !editing && caretCell) {
-      // caretCellは更新前の古いセルなので最新の配列から検索しなおす TODO:caretCellのidだけをstateにもつようにする
-      const row = api.getRow(caretCell.row.id)
-      const cell = row.getAllCells().find(x => x.id === caretCell.id)
+    } else if (caretCell && (e.key === 'F2' || e.key.length === 1 /*文字や数字や記号の場合*/)) {
+      // caretCellは更新前の古いセルなので最新の配列から検索しなおす
+      const row = api.getRow(caretCell.rowId)
+      const cell = row.getAllCells().find(cell => cell.id === caretCell.cellId)
       if (cell) startEditing(cell)
       e.preventDefault()
       return
     }
-
-    handleSelectionKeyDown(e)
-    if (e.defaultPrevented) return
   }, [api, editing, caretCell, getSelectedRows, handleSelectionKeyDown, startEditing, cancelEditing])
 
   useImperativeHandle(ref, () => ({
@@ -128,8 +127,6 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
       row: row.original.item,
       rowIndex: row.index,
     })),
-    // TODO: ↓いらない
-    getSelectedItems: () => getSelectedRows().map(row => row.original.item),
     getSelectedIndexes,
   }), [getSelectedRows])
 
