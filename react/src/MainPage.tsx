@@ -51,43 +51,47 @@ const AfterLoaded = ({ rowData, rowTypeData, ...rest }: {
   // 列
   const [columnCount, setColumnCount] = useState(4)
   const [indentSize, setIndentSize] = useState(24)
-  const columnDefs = useMemo((): Collection.ColumnDefEx<Util.TreeNode<GridRow>>[] => [{
-    id: 'col0',
-    header: '　',
-    cell: cellProps => {
-      const value = getLabelCellValue(cellProps.row.original.item, rowTypeMap)
-      const style: React.CSSProperties = { marginLeft: cellProps.row.original.item.indent * indentSize }
-      return (
-        <span className="block w-full px-1 overflow-hidden whitespace-nowrap" style={style}>
-          {value}&nbsp;
-        </span>
-      )
-    },
-    accessorFn: data => getLabelCellValue(data.item, rowTypeMap),
-    setValue: (row, value) => {
-      const { updatedRowType } = setLabelCellValue(row.item, rowTypeMap, value)
-      if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
-    },
-    cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
+  const columnDefs = useMemo((): Collection.ColumnDefEx<Util.TreeNode<GridRow>>[] => [
+    // ラベルの列
+    {
+      id: 'col0',
+      header: '　',
+      cell: cellProps => {
+        const style: React.CSSProperties = { marginLeft: cellProps.row.original.item.indent * indentSize }
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap" style={style}>
+            {getLabelCellValue(cellProps.row.original.item, rowTypeMap)}&nbsp;
+          </span>
+        )
+      },
+      accessorFn: data => getLabelCellValue(data.item, rowTypeMap),
+      setValue: (row, value) => {
+        const { updatedRowType } = setLabelCellValue(row.item, rowTypeMap, value)
+        if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
+      },
+      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
 
-  }, ...Array.from({ length: columnCount }, (_, i) => i).map<Collection.ColumnDefEx<Util.TreeNode<GridRow>>>(i => ({
-    id: `col${i + 1}`,
-    header: '　',
-    cell: cellProps => {
-      const value = getAttrCellValue(cellProps.row.original.item, rowTypeMap, i)
-      return (
-        <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-          {value}&nbsp;
-        </span>
-      )
     },
-    accessorFn: data => getAttrCellValue(data.item, rowTypeMap, i),
-    setValue: (row, value) => {
-      const { updatedRowType } = setAttrCellValue(row.item, rowTypeMap, i, value)
-      if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
-    },
-    cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
-  }))], [columnCount, indentSize, rowTypeMap, update, dispatchRowType])
+
+    // 属性の列
+    ...Array.from({ length: columnCount }, (_, i) => i).map<Collection.ColumnDefEx<Util.TreeNode<GridRow>>>(i => ({
+      id: `col${i + 1}`,
+      header: '　',
+      cell: cellProps => {
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {getAttrCellValue(cellProps.row.original.item, rowTypeMap, i)}&nbsp;
+          </span>
+        )
+      },
+      accessorFn: data => getAttrCellValue(data.item, rowTypeMap, i),
+      setValue: (row, value) => {
+        const { updatedRowType } = setAttrCellValue(row.item, rowTypeMap, i, value)
+        if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
+      },
+      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
+    }))
+  ], [columnCount, indentSize, rowTypeMap, update, dispatchRowType])
 
   return (
     <div {...rest}>
