@@ -1,10 +1,12 @@
 import { UUID } from 'uuidjs'
 import { RowType, RowObject, RowTypeId, ColumnId, RowObjectId } from './Types'
 
-export default function () {
+export default function (many: boolean) {
 
   const task = newRowType('残タスク', ['ステータス', '備考'])
   const status = task.columns.find(c => c.name === 'ステータス')!.id
+
+  const parts = newRowType('構成要素')
 
   const task1 = newRow('先方と要件を詰める', { type: task.id })
   const task1_1 = newRow('パワポの図を描く', { type: task.id, parent: task1.id, attrs: { [status]: '完了' } })
@@ -12,12 +14,16 @@ export default function () {
 
   return {
     rowTypes: [
-      task
+      task,
+      parts,
     ],
     rows: [
       task1,
       task1_1,
       task1_2,
+      ...(many ? Array.from({ length: 10 }).map(_ => newRow('', { type: task.id })) : []),
+      ...(many ? Array.from({ length: 10 }).map(_ => newRow('', { type: parts.id })) : []),
+      ...(many ? Array.from({ length: 200 }).map(_ => newRow('', { type: task.id })) : []),
     ],
   }
 }
