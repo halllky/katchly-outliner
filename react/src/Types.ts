@@ -141,7 +141,7 @@ export const setAttrCellValue = (
     }
 
   } else {
-    rowType.columns[colIndex].name = value
+    columns[colIndex].name = value
   }
 
   return newColumnsAreCreated || gridRow.type === 'rowType'
