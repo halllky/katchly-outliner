@@ -13,21 +13,21 @@ export const useLocalRepositoryCommitHandling = () => {
   const { post, httpDelete } = useHttpRequest()
 
   const saveHandlerMap = useMemo(() => new Map<string, SaveLocalItemHandler<any>>([
-    ['参照先', async (localReposItem: LocalRepositoryStoredItem<AggregateType.参照先DisplayData>) => {
-      const [{ item: saveItem }] = AggregateType.convert参照先ToLocalRepositoryItem(localReposItem.item)
+    ['RowType', async (localReposItem: LocalRepositoryStoredItem<AggregateType.RowTypeDisplayData>) => {
+      const [{ item: saveItem }] = AggregateType.convertRowTypeToLocalRepositoryItem(localReposItem.item)
       const state = getLocalRepositoryState(localReposItem)
       if (state === '+') {
-        const url = `/api/参照先/create`
-        const response = await post<AggregateType.参照先DisplayData>(url, saveItem)
+        const url = `/api/RowType/create`
+        const response = await post<AggregateType.RowTypeDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '*') {
-        const url = `/api/参照先/update`
-        const response = await post<AggregateType.参照先DisplayData>(url, saveItem)
+        const url = `/api/RowType/update`
+        const response = await post<AggregateType.RowTypeDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '-') {
-        const url = `/api/参照先/delete`
+        const url = `/api/RowType/delete`
         const response = await httpDelete(url, saveItem)
         return { commit: response.ok }
     
@@ -36,21 +36,21 @@ export const useLocalRepositoryCommitHandling = () => {
         return { commit: false }
       }
     }],
-    ['親集約', async (localReposItem: LocalRepositoryStoredItem<AggregateType.親集約DisplayData>) => {
-      const [{ item: saveItem }] = AggregateType.convert親集約ToLocalRepositoryItem(localReposItem.item)
+    ['Row', async (localReposItem: LocalRepositoryStoredItem<AggregateType.RowDisplayData>) => {
+      const [{ item: saveItem }] = AggregateType.convertRowToLocalRepositoryItem(localReposItem.item)
       const state = getLocalRepositoryState(localReposItem)
       if (state === '+') {
-        const url = `/api/親集約/create`
-        const response = await post<AggregateType.親集約DisplayData>(url, saveItem)
+        const url = `/api/Row/create`
+        const response = await post<AggregateType.RowDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '*') {
-        const url = `/api/親集約/update`
-        const response = await post<AggregateType.親集約DisplayData>(url, saveItem)
+        const url = `/api/Row/update`
+        const response = await post<AggregateType.RowDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '-') {
-        const url = `/api/親集約/delete`
+        const url = `/api/Row/delete`
         const response = await httpDelete(url, saveItem)
         return { commit: response.ok }
     

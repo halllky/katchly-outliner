@@ -1,25 +1,25 @@
-namespace FlexTree {
+namespace Katchly {
     
     /// <summary>
     /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス
     /// </summary>
-    public class 親集約BatchUpdateParameter {
+    public class RowBatchUpdateParameter {
         private readonly List<BatchUpdateData> _data = new();
     
-        public 親集約BatchUpdateParameter Add(親集約CreateCommand cmd) {
+        public RowBatchUpdateParameter Add(RowCreateCommand cmd) {
             _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Add, Data = cmd });
             return this;
         }
-        public 親集約BatchUpdateParameter Modify(親集約SaveCommand item) {
+        public RowBatchUpdateParameter Modify(RowSaveCommand item) {
             _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Modify, Data = item });
             return this;
         }
-        public 親集約BatchUpdateParameter Delete(string? ID) {
+        public RowBatchUpdateParameter Delete(string? ID) {
             _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Delete, Data = new object[] { ID } });
             return this;
         }
         public BatchUpdateParameter Build() => new BatchUpdateParameter {
-            DataType = "親集約",
+            DataType = "Row",
             Items = _data.ToList(),
         };
     }
@@ -27,23 +27,23 @@ namespace FlexTree {
     /// <summary>
     /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス
     /// </summary>
-    public class 参照先BatchUpdateParameter {
+    public class RowTypeBatchUpdateParameter {
         private readonly List<BatchUpdateData> _data = new();
     
-        public 参照先BatchUpdateParameter Add(参照先CreateCommand cmd) {
+        public RowTypeBatchUpdateParameter Add(RowTypeCreateCommand cmd) {
             _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Add, Data = cmd });
             return this;
         }
-        public 参照先BatchUpdateParameter Modify(参照先SaveCommand item) {
+        public RowTypeBatchUpdateParameter Modify(RowTypeSaveCommand item) {
             _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Modify, Data = item });
             return this;
         }
-        public 参照先BatchUpdateParameter Delete(string? 参照先ID) {
-            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Delete, Data = new object[] { 参照先ID } });
+        public RowTypeBatchUpdateParameter Delete(string? ID) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Delete, Data = new object[] { ID } });
             return this;
         }
         public BatchUpdateParameter Build() => new BatchUpdateParameter {
-            DataType = "参照先",
+            DataType = "RowType",
             Items = _data.ToList(),
         };
     }

@@ -8,173 +8,113 @@ export const useDummyDataGenerator = () => {
 
   return useCallback(async () => {
 
-    const data72624326 = AggregateType.create参照先()
-    
-    data72624326.Name = 'TTTTTTTTTT'
+    const data72624326 = AggregateType.createRowType()
     
     
-    const response81732535 = await post<AggregateType.参照先SaveCommand>(`/api/参照先/create`, data72624326)
+    
+    data72624326.Columns = [AggregateType.createColumns()]
+    
+    data72624326.Columns[0].ColumnName = 'TTTTTTTTTT'
+    
+    const response81732535 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data72624326)
     if (!response81732535.ok) return false
     
-    const data55816118 = AggregateType.create参照先()
-    
-    data55816118.Name = 'OOOOOOOOOO'
+    const data55816118 = AggregateType.createRowType()
     
     
-    const response20603315 = await post<AggregateType.参照先SaveCommand>(`/api/参照先/create`, data55816118)
+    
+    data55816118.Columns = [AggregateType.createColumns()]
+    
+    data55816118.Columns[0].ColumnName = 'OOOOOOOOOO'
+    
+    const response20603315 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data55816118)
     if (!response20603315.ok) return false
     
-    const data90602705 = AggregateType.create参照先()
-    
-    data90602705.Name = 'ZZZZZZZZZZ'
+    const data90602705 = AggregateType.createRowType()
     
     
-    const response44217786 = await post<AggregateType.参照先SaveCommand>(`/api/参照先/create`, data90602705)
+    
+    data90602705.Columns = [AggregateType.createColumns()]
+    
+    data90602705.Columns[0].ColumnName = 'ZZZZZZZZZZ'
+    
+    const response44217786 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data90602705)
     if (!response44217786.ok) return false
     
-    const data27370445 = AggregateType.create参照先()
-    
-    data27370445.Name = 'MMMMMMMMMM'
+    const data27370445 = AggregateType.createRowType()
     
     
-    const response29190628 = await post<AggregateType.参照先SaveCommand>(`/api/参照先/create`, data27370445)
+    
+    data27370445.Columns = [AggregateType.createColumns()]
+    
+    data27370445.Columns[0].ColumnName = 'MMMMMMMMMM'
+    
+    const response29190628 = await post<AggregateType.RowTypeSaveCommand>(`/api/RowType/create`, data27370445)
     if (!response29190628.ok) return false
     
-    const data63265906 = AggregateType.create親集約()
+    const data63265906 = AggregateType.createRow()
     
-    data63265906.単語 = 'ZZZZZZZZZZ'
-    data63265906.文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data63265906.整数 = 30366
-    data63265906.実数 = 862369.98
-    data63265906.日付時刻 = '2005-07-24'
-    data63265906.日付 = '2002-08-01'
-    data63265906.年月 = 203010
-    data63265906.年 = 2039
-    const response03262519 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data63265906.参照 = response03262519.ok ? response03262519.data[0].Key : undefined
-    data63265906.真偽値 = true
-    data63265906.列挙体 = '選択肢3'
+    data63265906.Parent = 'ZZZZZZZZZZ'
+    data63265906.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response03036699 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data63265906.RowType = response03036699.ok ? response03036699.data[0].__instanceKey : undefined
     
     
-    data63265906.Children = [AggregateType.createChildren()]
+    data63265906.Attrs = [AggregateType.createAttrs()]
+    const response86237014 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data63265906.Attrs[0].ColType = response86237014.ok ? response86237014.data[0].__instanceKey : undefined
+    data63265906.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    data63265906.Children[0].単語 = 'NNNNNNNNNN'
-    data63265906.Children[0].文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data63265906.Children[0].整数 = 934017
-    data63265906.Children[0].実数 = 687619.54
-    data63265906.Children[0].日付時刻 = '2000-08-31'
-    data63265906.Children[0].日付 = '2001-07-15'
-    data63265906.Children[0].年月 = 201204
-    data63265906.Children[0].年 = 2039
-    const response64269746 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data63265906.Children[0].参照 = response64269746.ok ? response64269746.data[0].Key : undefined
-    data63265906.Children[0].真偽値 = true
-    data63265906.Children[0].列挙体 = '選択肢3'
-    
-    const response46951187 = await post<AggregateType.親集約SaveCommand>(`/api/親集約/create`, data63265906)
+    const response46951187 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data63265906)
     if (!response46951187.ok) return false
     
-    const data03039429 = AggregateType.create親集約()
+    const data99534707 = AggregateType.createRow()
     
-    data03039429.単語 = 'IIIIIIIIII'
-    data03039429.文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data03039429.整数 = 957454
-    data03039429.実数 = 505128.70
-    data03039429.日付時刻 = '2000-12-22'
-    data03039429.日付 = '2002-03-31'
-    data03039429.年月 = 203509
-    data03039429.年 = 2006
-    const response45720878 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data03039429.参照 = response45720878.ok ? response45720878.data[1].Key : undefined
-    data03039429.真偽値 = true
-    data03039429.列挙体 = '選択肢1'
+    data99534707.Parent = 'IIIIIIIIII'
+    data99534707.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response81690790 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data99534707.RowType = response81690790.ok ? response81690790.data[1].__instanceKey : undefined
     
     
-    data03039429.Children = [AggregateType.createChildren()]
+    data99534707.Attrs = [AggregateType.createAttrs()]
+    const response84805177 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data99534707.Attrs[0].ColType = response84805177.ok ? response84805177.data[1].__instanceKey : undefined
+    data99534707.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    data03039429.Children[0].単語 = 'FFFFFFFFFF'
-    data03039429.Children[0].文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data03039429.Children[0].整数 = 410072
-    data03039429.Children[0].実数 = 718726.61
-    data03039429.Children[0].日付時刻 = '2004-01-03'
-    data03039429.Children[0].日付 = '2001-08-07'
-    data03039429.Children[0].年月 = 203310
-    data03039429.Children[0].年 = 2026
-    const response85821919 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data03039429.Children[0].参照 = response85821919.ok ? response85821919.data[1].Key : undefined
-    data03039429.Children[0].真偽値 = true
-    data03039429.Children[0].列挙体 = '選択肢3'
+    const response67718114 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data99534707)
+    if (!response67718114.ok) return false
     
-    const response38100450 = await post<AggregateType.親集約SaveCommand>(`/api/親集約/create`, data03039429)
-    if (!response38100450.ok) return false
+    const data99190216 = AggregateType.createRow()
     
-    const data62486612 = AggregateType.create親集約()
-    
-    data62486612.単語 = 'XXXXXXXXXX'
-    data62486612.文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data62486612.整数 = 896438
-    data62486612.実数 = 86579.83
-    data62486612.日付時刻 = '2001-05-25'
-    data62486612.日付 = '2005-04-16'
-    data62486612.年月 = 203103
-    data62486612.年 = 2039
-    const response48136564 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data62486612.参照 = response48136564.ok ? response48136564.data[2].Key : undefined
-    data62486612.真偽値 = true
-    data62486612.列挙体 = '選択肢2'
+    data99190216.Parent = 'SSSSSSSSSS'
+    data99190216.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response52628413 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data99190216.RowType = response52628413.ok ? response52628413.data[2].__instanceKey : undefined
     
     
-    data62486612.Children = [AggregateType.createChildren()]
+    data99190216.Attrs = [AggregateType.createAttrs()]
+    const response93401864 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data99190216.Attrs[0].ColType = response93401864.ok ? response93401864.data[2].__instanceKey : undefined
+    data99190216.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    data62486612.Children[0].単語 = 'SSSSSSSSSS'
-    data62486612.Children[0].文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data62486612.Children[0].整数 = 809461
-    data62486612.Children[0].実数 = 100935.72
-    data62486612.Children[0].日付時刻 = '2005-11-25'
-    data62486612.Children[0].日付 = '2001-01-11'
-    data62486612.Children[0].年月 = 203503
-    data62486612.Children[0].年 = 2013
-    const response54079523 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data62486612.Children[0].参照 = response54079523.ok ? response54079523.data[2].Key : undefined
-    data62486612.Children[0].真偽値 = true
-    data62486612.Children[0].列挙体 = '選択肢1'
+    const response03262519 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data99190216)
+    if (!response03262519.ok) return false
     
-    const response21840678 = await post<AggregateType.親集約SaveCommand>(`/api/親集約/create`, data62486612)
-    if (!response21840678.ok) return false
+    const data68762027 = AggregateType.createRow()
     
-    const data67103666 = AggregateType.create親集約()
-    
-    data67103666.単語 = 'VVVVVVVVVV'
-    data67103666.文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data67103666.整数 = 809203
-    data67103666.実数 = 793629.75
-    data67103666.日付時刻 = '2007-09-13'
-    data67103666.日付 = '2002-06-03'
-    data67103666.年月 = 201608
-    data67103666.年 = 2006
-    const response28672242 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data67103666.参照 = response28672242.ok ? response28672242.data[3].Key : undefined
-    data67103666.真偽値 = true
-    data67103666.列挙体 = '選択肢3'
+    data68762027.Parent = 'CCCCCCCCCC'
+    data68762027.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response18712457 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data68762027.RowType = response18712457.ok ? response18712457.data[3].__instanceKey : undefined
     
     
-    data67103666.Children = [AggregateType.createChildren()]
+    data68762027.Attrs = [AggregateType.createAttrs()]
+    const response45332718 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data68762027.Attrs[0].ColType = response45332718.ok ? response45332718.data[3].__instanceKey : undefined
+    data68762027.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
-    data67103666.Children[0].単語 = 'FFFFFFFFFF'
-    data67103666.Children[0].文章 = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data67103666.Children[0].整数 = 186871
-    data67103666.Children[0].実数 = 68518.61
-    data67103666.Children[0].日付時刻 = '2005-09-10'
-    data67103666.Children[0].日付 = '2005-03-06'
-    data67103666.Children[0].年月 = 203603
-    data67103666.Children[0].年 = 2036
-    const response06652159 = await get<{ Key: ItemKey, Value?: string }[]>(`/api/参照先/list-by-keyword`, {})
-    data67103666.Children[0].参照 = response06652159.ok ? response06652159.data[3].Key : undefined
-    data67103666.Children[0].真偽値 = true
-    data67103666.Children[0].列挙体 = '選択肢3'
-    
-    const response46839773 = await post<AggregateType.親集約SaveCommand>(`/api/親集約/create`, data67103666)
-    if (!response46839773.ok) return false
+    const response54681542 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data68762027)
+    if (!response54681542.ok) return false
     
 
     return true

@@ -1,47 +1,62 @@
 import { ItemKey } from './LocalRepository'
 
-export const get親集約SingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+export const getRowSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''
   }
   if (mode === 'new') {
-    return `/xe09725e2e5673c42591875254a98e3c9/new/${window.encodeURI(`${key}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/new/${window.encodeURI(`${key}`)}`
   }
   const [ID] = JSON.parse(key) as [string | undefined]
   if (mode === 'view') {
-    return `/xe09725e2e5673c42591875254a98e3c9/detail/${window.encodeURI(`${ID}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/detail/${window.encodeURI(`${ID}`)}`
   } else {
-    return `/xe09725e2e5673c42591875254a98e3c9/edit/${window.encodeURI(`${ID}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/edit/${window.encodeURI(`${ID}`)}`
   }
 }
 
-export const getChildrenSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+export const getAttrsSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''
   }
   if (mode === 'new') {
-    return `/xe09725e2e5673c42591875254a98e3c9/new/${window.encodeURI(`${key}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/new/${window.encodeURI(`${key}`)}`
   }
-  const [Children_ID, ID] = JSON.parse(key) as [string | undefined, string | undefined]
+  const [Attrs_ID, ColType_Columns_ID, ColType_ColumnId] = JSON.parse(key) as [string | undefined, string | undefined, string | undefined]
   if (mode === 'view') {
-    return `/xe09725e2e5673c42591875254a98e3c9/detail/${window.encodeURI(`${Children_ID}`)}/${window.encodeURI(`${ID}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/detail/${window.encodeURI(`${Attrs_ID}`)}/${window.encodeURI(`${ColType_Columns_ID}`)}/${window.encodeURI(`${ColType_ColumnId}`)}`
   } else {
-    return `/xe09725e2e5673c42591875254a98e3c9/edit/${window.encodeURI(`${Children_ID}`)}/${window.encodeURI(`${ID}`)}`
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/edit/${window.encodeURI(`${Attrs_ID}`)}/${window.encodeURI(`${ColType_Columns_ID}`)}/${window.encodeURI(`${ColType_ColumnId}`)}`
   }
 }
 
-export const get参照先SingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+export const getRowTypeSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''
   }
   if (mode === 'new') {
-    return `/x0980ef37494eb0089d5695ded11e38fa/new/${window.encodeURI(`${key}`)}`
+    return `/x482f568abd9568fda9b360b0bf991835/new/${window.encodeURI(`${key}`)}`
   }
-  const [参照先ID] = JSON.parse(key) as [string | undefined]
+  const [ID] = JSON.parse(key) as [string | undefined]
   if (mode === 'view') {
-    return `/x0980ef37494eb0089d5695ded11e38fa/detail/${window.encodeURI(`${参照先ID}`)}`
+    return `/x482f568abd9568fda9b360b0bf991835/detail/${window.encodeURI(`${ID}`)}`
   } else {
-    return `/x0980ef37494eb0089d5695ded11e38fa/edit/${window.encodeURI(`${参照先ID}`)}`
+    return `/x482f568abd9568fda9b360b0bf991835/edit/${window.encodeURI(`${ID}`)}`
+  }
+}
+
+export const getColumnsSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+  if (!key) {
+    return ''
+  }
+  if (mode === 'new') {
+    return `/x482f568abd9568fda9b360b0bf991835/new/${window.encodeURI(`${key}`)}`
+  }
+  const [Columns_ID, ColumnId] = JSON.parse(key) as [string | undefined, string | undefined]
+  if (mode === 'view') {
+    return `/x482f568abd9568fda9b360b0bf991835/detail/${window.encodeURI(`${Columns_ID}`)}/${window.encodeURI(`${ColumnId}`)}`
+  } else {
+    return `/x482f568abd9568fda9b360b0bf991835/edit/${window.encodeURI(`${Columns_ID}`)}/${window.encodeURI(`${ColumnId}`)}`
   }
 }
 

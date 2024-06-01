@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace FlexTree {
+namespace Katchly {
 
     public partial class MyDbContext : DbContext {
         public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
@@ -8,8 +8,8 @@ namespace FlexTree {
         /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             this.OnModelCreating_NIJOBackgroundTaskEntity(modelBuilder);
-            this.OnModelCreating_親集約(modelBuilder);
-            this.OnModelCreating_参照先(modelBuilder);
+            this.OnModelCreating_Row(modelBuilder);
+            this.OnModelCreating_RowType(modelBuilder);
         }
 
         /// <inheritdoc />

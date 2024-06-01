@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlexTree;
+namespace Katchly;
 
 #if DEBUG
 [ApiController]
@@ -17,7 +17,7 @@ public class WebDebuggerController : ControllerBase {
 
   [HttpPost("recreate-database")]
   public HttpResponseMessage RecreateDatabase() {
-    var dbContext = _provider.GetRequiredService<FlexTree.MyDbContext>();
+    var dbContext = _provider.GetRequiredService<Katchly.MyDbContext>();
     dbContext.Database.EnsureDeleted();
     dbContext.Database.EnsureCreated();
     return new HttpResponseMessage {

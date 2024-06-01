@@ -3,184 +3,105 @@ import * as Util from './util'
 
 // ------------------ NIJO::BackgroundTaskEntity ------------------
 
-// ------------------ 親集約 ------------------
-export type 親集約SaveCommand = {
+// ------------------ Row ------------------
+export type RowSaveCommand = {
   ID?: string
-  単語?: string
-  文章?: string
-  整数?: number
-  実数?: number
-  日付時刻?: string
-  日付?: string
-  年月?: number
-  年?: number
-  参照?: Util.ItemKey
-  真偽値?: boolean
-  列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
-  Children?: ChildrenSaveCommand[]
+  Parent?: string
+  Label?: string
+  RowType?: Util.ItemKey
+  Attrs?: AttrsSaveCommand[]
 }
 
-export const create親集約 = (): 親集約SaveCommand => ({
+export const createRow = (): RowSaveCommand => ({
   ID: UUID.generate(),
-  Children: [],
+  Attrs: [],
 })
 
-export type ChildrenSaveCommand = {
+export type AttrsSaveCommand = {
+  ColType?: Util.ItemKey
+  Value?: string
+}
+
+export const createAttrs = (): AttrsSaveCommand => ({
+})
+
+export type RowSearchCondition = {
   ID?: string
-  単語?: string
-  文章?: string
-  整数?: number
-  実数?: number
-  日付時刻?: string
-  日付?: string
-  年月?: number
-  年?: number
-  参照?: Util.ItemKey
-  真偽値?: boolean
-  列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
+  Parent?: string
+  Label?: string
+  RowType: Row_RowTypeSearchCondition
 }
-
-export const createChildren = (): ChildrenSaveCommand => ({
-  ID: UUID.generate(),
-})
-
-export type 親集約SearchCondition = {
+export type AttrsSearchCondition = {
+  ColType: Attrs_ColTypeSearchCondition
+  Value?: string
+}
+export type Row_RowTypeSearchCondition = {
   ID?: string
-  単語?: string
-  文章?: string
-  整数: { From?: number, To?: number }
-  実数: { From?: number, To?: number }
-  日付時刻: { From?: string, To?: string }
-  日付: { From?: string, To?: string }
-  年月: { From?: number, To?: number }
-  年: { From?: number, To?: number }
-  参照: 親集約_参照SearchCondition
-  真偽値?: boolean
-  列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
 }
-export type ChildrenSearchCondition = {
+export type Attrs_ColTypeSearchCondition = {
+  Parent: Attrs_ColType_ParentSearchCondition
+  ColumnId?: string
+  ColumnName?: string
+}
+export type Attrs_ColType_ParentSearchCondition = {
   ID?: string
-  単語?: string
-  文章?: string
-  整数: { From?: number, To?: number }
-  実数: { From?: number, To?: number }
-  日付時刻: { From?: string, To?: string }
-  日付: { From?: string, To?: string }
-  年月: { From?: number, To?: number }
-  年: { From?: number, To?: number }
-  参照: Children_参照SearchCondition
-  真偽値?: boolean
-  列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
-}
-export type 親集約_参照SearchCondition = {
-  参照先ID?: string
-  Name?: string
-}
-export type Children_参照SearchCondition = {
-  参照先ID?: string
-  Name?: string
 }
 
-export const create親集約SearchCondition = (): 親集約SearchCondition => ({
-    整数: {},
-    実数: {},
-    日付時刻: {},
-    日付: {},
-    年月: {},
-    年: {},
-    参照: create親集約_参照SearchCondition(),
+export const createRowSearchCondition = (): RowSearchCondition => ({
+    RowType: createRow_RowTypeSearchCondition(),
 })
-export const createChildrenSearchCondition = (): ChildrenSearchCondition => ({
-    整数: {},
-    実数: {},
-    日付時刻: {},
-    日付: {},
-    年月: {},
-    年: {},
-    参照: createChildren_参照SearchCondition(),
+export const createAttrsSearchCondition = (): AttrsSearchCondition => ({
+    ColType: createAttrs_ColTypeSearchCondition(),
 })
-export const create親集約_参照SearchCondition = (): 親集約_参照SearchCondition => ({
+export const createRow_RowTypeSearchCondition = (): Row_RowTypeSearchCondition => ({
 })
-export const createChildren_参照SearchCondition = (): Children_参照SearchCondition => ({
+export const createAttrs_ColTypeSearchCondition = (): Attrs_ColTypeSearchCondition => ({
+    Parent: createAttrs_ColType_ParentSearchCondition(),
+})
+export const createAttrs_ColType_ParentSearchCondition = (): Attrs_ColType_ParentSearchCondition => ({
 })
 
-/** 親集約の画面表示用データ */
-export type 親集約DisplayData = {
+/** Rowの画面表示用データ */
+export type RowDisplayData = {
   localRepositoryItemKey: Util.ItemKey
   existsInRemoteRepository: boolean
   willBeChanged: boolean
   willBeDeleted: boolean
   own_members: {
     ID?: string
-    単語?: string
-    文章?: string
-    整数?: number
-    実数?: number
-    日付時刻?: string
-    日付?: string
-    年月?: number
-    年?: number
-    参照?: 参照先RefInfo
-    真偽値?: boolean
-    列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
+    Parent?: string
+    Label?: string
+    RowType?: RowTypeRefInfo
   }
-  child_Children?: ChildrenDisplayData[]
+  child_Attrs?: AttrsDisplayData[]
 }
-/** Childrenの画面表示用データ */
-export type ChildrenDisplayData = {
+/** Attrsの画面表示用データ */
+export type AttrsDisplayData = {
   localRepositoryItemKey: Util.ItemKey
   existsInRemoteRepository: boolean
   willBeChanged: boolean
   willBeDeleted: boolean
   own_members: {
-    ID?: string
-    単語?: string
-    文章?: string
-    整数?: number
-    実数?: number
-    日付時刻?: string
-    日付?: string
-    年月?: number
-    年?: number
-    参照?: 参照先RefInfo
-    真偽値?: boolean
-    列挙体?: '選択肢1' | '選択肢2' | '選択肢3'
+    ColType?: ColumnsRefInfo
+    Value?: string
   }
 }
 
 /** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
-export const convert親集約ToLocalRepositoryItem = (displayData: 親集約DisplayData) => {
-  const item0: Util.LocalRepositoryItem<親集約SaveCommand> = {
+export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => {
+  const item0: Util.LocalRepositoryItem<RowSaveCommand> = {
     itemKey: displayData.localRepositoryItemKey,
     existsInRemoteRepository: displayData.existsInRemoteRepository,
     willBeChanged: displayData.willBeChanged,
     willBeDeleted: displayData.willBeDeleted,
     item: {
       ID: displayData?.own_members?.ID,
-      単語: displayData?.own_members?.単語,
-      文章: displayData?.own_members?.文章,
-      整数: displayData?.own_members?.整数,
-      実数: displayData?.own_members?.実数,
-      日付時刻: displayData?.own_members?.日付時刻,
-      日付: displayData?.own_members?.日付,
-      年月: displayData?.own_members?.年月,
-      年: displayData?.own_members?.年,
-      参照: displayData?.own_members?.参照?.__instanceKey,
-      真偽値: displayData?.own_members?.真偽値,
-      列挙体: displayData?.own_members?.列挙体,
-      Children: displayData.child_Children?.map(xChildren => ({
-        ID: xChildren?.own_members?.ID,
-        単語: xChildren?.own_members?.単語,
-        文章: xChildren?.own_members?.文章,
-        整数: xChildren?.own_members?.整数,
-        実数: xChildren?.own_members?.実数,
-        日付時刻: xChildren?.own_members?.日付時刻,
-        日付: xChildren?.own_members?.日付,
-        年月: xChildren?.own_members?.年月,
-        年: xChildren?.own_members?.年,
-        参照: xChildren?.own_members?.参照?.__instanceKey,
-        真偽値: xChildren?.own_members?.真偽値,
-        列挙体: xChildren?.own_members?.列挙体,
+      Parent: displayData?.own_members?.Parent,
+      Label: displayData?.own_members?.Label,
+      RowType: displayData?.own_members?.RowType?.__instanceKey,
+      Attrs: displayData.child_Attrs?.map(xAttrs => ({
+        ColType: xAttrs?.own_members?.ColType?.__instanceKey,
+        Value: xAttrs?.own_members?.Value,
       })),
     },
   }
@@ -190,71 +111,105 @@ export const convert親集約ToLocalRepositoryItem = (displayData: 親集約Disp
   ] as const
 }
 
-/** 親集約を参照する他のデータの画面上に表示される親集約のデータ型。 */
-export type 親集約RefInfo = {
-  /** 親集約のキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間の親集約をUUID等の不変の値で参照できるようにするために文字列になっている。 */
+/** Rowを参照する他のデータの画面上に表示されるRowのデータ型。 */
+export type RowRefInfo = {
+  /** Rowのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のRowをUUID等の不変の値で参照できるようにするために文字列になっている。 */
   __instanceKey?: Util.ItemKey
 
   ID?: string,
-  文章?: string,
+  Label?: string,
 }
 
-/** Childrenを参照する他のデータの画面上に表示されるChildrenのデータ型。 */
-export type ChildrenRefInfo = {
-  /** Childrenのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のChildrenをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+/** Attrsを参照する他のデータの画面上に表示されるAttrsのデータ型。 */
+export type AttrsRefInfo = {
+  /** Attrsのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のAttrsをUUID等の不変の値で参照できるようにするために文字列になっている。 */
   __instanceKey?: Util.ItemKey
 
   Parent?: {
     ID?: string,
-    文章?: string,
+    Label?: string,
   },
-  ID?: string,
-  文章?: string,
+  ColType?: {
+    Parent?: {
+      ID?: string,
+    },
+    ColumnId?: string,
+  },
+  Value?: string,
 }
 
 
-// ------------------ 参照先 ------------------
-export type 参照先SaveCommand = {
-  参照先ID?: string
-  Name?: string
+// ------------------ RowType ------------------
+export type RowTypeSaveCommand = {
+  ID?: string
+  Columns?: ColumnsSaveCommand[]
 }
 
-export const create参照先 = (): 参照先SaveCommand => ({
-  参照先ID: UUID.generate(),
+export const createRowType = (): RowTypeSaveCommand => ({
+  ID: UUID.generate(),
+  Columns: [],
 })
 
-export type 参照先SearchCondition = {
-  参照先ID?: string
-  Name?: string
+export type ColumnsSaveCommand = {
+  ColumnId?: string
+  ColumnName?: string
 }
 
-export const create参照先SearchCondition = (): 参照先SearchCondition => ({
+export const createColumns = (): ColumnsSaveCommand => ({
+  ColumnId: UUID.generate(),
 })
 
-/** 参照先の画面表示用データ */
-export type 参照先DisplayData = {
+export type RowTypeSearchCondition = {
+  ID?: string
+}
+export type ColumnsSearchCondition = {
+  ColumnId?: string
+  ColumnName?: string
+}
+
+export const createRowTypeSearchCondition = (): RowTypeSearchCondition => ({
+})
+export const createColumnsSearchCondition = (): ColumnsSearchCondition => ({
+})
+
+/** RowTypeの画面表示用データ */
+export type RowTypeDisplayData = {
   localRepositoryItemKey: Util.ItemKey
   existsInRemoteRepository: boolean
   willBeChanged: boolean
   willBeDeleted: boolean
   own_members: {
-    参照先ID?: string
-    Name?: string
+    ID?: string
+  }
+  child_Columns?: ColumnsDisplayData[]
+}
+/** Columnsの画面表示用データ */
+export type ColumnsDisplayData = {
+  localRepositoryItemKey: Util.ItemKey
+  existsInRemoteRepository: boolean
+  willBeChanged: boolean
+  willBeDeleted: boolean
+  own_members: {
+    ColumnId?: string
+    ColumnName?: string
   }
 }
 
 /** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
-export const convert参照先ToLocalRepositoryItem = (displayData: 参照先DisplayData) => {
-  const item0: Util.LocalRepositoryItem<参照先SaveCommand> = {
+export const convertRowTypeToLocalRepositoryItem = (displayData: RowTypeDisplayData) => {
+  const item0: Util.LocalRepositoryItem<RowTypeSaveCommand> = {
     itemKey: displayData.localRepositoryItemKey,
     existsInRemoteRepository: displayData.existsInRemoteRepository,
     willBeChanged: displayData.willBeChanged,
     willBeDeleted: displayData.willBeDeleted,
     item: {
-      参照先ID: displayData?.own_members?.参照先ID,
-      Name: displayData?.own_members?.Name,
+      ID: displayData?.own_members?.ID,
+      Columns: displayData.child_Columns?.map(xColumns => ({
+        ColumnId: xColumns?.own_members?.ColumnId,
+        ColumnName: xColumns?.own_members?.ColumnName,
+      })),
     },
   }
 
@@ -263,14 +218,25 @@ export const convert参照先ToLocalRepositoryItem = (displayData: 参照先Disp
   ] as const
 }
 
-/** 参照先を参照する他のデータの画面上に表示される参照先のデータ型。 */
-export type 参照先RefInfo = {
-  /** 参照先のキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間の参照先をUUID等の不変の値で参照できるようにするために文字列になっている。 */
+/** RowTypeを参照する他のデータの画面上に表示されるRowTypeのデータ型。 */
+export type RowTypeRefInfo = {
+  /** RowTypeのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のRowTypeをUUID等の不変の値で参照できるようにするために文字列になっている。 */
   __instanceKey?: Util.ItemKey
 
-  参照先ID?: string,
-  Name?: string,
+  ID?: string,
+}
+
+/** Columnsを参照する他のデータの画面上に表示されるColumnsのデータ型。 */
+export type ColumnsRefInfo = {
+  /** Columnsのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のColumnsをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+  __instanceKey?: Util.ItemKey
+
+  Parent?: {
+    ID?: string,
+  },
+  ColumnId?: string,
 }
 
 

@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace FlexTree {
+namespace Katchly {
     /// <summary>
     /// 自動生成された検索機能や登録機能を上書きする場合はこのクラス内でそのメソッドやプロパティをoverrideしてください。
     /// </summary>

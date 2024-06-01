@@ -1,4 +1,4 @@
-namespace FlexTree {
+namespace Katchly {
 
     internal static class DefaultConfigurer {
 
@@ -24,7 +24,7 @@ namespace FlexTree {
 
             builder.Services.AddControllers(option => {
                 // エラーハンドリング
-                option.Filters.Add<FlexTree.HttpResponseExceptionFilter>();
+                option.Filters.Add<Katchly.HttpResponseExceptionFilter>();
 
             }).AddJsonOptions(option => {
                 // JSON日本語設定
@@ -58,9 +58,9 @@ namespace FlexTree {
 
             // DB接続
             services.AddScoped<Microsoft.EntityFrameworkCore.DbContext>(provider => {
-                return provider.GetRequiredService<FlexTree.MyDbContext>();
+                return provider.GetRequiredService<Katchly.MyDbContext>();
             });
-            services.AddDbContext<FlexTree.MyDbContext>((provider, option) => {
+            services.AddDbContext<Katchly.MyDbContext>((provider, option) => {
                 var setting = provider.GetRequiredService<RuntimeSettings.Server>();
                 var connStr = setting.GetActiveConnectionString();
                 Microsoft.EntityFrameworkCore.ProxiesExtensions.UseLazyLoadingProxies(option);

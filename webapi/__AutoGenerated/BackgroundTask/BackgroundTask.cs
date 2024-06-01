@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace FlexTree {
+namespace Katchly {
     public abstract class BackgroundTask {
 
         /// <summary>

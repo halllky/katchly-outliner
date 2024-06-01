@@ -1,4 +1,4 @@
-namespace FlexTree {
+namespace Katchly {
     using System.Text.Json;
 
     public class BatchUpdateParameter {
@@ -23,22 +23,22 @@ namespace FlexTree {
         }
 
         public override IEnumerable<string> ValidateParameter(BatchUpdateParameter parameter) {
-            if (parameter.DataType == "親集約") yield break;
-            if (parameter.DataType == "参照先") yield break;
+            if (parameter.DataType == "Row") yield break;
+            if (parameter.DataType == "RowType") yield break;
             yield return $"識別子 '{parameter.DataType}' と対応する一括更新処理はありません。";
         }
 
         public override void Execute(JobChainWithParameter<BatchUpdateParameter> job) {
             job.Section("更新処理実行", context => {
                 switch (context.Parameter.DataType) {
-                    case "親集約": BatchUpdate親集約(context); break;
-                    case "参照先": BatchUpdate参照先(context); break;
+                    case "Row": BatchUpdateRow(context); break;
+                    case "RowType": BatchUpdateRowType(context); break;
                     default: throw new InvalidOperationException($"識別子 '{context.Parameter.DataType}' と対応する一括更新処理はありません。");
                 }
             });
         }
 
-        private void BatchUpdate親集約(BackgroundTaskContext<BatchUpdateParameter> context) {
+        private void BatchUpdateRow(BackgroundTaskContext<BatchUpdateParameter> context) {
             if (context.Parameter.Items == null || context.Parameter.Items.Count == 0) {
                 context.Logger.LogWarning("パラメータが０件です。");
                 return;
@@ -56,21 +56,21 @@ namespace FlexTree {
                     ICollection<string> errors;
                     switch (item.Action) {
                         case E_BatchUpdateAction.Add:
-                            var cmd = Util.EnsureObjectType<親集約CreateCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(親集約CreateCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Create親集約(cmd, out var _, out errors))
+                            var cmd = Util.EnsureObjectType<RowCreateCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowCreateCommand)}型に変換できません。");
+                            if (!scopedAppSrv.CreateRow(cmd, out var _, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         case E_BatchUpdateAction.Modify:
-                            var updateData = Util.EnsureObjectType<親集約SaveCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(親集約SaveCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Update親集約(updateData, out var _, out errors))
+                            var updateData = Util.EnsureObjectType<RowSaveCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowSaveCommand)}型に変換できません。");
+                            if (!scopedAppSrv.UpdateRow(updateData, out var _, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         case E_BatchUpdateAction.Delete:
-                            var deleteData = Util.EnsureObjectType<親集約SaveCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(親集約SaveCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Delete親集約(deleteData, out errors))
+                            var deleteData = Util.EnsureObjectType<RowSaveCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowSaveCommand)}型に変換できません。");
+                            if (!scopedAppSrv.DeleteRow(deleteData, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         default:
@@ -84,7 +84,7 @@ namespace FlexTree {
             }
         }
 
-        private void BatchUpdate参照先(BackgroundTaskContext<BatchUpdateParameter> context) {
+        private void BatchUpdateRowType(BackgroundTaskContext<BatchUpdateParameter> context) {
             if (context.Parameter.Items == null || context.Parameter.Items.Count == 0) {
                 context.Logger.LogWarning("パラメータが０件です。");
                 return;
@@ -102,21 +102,21 @@ namespace FlexTree {
                     ICollection<string> errors;
                     switch (item.Action) {
                         case E_BatchUpdateAction.Add:
-                            var cmd = Util.EnsureObjectType<参照先CreateCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(参照先CreateCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Create参照先(cmd, out var _, out errors))
+                            var cmd = Util.EnsureObjectType<RowTypeCreateCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowTypeCreateCommand)}型に変換できません。");
+                            if (!scopedAppSrv.CreateRowType(cmd, out var _, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         case E_BatchUpdateAction.Modify:
-                            var updateData = Util.EnsureObjectType<参照先SaveCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(参照先SaveCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Update参照先(updateData, out var _, out errors))
+                            var updateData = Util.EnsureObjectType<RowTypeSaveCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowTypeSaveCommand)}型に変換できません。");
+                            if (!scopedAppSrv.UpdateRowType(updateData, out var _, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         case E_BatchUpdateAction.Delete:
-                            var deleteData = Util.EnsureObjectType<参照先SaveCommand>(item.Data)
-                                ?? throw new InvalidOperationException($"パラメータを{nameof(参照先SaveCommand)}型に変換できません。");
-                            if (!scopedAppSrv.Delete参照先(deleteData, out errors))
+                            var deleteData = Util.EnsureObjectType<RowTypeSaveCommand>(item.Data)
+                                ?? throw new InvalidOperationException($"パラメータを{nameof(RowTypeSaveCommand)}型に変換できません。");
+                            if (!scopedAppSrv.DeleteRowType(deleteData, out errors))
                                 throw new InvalidOperationException(string.Join(Environment.NewLine, errors));
                             break;
                         default:

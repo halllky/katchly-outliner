@@ -10,8 +10,8 @@ export type BatchUpdateState = {
   items: BatchUpdateItem[]
 }
 export type BatchUpdateItem
-  = { type: '親集約', act: ActionType, item: Types.親集約SaveCommand }
-  | { type: '参照先', act: ActionType, item: Types.参照先SaveCommand }
+  = { type: 'Row', act: ActionType, item: Types.RowSaveCommand }
+  | { type: 'RowType', act: ActionType, item: Types.RowTypeSaveCommand }
 export type ActionType = 'a' | 'm' | 'd' // add, modify, delete
 
 export default () => {

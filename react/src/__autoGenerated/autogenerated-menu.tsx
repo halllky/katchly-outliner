@@ -1,25 +1,25 @@
-import 親集約CreateView from './pages/親集約/new'
-import 親集約MultiView from './pages/親集約/list'
-import 親集約DetailView from './pages/親集約/detail'
-import 親集約EditView from './pages/親集約/edit'
-import 参照先CreateView from './pages/参照先/new'
-import 参照先MultiView from './pages/参照先/list'
-import 参照先DetailView from './pages/参照先/detail'
-import 参照先EditView from './pages/参照先/edit'
+import RowCreateView from './pages/Row/new'
+import RowMultiView from './pages/Row/list'
+import RowDetailView from './pages/Row/detail'
+import RowEditView from './pages/Row/edit'
+import RowTypeCreateView from './pages/RowType/new'
+import RowTypeMultiView from './pages/RowType/list'
+import RowTypeDetailView from './pages/RowType/detail'
+import RowTypeEditView from './pages/RowType/edit'
 
-export const THIS_APPLICATION_NAME = 'FlexTree' as const
+export const THIS_APPLICATION_NAME = 'Katchly' as const
 
 export const routes: { url: string, el: JSX.Element }[] = [
-  { url: '/xe09725e2e5673c42591875254a98e3c9/new/:key0?', el: <親集約CreateView /> },
-  { url: '/xe213acbb917da6e275692e24574a1c42', el: <親集約MultiView /> },
-  { url: '/xe09725e2e5673c42591875254a98e3c9/detail/:key0', el: <親集約DetailView /> },
-  { url: '/xe09725e2e5673c42591875254a98e3c9/edit/:key0', el: <親集約EditView /> },
-  { url: '/x0980ef37494eb0089d5695ded11e38fa/new/:key0?', el: <参照先CreateView /> },
-  { url: '/xb058decf0b0181492825cc0c048c524b', el: <参照先MultiView /> },
-  { url: '/x0980ef37494eb0089d5695ded11e38fa/detail/:key0', el: <参照先DetailView /> },
-  { url: '/x0980ef37494eb0089d5695ded11e38fa/edit/:key0', el: <参照先EditView /> },
+  { url: '/xc431ca892f0ec48c9bbc3311bb00c38c/new/:key0?', el: <RowCreateView /> },
+  { url: '/xaa6703a7b77c514e0f4f9413ccf059d3', el: <RowMultiView /> },
+  { url: '/xc431ca892f0ec48c9bbc3311bb00c38c/detail/:key0', el: <RowDetailView /> },
+  { url: '/xc431ca892f0ec48c9bbc3311bb00c38c/edit/:key0', el: <RowEditView /> },
+  { url: '/x482f568abd9568fda9b360b0bf991835/new/:key0?', el: <RowTypeCreateView /> },
+  { url: '/x32605e58c9870700a3a2652f36a5c4b5', el: <RowTypeMultiView /> },
+  { url: '/x482f568abd9568fda9b360b0bf991835/detail/:key0', el: <RowTypeDetailView /> },
+  { url: '/x482f568abd9568fda9b360b0bf991835/edit/:key0', el: <RowTypeEditView /> },
 ]
 export const menuItems: { url: string, text: string }[] = [
-  { url: '/xe213acbb917da6e275692e24574a1c42', text: '親集約' },
-  { url: '/xb058decf0b0181492825cc0c048c524b', text: '参照先' },
+  { url: '/xaa6703a7b77c514e0f4f9413ccf059d3', text: 'Row' },
+  { url: '/x32605e58c9870700a3a2652f36a5c4b5', text: 'RowType' },
 ]

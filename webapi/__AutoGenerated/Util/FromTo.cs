@@ -1,5 +1,5 @@
 using System;
-namespace FlexTree {
+namespace Katchly {
     public partial class FromTo {
         public virtual object? From { get; set; }
         public virtual object? To { get; set; }

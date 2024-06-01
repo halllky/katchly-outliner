@@ -1,0 +1,14 @@
+{
+  "log": "log",
+  "job": "job",
+  "currentDb": "SQLITE",
+  "db": [
+    {
+      "name": "SQLITE",
+      "connStr": "Data Source=../DEBUG.sqlite3;Pooling=False"
+    }
+  ],
+  "backgroundTask": {
+    "pollingSpanMilliSeconds": 5000
+  }
+}

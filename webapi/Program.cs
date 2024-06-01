@@ -6,13 +6,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-FlexTree.DefaultConfigurer.InitWebHostBuilder(builder);
+Katchly.DefaultConfigurer.InitWebHostBuilder(builder);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -23,6 +22,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-FlexTree.DefaultConfigurer.InitWebApplication(app);
+Katchly.DefaultConfigurer.InitWebApplication(app);
 
 app.Run();

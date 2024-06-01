@@ -1,4 +1,4 @@
-namespace FlexTree {
+namespace Katchly {
     using System.Text.Json;
     using System.Text.Json.Nodes;
 
@@ -14,9 +14,10 @@ namespace FlexTree {
             // カスタムコンバータ
             option.Converters.Add(new CustomJsonConverters.IntegerValueConverter());
 
-            option.Converters.Add(new CustomJsonConverters.親集約KeysJsonValueConverter());
-            option.Converters.Add(new CustomJsonConverters.ChildrenKeysJsonValueConverter());
-            option.Converters.Add(new CustomJsonConverters.参照先KeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.RowKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.AttrsKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
         }
         public static JsonSerializerOptions GetJsonSrializerOptions() {
             var option = new System.Text.Json.JsonSerializerOptions();
@@ -68,7 +69,7 @@ namespace FlexTree {
     }
 }
 
-namespace FlexTree.CustomJsonConverters {
+namespace Katchly.CustomJsonConverters {
     using System.Text;
     using System.Text.Json;
     using System.Text.Json.Serialization;
@@ -114,25 +115,25 @@ namespace FlexTree.CustomJsonConverters {
     }
 
     /// <summary>
-    /// <see cref="親集約Keys"/> 型のプロパティの値が
+    /// <see cref="RowKeys"/> 型のプロパティの値が
     /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
     /// </summary>
-    public class 親集約KeysJsonValueConverter : JsonConverter<親集約Keys?> {
-        public override 親集約Keys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+    public class RowKeysJsonValueConverter : JsonConverter<RowKeys?> {
+        public override RowKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             var jsonArray = reader.GetString();
             if (jsonArray == null) return null;
             var objArray = Util.ParseJsonAsObjectArray(jsonArray);
     
             var IDValue = objArray.ElementAtOrDefault(0);
             if (IDValue != null && IDValue is not string)
-                throw new InvalidOperationException($"親集約Keysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+                throw new InvalidOperationException($"RowKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
     
-            return new 親集約Keys {
+            return new RowKeys {
                 ID = (string?)IDValue,
             };
         }
     
-        public override void Write(Utf8JsonWriter writer, 親集約Keys? value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, RowKeys? value, JsonSerializerOptions options) {
             if (value == null) {
                 writer.WriteNullValue();
     
@@ -147,38 +148,81 @@ namespace FlexTree.CustomJsonConverters {
     }
 
     /// <summary>
-    /// <see cref="ChildrenKeys"/> 型のプロパティの値が
+    /// <see cref="AttrsKeys"/> 型のプロパティの値が
     /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
     /// </summary>
-    public class ChildrenKeysJsonValueConverter : JsonConverter<ChildrenKeys?> {
-        public override ChildrenKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+    public class AttrsKeysJsonValueConverter : JsonConverter<AttrsKeys?> {
+        public override AttrsKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             var jsonArray = reader.GetString();
             if (jsonArray == null) return null;
             var objArray = Util.ParseJsonAsObjectArray(jsonArray);
     
-            var Children_IDValue = objArray.ElementAtOrDefault(0);
-            if (Children_IDValue != null && Children_IDValue is not string)
-                throw new InvalidOperationException($"ChildrenKeysの値の変換に失敗しました。Children_IDの位置の値がstring型ではありません: {Children_IDValue}");
+            var Attrs_IDValue = objArray.ElementAtOrDefault(0);
+            if (Attrs_IDValue != null && Attrs_IDValue is not string)
+                throw new InvalidOperationException($"AttrsKeysの値の変換に失敗しました。Attrs_IDの位置の値がstring型ではありません: {Attrs_IDValue}");
     
-            var IDValue = objArray.ElementAtOrDefault(1);
-            if (IDValue != null && IDValue is not string)
-                throw new InvalidOperationException($"ChildrenKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+            var ColType_Columns_IDValue = objArray.ElementAtOrDefault(1);
+            if (ColType_Columns_IDValue != null && ColType_Columns_IDValue is not string)
+                throw new InvalidOperationException($"AttrsKeysの値の変換に失敗しました。ColType_Columns_IDの位置の値がstring型ではありません: {ColType_Columns_IDValue}");
     
-            return new ChildrenKeys {
+            var ColType_ColumnIdValue = objArray.ElementAtOrDefault(2);
+            if (ColType_ColumnIdValue != null && ColType_ColumnIdValue is not string)
+                throw new InvalidOperationException($"AttrsKeysの値の変換に失敗しました。ColType_ColumnIdの位置の値がstring型ではありません: {ColType_ColumnIdValue}");
+    
+            return new AttrsKeys {
                 Parent = new() {
-                    ID = (string?)Children_IDValue,
+                    ID = (string?)Attrs_IDValue,
                 },
-                ID = (string?)IDValue,
+                ColType = new() {
+                    Parent = new() {
+                        ID = (string?)ColType_Columns_IDValue,
+                    },
+                    ColumnId = (string?)ColType_ColumnIdValue,
+                },
             };
         }
     
-        public override void Write(Utf8JsonWriter writer, ChildrenKeys? value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, AttrsKeys? value, JsonSerializerOptions options) {
             if (value == null) {
                 writer.WriteNullValue();
     
             } else {
                 object?[] objArray = [
                     value.Parent?.ID,
+                    value.ColType?.Parent?.ID,
+                    value.ColType?.ColumnId,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="RowTypeKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class RowTypeKeysJsonValueConverter : JsonConverter<RowTypeKeys?> {
+        public override RowTypeKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var IDValue = objArray.ElementAtOrDefault(0);
+            if (IDValue != null && IDValue is not string)
+                throw new InvalidOperationException($"RowTypeKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+    
+            return new RowTypeKeys {
+                ID = (string?)IDValue,
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, RowTypeKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
                     value.ID,
                 ];
                 var jsonArray = objArray.ToJson();
@@ -188,31 +232,39 @@ namespace FlexTree.CustomJsonConverters {
     }
 
     /// <summary>
-    /// <see cref="参照先Keys"/> 型のプロパティの値が
+    /// <see cref="ColumnsKeys"/> 型のプロパティの値が
     /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
     /// </summary>
-    public class 参照先KeysJsonValueConverter : JsonConverter<参照先Keys?> {
-        public override 参照先Keys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+    public class ColumnsKeysJsonValueConverter : JsonConverter<ColumnsKeys?> {
+        public override ColumnsKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             var jsonArray = reader.GetString();
             if (jsonArray == null) return null;
             var objArray = Util.ParseJsonAsObjectArray(jsonArray);
     
-            var 参照先IDValue = objArray.ElementAtOrDefault(0);
-            if (参照先IDValue != null && 参照先IDValue is not string)
-                throw new InvalidOperationException($"参照先Keysの値の変換に失敗しました。参照先IDの位置の値がstring型ではありません: {参照先IDValue}");
+            var Columns_IDValue = objArray.ElementAtOrDefault(0);
+            if (Columns_IDValue != null && Columns_IDValue is not string)
+                throw new InvalidOperationException($"ColumnsKeysの値の変換に失敗しました。Columns_IDの位置の値がstring型ではありません: {Columns_IDValue}");
     
-            return new 参照先Keys {
-                参照先ID = (string?)参照先IDValue,
+            var ColumnIdValue = objArray.ElementAtOrDefault(1);
+            if (ColumnIdValue != null && ColumnIdValue is not string)
+                throw new InvalidOperationException($"ColumnsKeysの値の変換に失敗しました。ColumnIdの位置の値がstring型ではありません: {ColumnIdValue}");
+    
+            return new ColumnsKeys {
+                Parent = new() {
+                    ID = (string?)Columns_IDValue,
+                },
+                ColumnId = (string?)ColumnIdValue,
             };
         }
     
-        public override void Write(Utf8JsonWriter writer, 参照先Keys? value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, ColumnsKeys? value, JsonSerializerOptions options) {
             if (value == null) {
                 writer.WriteNullValue();
     
             } else {
                 object?[] objArray = [
-                    value.参照先ID,
+                    value.Parent?.ID,
+                    value.ColumnId,
                 ];
                 var jsonArray = objArray.ToJson();
                 writer.WriteStringValue(jsonArray);

@@ -1,4 +1,4 @@
-namespace FlexTree {
+namespace Katchly {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace FlexTree {
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
-    using FlexTree;
+    using Katchly;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -76,8 +76,8 @@ namespace FlexTree {
 #endregion データ構造クラス
 }
 
-namespace FlexTree {
-    using FlexTree;
+namespace Katchly {
+    using Katchly;
     using Microsoft.EntityFrameworkCore;
 
     partial class MyDbContext {

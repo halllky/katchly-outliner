@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FlexTree {
+namespace Katchly {
     public class AggregateUpdateEvent<T> : IEnumerable<T> {
         public IReadOnlyCollection<T> Created { get; init; } = new HashSet<T>();
         public IReadOnlyCollection<T> Deleted { get; init; } = new HashSet<T>();

@@ -24,10 +24,10 @@ const Page = () => {
   const [, dispatchToast] = Util.useToastContext()
 
   // 検索条件
-  const [filter, setFilter] = useState<AggregateType.参照先SearchCondition>(() => AggregateType.create参照先SearchCondition())
+  const [filter, setFilter] = useState<AggregateType.RowSearchCondition>(() => AggregateType.createRowSearchCondition())
   const [currentPage, dispatchPaging] = useReducer(pagingReducer, { pageIndex: 0 })
 
-  const rhfSearchMethods = Util.useFormEx<AggregateType.参照先SearchCondition>({})
+  const rhfSearchMethods = Util.useFormEx<AggregateType.RowSearchCondition>({})
   const getConditionValues = rhfSearchMethods.getValues
   const registerExCondition = rhfSearchMethods.registerEx
 
@@ -37,7 +37,7 @@ const Page = () => {
     skip: currentPage.pageIndex * 20,
     take: 20,
   }), [filter, currentPage])
-  const { load, commit } = Util.use参照先Repository(editRange)
+  const { load, commit } = Util.useRowRepository(editRange)
 
   const reactHookFormMethods = Util.useFormEx<{ currentPageItems: GridRow[] }>({})
   const { control, registerEx, handleSubmit, reset } = reactHookFormMethods
@@ -58,13 +58,13 @@ const Page = () => {
 
   // データ編集
   const handleAdd: React.MouseEventHandler<HTMLButtonElement> = useCallback(async () => {
-    const newRow: AggregateType.参照先DisplayData = {
+    const newRow: AggregateType.RowDisplayData = {
       localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
       existsInRemoteRepository: false,
       willBeChanged: true,
       willBeDeleted: false,
       own_members: {
-        参照先ID: UUID.generate(),
+        ID: UUID.generate(),
       },
     }
     append(newRow)
@@ -97,7 +97,7 @@ const Page = () => {
       cell: cellProps => {
         const row = cellProps.row.original.item
         const state = Util.getLocalRepositoryState(row)
-        const singleViewUrl = Util.get参照先SingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
+        const singleViewUrl = Util.getRowSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
           <div className="flex items-center gap-1 pl-1">
             <Link to={singleViewUrl} className="text-link">詳細</Link>
@@ -110,9 +110,9 @@ const Page = () => {
     },
     {
       id: 'col1',
-      header: 'Name',
+      header: 'Parent',
       cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.Name
+        const value = cellProps.row.original.item.own_members?.Parent
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -120,9 +120,42 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.own_members?.Name,
-      setValue: (row, value) => row.item.own_members.Name = value,
+      accessorFn: data => data.item.own_members?.Parent,
+      setValue: (row, value) => row.item.own_members.Parent = value,
       cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
+    },
+    {
+      id: 'col2',
+      header: 'Label',
+      cell: cellProps => {
+        const value = cellProps.row.original.item.own_members?.Label
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: data => data.item.own_members?.Label,
+      setValue: (row, value) => row.item.own_members.Label = value,
+      cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
+    },
+    {
+      id: 'col3',
+      header: 'RowType',
+      cell: cellProps => {
+        const value = cellProps.row.original.item.own_members?.RowType
+        const formatted = `${value?.ID ?? ''}`
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {formatted}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: data => data.item.own_members?.RowType,
+      setValue: (row, value) => row.item.own_members.RowType = value,
+      cellEditor: (props, ref) => <Input.ComboBoxRowType ref={ref} {...props} />,
     },
   ], [update])
 
@@ -133,7 +166,7 @@ const Page = () => {
         <form className="flex flex-col gap-2">
           <div className="flex gap-2 justify-start">
             <h1 className="text-base font-semibold select-none py-1">
-              参照先
+              Row
             </h1>
             <Input.Button onClick={handleReload}>再読み込み</Input.Button>
             <div className="basis-4"></div>
@@ -145,8 +178,11 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="Name">
-              <Input.Word {...registerExCondition(`Name`)} />
+            <VForm.Item label="Parent">
+              <Input.Word {...registerExCondition(`Parent`)} />
+            </VForm.Item>
+            <VForm.Item label="Label">
+              <Input.Description {...registerExCondition(`Label`)} />
             </VForm.Item>
           </VForm.Container>
         </form>
@@ -167,7 +203,7 @@ const Page = () => {
   )
 }
 
-type GridRow = AggregateType.参照先DisplayData
+type GridRow = AggregateType.RowDisplayData
 
 // TODO: utilに持っていく
 type PageState = { pageIndex: number, loaded?: boolean }

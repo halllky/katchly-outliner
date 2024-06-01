@@ -22,30 +22,23 @@ export default function () {
 const Page = () => {
   const { key0 } = useParams()
   const pkArray: [string | undefined] = useMemo(() => {
-    const urlKey参照先ID = key0
-    return [urlKey参照先ID]
+    const urlKeyID = key0
+    return [urlKeyID]
   }, [key0])
 
-  const { load, commit } = Util.use参照先Repository(pkArray)
+  const { load } = Util.useRowTypeRepository(pkArray)
 
-  const [defaultValues, setDefaultValues] = useState<AggregateType.参照先DisplayData | undefined>()
+  const [defaultValues, setDefaultValues] = useState<AggregateType.RowTypeDisplayData | undefined>()
   useEffect(() => {
     load().then(items => {
       setDefaultValues(items?.[0])
     })
   }, [load])
 
-  const handleCommit: ReturnType<typeof Util.use参照先Repository>['commit'] = useCallback(async (...items) => {
-    await commit(...items)
-    const afterCommit = await load()
-    setDefaultValues(afterCommit?.[0])
-  }, [load, commit])
-
   return defaultValues ? (
     <AfterLoaded
       pkArray={pkArray}
       defaultValues={defaultValues}
-      commit={handleCommit}
     ></AfterLoaded>
   ) : (
     <>
@@ -57,11 +50,9 @@ const Page = () => {
 const AfterLoaded = ({
   pkArray,
   defaultValues,
-  commit,
 }: {
   pkArray: [string | undefined]
-  defaultValues: AggregateType.参照先DisplayData
-  commit: ReturnType<typeof Util.use参照先Repository>['commit']
+  defaultValues: AggregateType.RowTypeDisplayData
 }) => {
 
   const navigate = useNavigate()
@@ -69,7 +60,7 @@ const AfterLoaded = ({
   const { handleSubmit } = reactHookFormMethods
 
   const instanceName = useMemo(() => {
-    return `${defaultValues.own_members?.Name ?? ''}`
+    return `${defaultValues.own_members?.ID ?? ''}`
   }, [defaultValues.own_members])
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -85,16 +76,16 @@ const AfterLoaded = ({
     }
   }, [])
 
-  // データの一時保存
-  const onSave: SubmitHandler<AggregateType.参照先DisplayData> = useCallback(async data => {
-    await commit({ ...data, willBeChanged: true })
-  }, [commit])
+  const navigateToEditView = useCallback((e: React.MouseEvent) => {
+    navigate(`/x482f568abd9568fda9b360b0bf991835/edit/${window.encodeURI(`${pkArray[0]}`)}`)
+    e.preventDefault()
+  }, [navigate, pkArray])
 
   return (
     <FormProvider {...reactHookFormMethods}>
-      <form className="page-content-root gap-2" ref={formRef} onSubmit={handleSubmit(onSave)} onKeyDown={onKeyDown}>
+      <form className="page-content-root gap-2">
         <h1 className="flex text-base font-semibold select-none py-1">
-          <Link to="/xb058decf0b0181492825cc0c048c524b">参照先</Link>
+          <Link to="/x32605e58c9870700a3a2652f36a5c4b5">RowType</Link>
           &nbsp;&#047;&nbsp;
           <span className="select-all">{instanceName}</span>
           <div className="flex-1"></div>
@@ -102,27 +93,67 @@ const AfterLoaded = ({
 
         <Util.InlineMessageList />
 
-        <参照先View />
+        <RowTypeView />
 
-        <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
+        <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
       </form>
     </FormProvider>
   )
 }
 
-const 参照先View = ({ }: {
+const RowTypeView = ({ }: {
 }) => {
-  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.参照先DisplayData>()
+  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
   const item = getValues()
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="10.4rem">
-        <input type="hidden" {...register(`own_members.参照先ID`)} />
-        <VForm.Item label="Name">
-          <Input.Word {...registerEx(`own_members.Name`)} />
-        </VForm.Item>
+      <VForm.Container leftColumnMinWidth="14.0rem">
+        <input type="hidden" {...register(`own_members.ID`)} />
+        <ColumnsView />
       </VForm.Container>
     </>
+  )
+}
+const ColumnsView = ({ }: {
+}) => {
+  const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: `child_Columns`,
+  })
+  const dtRef = useRef<Layout.DataTableRef<AggregateType.ColumnsDisplayData>>(null)
+
+
+  const options = useMemo<Layout.DataTableProps<AggregateType.ColumnsDisplayData>>(() => ({
+    columns: [
+      {
+        id: 'col1',
+        header: 'ColumnName',
+        cell: cellProps => {
+          const value = cellProps.row.original.item.own_members?.ColumnName
+          return (
+            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+              {value}
+              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+            </span>
+          )
+        },
+        accessorFn: data => data.item.own_members?.ColumnName,
+      },
+    ],
+  }), [update])
+
+  return (
+    <VForm.Item wide
+      label="Columns"
+      >
+      <Layout.DataTable
+        ref={dtRef}
+        data={fields}
+        {...options}
+        className="h-64 w-full"
+      />
+    </VForm.Item>
   )
 }
