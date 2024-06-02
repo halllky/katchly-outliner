@@ -90,12 +90,12 @@ const Page = () => {
   }, [commit, load, fields])
 
   // 列定義
-  const columnDefs: Layout.ColumnDefEx<Util.TreeNode<GridRow>>[] = useMemo(() => [
+  const columnDefs: Layout.ColumnDefEx<GridRow>[] = useMemo(() => [
     {
       id: 'col-header',
       header: '',
       cell: cellProps => {
-        const row = cellProps.row.original.item
+        const row = cellProps.row.original
         const state = Util.getLocalRepositoryState(row)
         const singleViewUrl = Util.getRowSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
@@ -112,7 +112,7 @@ const Page = () => {
       id: 'col1',
       header: 'Parent',
       cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.Parent
+        const value = cellProps.row.original.own_members?.Parent
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -120,15 +120,15 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.own_members?.Parent,
-      setValue: (row, value) => row.item.own_members.Parent = value,
+      accessorFn: data => data.own_members?.Parent,
+      setValue: (row, value) => row.own_members.Parent = value,
       cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
     },
     {
       id: 'col2',
       header: 'Label',
       cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.Label
+        const value = cellProps.row.original.own_members?.Label
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -136,15 +136,15 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.own_members?.Label,
-      setValue: (row, value) => row.item.own_members.Label = value,
+      accessorFn: data => data.own_members?.Label,
+      setValue: (row, value) => row.own_members.Label = value,
       cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
     },
     {
       id: 'col3',
       header: 'RowType',
       cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.RowType
+        const value = cellProps.row.original.own_members?.RowType
         const formatted = `${value?.ID ?? ''}`
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
@@ -153,8 +153,8 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.own_members?.RowType,
-      setValue: (row, value) => row.item.own_members.RowType = value,
+      accessorFn: data => data.own_members?.RowType,
+      setValue: (row, value) => row.own_members.RowType = value,
       cellEditor: (props, ref) => <Input.ComboBoxRowType ref={ref} {...props} />,
     },
     {
@@ -163,30 +163,30 @@ const Page = () => {
       cell: ({ row }) => {
       
         const createRowOrder = useCallback(() => {
-          if (row.original.item) {
-            row.original.item.ref_from_Row_RowOrder = {
+          if (row.original) {
+            row.original.ref_from_Row_RowOrder = {
               localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
               existsInRemoteRepository: false,
               willBeChanged: true,
               willBeDeleted: false,
               own_members: {
                 Row: {
-                  __instanceKey: row.original.item.localRepositoryItemKey,
+                  __instanceKey: row.original.localRepositoryItemKey,
                 },
               },
             }
-            update(row.index, { ...row.original.item })
+            update(row.index, { ...row.original })
           }
         }, [row.index])
       
         const deleteRowOrder = useCallback(() => {
-          if (row.original.item.ref_from_Row_RowOrder) {
-            row.original.item.ref_from_Row_RowOrder.willBeDeleted = true
-            update(row.index, { ...row.original.item })
+          if (row.original.ref_from_Row_RowOrder) {
+            row.original.ref_from_Row_RowOrder.willBeDeleted = true
+            update(row.index, { ...row.original })
           }
         }, [row.index])
       
-        const RowOrder = row.original.item.ref_from_Row_RowOrder
+        const RowOrder = row.original.ref_from_Row_RowOrder
       
         return <>
           {(RowOrder === undefined || RowOrder.willBeDeleted) && (
@@ -203,7 +203,7 @@ const Page = () => {
       id: 'col4',
       header: 'Order',
       cell: cellProps => {
-        const value = cellProps.row.original.item.ref_from_Row_RowOrder?.own_members?.Order
+        const value = cellProps.row.original.ref_from_Row_RowOrder?.own_members?.Order
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -211,11 +211,11 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.ref_from_Row_RowOrder?.own_members?.Order,
+      accessorFn: data => data.ref_from_Row_RowOrder?.own_members?.Order,
       setValue: (row, value) => {
-        if (row.item.ref_from_Row_RowOrder) {
-          row.item.ref_from_Row_RowOrder.own_members.Order = value
-          row.item.ref_from_Row_RowOrder.willBeChanged = true
+        if (row.ref_from_Row_RowOrder) {
+          row.ref_from_Row_RowOrder.own_members.Order = value
+          row.ref_from_Row_RowOrder.willBeChanged = true
         }
       },
       cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,

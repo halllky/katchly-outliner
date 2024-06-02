@@ -90,12 +90,12 @@ const Page = () => {
   }, [commit, load, fields])
 
   // 列定義
-  const columnDefs: Layout.ColumnDefEx<Util.TreeNode<GridRow>>[] = useMemo(() => [
+  const columnDefs: Layout.ColumnDefEx<GridRow>[] = useMemo(() => [
     {
       id: 'col-header',
       header: '',
       cell: cellProps => {
-        const row = cellProps.row.original.item
+        const row = cellProps.row.original
         const state = Util.getLocalRepositoryState(row)
         const singleViewUrl = Util.getRowTypeSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
@@ -112,7 +112,7 @@ const Page = () => {
       id: 'col1',
       header: 'RowTypeName',
       cell: cellProps => {
-        const value = cellProps.row.original.item.own_members?.RowTypeName
+        const value = cellProps.row.original.own_members?.RowTypeName
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -120,8 +120,8 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.item.own_members?.RowTypeName,
-      setValue: (row, value) => row.item.own_members.RowTypeName = value,
+      accessorFn: data => data.own_members?.RowTypeName,
+      setValue: (row, value) => row.own_members.RowTypeName = value,
       cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
     },
   ], [update])

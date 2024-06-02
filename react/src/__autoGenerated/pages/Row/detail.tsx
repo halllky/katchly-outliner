@@ -203,7 +203,7 @@ const AttrsView = ({ }: {
         id: 'col1',
         header: 'ColType',
         cell: cellProps => {
-          const value = cellProps.row.original.item.own_members?.ColType
+          const value = cellProps.row.original.own_members?.ColType
           const formatted = `${value?.Parent?.ID ?? ''}${value?.ColumnId ?? ''}`
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
@@ -212,13 +212,13 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.item.own_members?.ColType,
+        accessorFn: data => data.own_members?.ColType,
       },
       {
         id: 'col2',
         header: 'Value',
         cell: cellProps => {
-          const value = cellProps.row.original.item.own_members?.Value
+          const value = cellProps.row.original.own_members?.Value
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
               {value}
@@ -226,7 +226,7 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.item.own_members?.Value,
+        accessorFn: data => data.own_members?.Value,
       },
     ],
   }), [update])

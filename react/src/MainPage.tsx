@@ -70,24 +70,24 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
   // 列
   const [columnCount, setColumnCount] = useState(4)
   const [indentSize, setIndentSize] = useState(24)
-  const columnDefs = useMemo((): Collection.ColumnDefEx<Util.TreeNode<GridRow>>[] => [
+  const columnDefs = useMemo((): Collection.ColumnDefEx<GridRow>[] => [
     // ラベルの列
     {
       id: 'col0',
       header: '　',
       size: 640,
       cell: cellProps => {
-        const bgColor = cellProps.row.original.item.type === 'rowType' ? ROWTYPE_STYLE : ''
-        const style: React.CSSProperties = { marginLeft: cellProps.row.original.item.indent * indentSize }
+        const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
+        const style: React.CSSProperties = { marginLeft: cellProps.row.original.indent * indentSize }
         return (
           <span className={`block w-full px-1 overflow-hidden whitespace-nowrap ${bgColor}`} style={style}>
-            {getLabelCellValue(cellProps.row.original.item, rowTypeMap)}&nbsp;
+            {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
           </span>
         )
       },
-      accessorFn: data => getLabelCellValue(data.item, rowTypeMap),
+      accessorFn: data => getLabelCellValue(data, rowTypeMap),
       setValue: (row, value) => {
-        const { updatedRowType } = setLabelCellValue(row.item, rowTypeMap, value)
+        const { updatedRowType } = setLabelCellValue(row, rowTypeMap, value)
         if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
       },
       cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
@@ -95,20 +95,20 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
     },
 
     // 属性の列
-    ...Array.from({ length: columnCount }, (_, i) => i).map<Collection.ColumnDefEx<Util.TreeNode<GridRow>>>(i => ({
+    ...Array.from({ length: columnCount }, (_, i) => i).map<Collection.ColumnDefEx<GridRow>>(i => ({
       id: `col${i + 1}`,
       header: '　',
       cell: cellProps => {
-        const bgColor = cellProps.row.original.item.type === 'rowType' ? ROWTYPE_STYLE : ''
+        const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
         return (
           <span className={`block w-full px-1 overflow-hidden whitespace-nowrap ${bgColor}`}>
-            {getAttrCellValue(cellProps.row.original.item, rowTypeMap, i)}&nbsp;
+            {getAttrCellValue(cellProps.row.original, rowTypeMap, i)}&nbsp;
           </span>
         )
       },
-      accessorFn: data => getAttrCellValue(data.item, rowTypeMap, i),
+      accessorFn: data => getAttrCellValue(data, rowTypeMap, i),
       setValue: (row, value) => {
-        const { updatedRowType } = setAttrCellValue(row.item, rowTypeMap, i, value)
+        const { updatedRowType } = setAttrCellValue(row, rowTypeMap, i, value)
         if (updatedRowType) dispatchRowType(state => state.set({ ...updatedRowType }))
       },
       cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
@@ -135,10 +135,10 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
   const onKeyDown: Collection.DataTableKeyDownEvent<GridRow> = useCallback((e, { row, rowIndex }) => {
     // TABキーによるインデントの上げ下げ
     if (e.key === 'Tab') {
-      row.item.indent = e.shiftKey
-        ? Math.max(0, row.item.indent - 1)
-        : (row.item.indent + 1)
-      update(rowIndex, row.item)
+      row.indent = e.shiftKey
+        ? Math.max(0, row.indent - 1)
+        : (row.indent + 1)
+      update(rowIndex, row)
       e.preventDefault()
     }
     // Ctrl + B によるサイドメニュー表示切替

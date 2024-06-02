@@ -161,7 +161,7 @@ const ColumnsView = ({ }: {
         id: 'col1',
         header: 'ColumnName',
         cell: cellProps => {
-          const value = cellProps.row.original.item.own_members?.ColumnName
+          const value = cellProps.row.original.own_members?.ColumnName
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
               {value}
@@ -169,8 +169,8 @@ const ColumnsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.item.own_members?.ColumnName,
-        setValue: (row, value) => row.item.own_members.ColumnName = value,
+        accessorFn: data => data.own_members?.ColumnName,
+        setValue: (row, value) => row.own_members.ColumnName = value,
         cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
       },
     ],

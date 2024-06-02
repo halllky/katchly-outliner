@@ -216,7 +216,7 @@ const AttrsView = ({ }: {
         id: 'col1',
         header: 'ColType',
         cell: cellProps => {
-          const value = cellProps.row.original.item.own_members?.ColType
+          const value = cellProps.row.original.own_members?.ColType
           const formatted = `${value?.Parent?.ID ?? ''}${value?.ColumnId ?? ''}`
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
@@ -225,15 +225,15 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.item.own_members?.ColType,
-        setValue: (row, value) => row.item.own_members.ColType = value,
+        accessorFn: data => data.own_members?.ColType,
+        setValue: (row, value) => row.own_members.ColType = value,
         cellEditor: (props, ref) => <Input.ComboBoxColumns ref={ref} {...props} />,
       },
       {
         id: 'col2',
         header: 'Value',
         cell: cellProps => {
-          const value = cellProps.row.original.item.own_members?.Value
+          const value = cellProps.row.original.own_members?.Value
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
               {value}
@@ -241,8 +241,8 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.item.own_members?.Value,
-        setValue: (row, value) => row.item.own_members.Value = value,
+        accessorFn: data => data.own_members?.Value,
+        setValue: (row, value) => row.own_members.Value = value,
         cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
       },
     ],
