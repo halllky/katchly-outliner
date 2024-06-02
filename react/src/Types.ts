@@ -31,7 +31,6 @@ export type GridRowOfRowObject = {
 }
 export type GridRowOfRowType = {
   type: 'rowType'
-  indent: number
   rowTypeId: RowTypeId
 }
 
@@ -79,7 +78,6 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
     if (previousRow === undefined || currentRow.item.type !== previousRow.item.type) {
       gridRows.push({
         type: 'rowType',
-        indent: currentRow.depth,
         rowTypeId: currentRow.item.type,
       })
     }
@@ -136,7 +134,6 @@ export const useRecalculateGridRow = (
           const insertRow: GridRowOfRowType = {
             type: 'rowType',
             rowTypeId: currentRow.item.type,
-            indent: currentRow.indent,
           }
           insertedRows.push({ aboveOf: currentRow, insertRow })
         }
@@ -192,13 +189,16 @@ const getBelowRowObjectIndex = (currentIndex: number, all: GridRow[]): number | 
 }
 // -----------------------------------------
 
-export const insertNewRow = (aboveRow: GridRow): GridRow => {
+export const insertNewRow = (aboveRow: GridRow): GridRowOfRowObject => {
   const type = aboveRow?.type === 'row'
     ? aboveRow.item.type
     : aboveRow?.rowTypeId
+  const indent = aboveRow?.type === 'row'
+    ? aboveRow.indent
+    : 0
   return {
     type: 'row',
-    indent: aboveRow?.indent ?? 0,
+    indent,
     item: {
       id: UUID.generate() as RowObjectId,
       text: '',

@@ -78,7 +78,11 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
       size: 640,
       cell: cellProps => {
         const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
-        const style: React.CSSProperties = { marginLeft: cellProps.row.original.indent * indentSize }
+        const style: React.CSSProperties = {
+          marginLeft: cellProps.row.original.type === 'row'
+            ? cellProps.row.original.indent * indentSize
+            : undefined,
+        }
         return (
           <span className={`block w-full px-1 overflow-hidden whitespace-nowrap ${bgColor}`} style={style}>
             {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
@@ -146,6 +150,7 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
       const selectedRows = gridRef.current?.getSelectedRows()
       if (selectedRows === undefined) return
       for (const { row, rowIndex } of selectedRows) {
+        if (row.type === 'rowType') continue
         row.indent = e.shiftKey
           ? Math.max(0, row.indent - 1)
           : (row.indent + 1)
