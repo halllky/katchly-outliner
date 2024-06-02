@@ -21,8 +21,6 @@ export type RowType = {
   columns: { id: ColumnId, name?: string }[]
 }
 
-// --------------------------------------
-
 export type GridRow = {
   type: 'row'
   indent: number
@@ -68,6 +66,22 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
     })
   }
   return gridRows
+}
+
+export const insertNewRow = (adoveRow: GridRow): GridRow => {
+  const type = adoveRow?.type === 'row'
+    ? adoveRow.item.type
+    : adoveRow?.rowTypeId
+  return {
+    type: 'row',
+    indent: adoveRow?.indent ?? 0,
+    item: {
+      id: UUID.generate() as RowObjectId,
+      text: '',
+      type: type,
+      attrs: {},
+    },
+  }
 }
 
 /** ラベル列のセルの値取得 */
