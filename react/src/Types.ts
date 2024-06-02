@@ -70,13 +70,13 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
   return gridRows
 }
 
-export const insertNewRow = (adoveRow: GridRow): GridRow => {
-  const type = adoveRow?.type === 'row'
-    ? adoveRow.item.type
-    : adoveRow?.rowTypeId
+export const insertNewRow = (aboveRow: GridRow): GridRow => {
+  const type = aboveRow?.type === 'row'
+    ? aboveRow.item.type
+    : aboveRow?.rowTypeId
   return {
     type: 'row',
-    indent: adoveRow?.indent ?? 0,
+    indent: aboveRow?.indent ?? 0,
     item: {
       id: UUID.generate() as RowObjectId,
       text: '',
