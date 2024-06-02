@@ -46,7 +46,7 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
 }) => {
 
   const gridRef = useRef<Collection.DataTableRef<GridRow>>(null)
-  const [activeRow, setActiveRow] = useState<{ row: GridRow, rowIndex: number }>()
+  const [activeRow, setActiveRow] = useState<{ rowIndex: number }>()
 
   // サイドメニュー
   const [showSideMenu, dispatchShowSideMenu] = Util.useToggle(true)
@@ -132,13 +132,17 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
     remove(selectedRowIndexes)
   }, [remove])
 
-  const onKeyDown: Collection.DataTableKeyDownEvent<GridRow> = useCallback((e, { row, rowIndex }) => {
+  const onKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // TABキーによるインデントの上げ下げ
     if (e.key === 'Tab') {
-      row.indent = e.shiftKey
-        ? Math.max(0, row.indent - 1)
-        : (row.indent + 1)
-      update(rowIndex, row)
+      const selectedRows = gridRef.current?.getSelectedRows()
+      if (selectedRows === undefined) return
+      for (const { row, rowIndex } of selectedRows) {
+        row.indent = e.shiftKey
+          ? Math.max(0, row.indent - 1)
+          : (row.indent + 1)
+        update(rowIndex, row)
+      }
       e.preventDefault()
     }
     // Ctrl + B によるサイドメニュー表示切替
