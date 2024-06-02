@@ -21,11 +21,13 @@ export type RowType = {
   columns: { id: ColumnId, name?: string }[]
 }
 
-export type GridRow = {
+export type GridRow = GridRowOfRowObject | GridRowOfRowType
+export type GridRowOfRowObject = {
   type: 'row'
   indent: number
   item: RowObject
-} | {
+}
+export type GridRowOfRowType = {
   type: 'rowType'
   indent: number
   rowTypeId: RowTypeId
