@@ -10,13 +10,45 @@ import { GridRow, GridRowOfRowObject, GridRowOfRowType, PageFormState, ROWTYPE_S
 
 export default function () {
 
-  const [many, setMany] = useState<boolean | undefined>(true)
-  const { rowTypes, rows } = useMemo(() => {
-    return createTestData(many ?? false)
-  }, [many])
+  const [{ rows, rowTypes }, setData] = useState<{ rows: RowObject[], rowTypes: RowType[] }>(() => ({ rows: [], rowTypes: [] }))
   const debugStyle = useMemo((): React.CSSProperties => ({
     fontFamily: '"BIZ UDGothic"',
   }), [])
+
+  // デバッグ用
+  const [many, setMany] = useState<boolean | undefined>(true)
+  const fromDebugData = useCallback(() => {
+    setData(createTestData(many ?? false))
+  }, [setData, many])
+
+  // ファイルに保存
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(e => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      try {
+        const parsedData = JSON.parse(reader.result as string)
+        setData(parsedData)
+      } catch (error) {
+        console.error('JSON parsing error:', error)
+      }
+    }
+    reader.readAsText(file)
+  }, [setData])
+  const handleDownloadJson = useCallback((data: { rows: RowObject[], rowTypes: RowType[] }) => {
+    const jsonString = JSON.stringify(data, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'data.json'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+  }, [])
+
 
   if (!rowTypes || !rows) return (
     <span>読み込み中...</span>
@@ -26,20 +58,27 @@ export default function () {
     <AfterLoaded
       rowTypeData={rowTypes}
       rowData={rows}
+      onSave={handleDownloadJson}
       className="p-1 h-full"
       style={debugStyle}
     >
+      <input type="file" onChange={handleFileChange} />
+
+      <div className="basis-2"></div>
+
+      <Input.IconButton outline onClick={fromDebugData}>DEBUG</Input.IconButton>
       <label className="flex items-center">
         <Input.CheckBox value={many} onChange={setMany} />
-        多数データでデバッグ
+        many
       </label>
     </AfterLoaded>
   )
 }
 
-const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
+const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children }: {
   rowData: RowObject[]
   rowTypeData: RowType[]
+  onSave: (data: { rows: RowObject[], rowTypes: RowType[] }) => void
   className?: string
   style?: React.CSSProperties
   children?: React.ReactNode
@@ -127,6 +166,14 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
     recalculate([index, index])
   }, [update, recalculate])
 
+  // 保存
+  const handleSave = useCallback(() => {
+    onSave({
+      rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
+      rowTypes: Array.from(rowTypeMap.values()),
+    })
+  }, [onSave, rowTypeMap, fields])
+
   // -------------------------------------
   // イベント
   const handleAddRow = useCallback(() => {
@@ -181,6 +228,7 @@ const AfterLoaded = ({ rowData, rowTypeData, className, style, children }: {
         <div className="flex gap-1 items-center">
           <Input.IconButton icon={PlusIcon} onClick={handleAddRow} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
           <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
+          <Input.IconButton fill onClick={handleSave}>保存</Input.IconButton>
           <div className="flex-1"></div>
           {children}
           <Input.IconButton icon={ChevronRightIcon} onClick={toggleSideMenu} hideText className="p-1">サイドメニュー表示（Ctrl + B）</Input.IconButton>
