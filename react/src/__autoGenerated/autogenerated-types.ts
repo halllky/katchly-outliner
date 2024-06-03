@@ -6,10 +6,10 @@ import * as Util from './util'
 // ------------------ Row ------------------
 export type RowSaveCommand = {
   ID?: string
-  Parent?: string
   Label?: string
   RowType?: Util.ItemKey
   Attrs?: AttrsSaveCommand[]
+  Indent?: number
 }
 
 export const createRow = (): RowSaveCommand => ({
@@ -27,9 +27,9 @@ export const createAttrs = (): AttrsSaveCommand => ({
 
 export type RowSearchCondition = {
   ID?: string
-  Parent?: string
   Label?: string
   RowType: Row_RowTypeSearchCondition
+  Indent: { From?: number, To?: number }
 }
 export type AttrsSearchCondition = {
   ColType: Attrs_ColTypeSearchCondition
@@ -51,6 +51,7 @@ export type Attrs_ColType_ParentSearchCondition = {
 
 export const createRowSearchCondition = (): RowSearchCondition => ({
     RowType: createRow_RowTypeSearchCondition(),
+    Indent: {},
 })
 export const createAttrsSearchCondition = (): AttrsSearchCondition => ({
     ColType: createAttrs_ColTypeSearchCondition(),
@@ -71,9 +72,9 @@ export type RowDisplayData = {
   willBeDeleted: boolean
   own_members: {
     ID?: string
-    Parent?: string
     Label?: string
     RowType?: RowTypeRefInfo
+    Indent?: number
   }
   child_Attrs?: AttrsDisplayData[]
   ref_from_Row_RowOrder?: RowOrderDisplayData
@@ -99,9 +100,9 @@ export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => 
     willBeDeleted: displayData.willBeDeleted,
     item: {
       ID: displayData?.own_members?.ID,
-      Parent: displayData?.own_members?.Parent,
       Label: displayData?.own_members?.Label,
       RowType: displayData?.own_members?.RowType?.__instanceKey,
+      Indent: displayData?.own_members?.Indent,
       Attrs: displayData.child_Attrs?.map(xAttrs => ({
         ColType: xAttrs?.own_members?.ColType?.__instanceKey,
         Value: xAttrs?.own_members?.Value,
@@ -173,9 +174,9 @@ export type RowOrderSearchCondition = {
 }
 export type RowOrder_RowSearchCondition = {
   ID?: string
-  Parent?: string
   Label?: string
   RowType: RowOrder_Row_RowTypeSearchCondition
+  Indent: { From?: number, To?: number }
 }
 export type RowOrder_Row_RowTypeSearchCondition = {
   ID?: string
@@ -188,6 +189,7 @@ export const createRowOrderSearchCondition = (): RowOrderSearchCondition => ({
 })
 export const createRowOrder_RowSearchCondition = (): RowOrder_RowSearchCondition => ({
     RowType: createRowOrder_Row_RowTypeSearchCondition(),
+    Indent: {},
 })
 export const createRowOrder_Row_RowTypeSearchCondition = (): RowOrder_Row_RowTypeSearchCondition => ({
 })

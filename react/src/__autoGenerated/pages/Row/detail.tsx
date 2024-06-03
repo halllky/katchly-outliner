@@ -110,9 +110,6 @@ const RowView = ({ }: {
     <>
       <VForm.Container leftColumnMinWidth="11.6rem">
         <input type="hidden" {...register(`own_members.ID`)} />
-        <VForm.Item label="Parent">
-          <Input.Word {...registerEx(`own_members.Parent`)} readOnly />
-        </VForm.Item>
         <VForm.Item label="Label">
           <Input.Description {...registerEx(`own_members.Label`)} readOnly />
         </VForm.Item>
@@ -122,6 +119,9 @@ const RowView = ({ }: {
           </Link>
         </VForm.Item>
         <AttrsView />
+        <VForm.Item label="Indent">
+          <Input.Num {...registerEx(`own_members.Indent`)} readOnly />
+        </VForm.Item>
       </VForm.Container>
       <Row_RowOrderView />
     </>

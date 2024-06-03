@@ -35,6 +35,9 @@ const newRowType = (name?: string, columnNames?: string[]): RowType => ({
     id: UUID.generate() as ColumnId,
     name: colName
   })) ?? [],
+  existsInRemoteRepository: false,
+  willBeChanged: true,
+  willBeDeleted: false,
 })
 
 const newRow = (text: string, { type, indent, attrs }: { type: RowTypeId, indent?: number, attrs?: RowObject['attrs'] }): RowObject => ({
@@ -43,5 +46,8 @@ const newRow = (text: string, { type, indent, attrs }: { type: RowTypeId, indent
   text,
   attrs: attrs ?? {},
   indent: indent ?? 0,
+  existsInRemoteRepository: false,
+  willBeChanged: true,
+  willBeDeleted: false,
 })
 

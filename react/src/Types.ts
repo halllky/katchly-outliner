@@ -10,14 +10,19 @@ export type RowObjectId = string & { [_rowObjectIdSymbol]: never }
 export type RowTypeId = string & { [_rowTypeIdSymbol]: never }
 export type ColumnId = string & { [_ColumnIdSymbol]: never }
 
-export type RowObject = {
+export type EditableObject = {
+  existsInRemoteRepository: boolean
+  willBeChanged: boolean
+  willBeDeleted: boolean
+}
+export type RowObject = EditableObject & {
   id: RowObjectId
   text: string
   type: RowTypeId
   attrs: { [key: ColumnId]: string }
   indent: number
 }
-export type RowType = {
+export type RowType = EditableObject & {
   id: RowTypeId
   name?: string
   columns: { id: ColumnId, name?: string }[]
@@ -190,7 +195,20 @@ export const insertNewRow = (aboveRow: GridRow): GridRowOfRowObject => {
       type: type,
       attrs: {},
       indent,
+      existsInRemoteRepository: false,
+      willBeChanged: true,
+      willBeDeleted: false,
     },
+  }
+}
+
+/** 行の編集状態取得 */
+export const getRowEditState = (gridRow: GridRow, rowTypeMap: Map<RowTypeId, RowType>): Util.LocalRepositoryState => {
+  if (gridRow.type === 'row') {
+    return Util.getLocalRepositoryState(gridRow.item)
+  } else {
+    const rowType = rowTypeMap.get(gridRow.rowTypeId)
+    return rowType ? Util.getLocalRepositoryState(rowType) : ''
   }
 }
 

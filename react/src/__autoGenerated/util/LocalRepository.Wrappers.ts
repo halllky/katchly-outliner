@@ -142,8 +142,9 @@ export const useRowRepository = (editRange?
       f.Row.ID = ID
     } else if (editRange) {
       f.Row.ID = editRange.filter.ID
-      f.Row.Parent = editRange.filter.Parent
       f.Row.Label = editRange.filter.Label
+      f.Row.Indent.From = editRange.filter.Indent?.From
+      f.Row.Indent.To = editRange.filter.Indent?.To
       f.Row.RowType.ID = editRange.filter.RowType?.ID
     }
     return { filter: f }
@@ -204,14 +205,13 @@ export const useRowRepository = (editRange?
         // const item = cursor.value.item as AggregateType.RowDisplayData
         // if (editRange.filter.ID !== undefined
         //   && item.ID !== editRange.filter.ID) return
-        // if (editRange.filter.Parent !== undefined
-        //   && item.Parent !== editRange.filter.Parent) return
         // if (editRange.filter.Label !== undefined
         //   && item.Label !== editRange.filter.Label) return
         // if (editRange.filter.RowType?.ID !== undefined
         //   && item.RowType?.ID !== editRange.filter.RowType.ID) return
         // if (editRange.filter.RowType?.RowTypeName !== undefined
         //   && item.RowType?.RowTypeName !== editRange.filter.RowType.RowTypeName) return
+        //
         localItems.push(cursor.value.item as AggregateType.RowDisplayData)
       })
     }
@@ -327,14 +327,13 @@ export const useRowOrderRepository = (editRange?
         // const item = cursor.value.item as AggregateType.RowOrderDisplayData
         // if (editRange.filter.Row?.ID !== undefined
         //   && item.Row?.ID !== editRange.filter.Row.ID) return
-        // if (editRange.filter.Row?.Parent !== undefined
-        //   && item.Row?.Parent !== editRange.filter.Row.Parent) return
         // if (editRange.filter.Row?.Label !== undefined
         //   && item.Row?.Label !== editRange.filter.Row.Label) return
         // if (editRange.filter.Row?.RowType?.ID !== undefined
         //   && item.Row?.RowType?.ID !== editRange.filter.Row.RowType.ID) return
         // if (editRange.filter.Row?.RowType?.RowTypeName !== undefined
         //   && item.Row?.RowType?.RowTypeName !== editRange.filter.Row.RowType.RowTypeName) return
+        //
         //
         localItems.push(cursor.value.item as AggregateType.RowOrderDisplayData)
       })

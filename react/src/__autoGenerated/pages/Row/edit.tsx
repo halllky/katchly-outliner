@@ -119,9 +119,6 @@ const RowView = ({ }: {
     <>
       <VForm.Container leftColumnMinWidth="11.6rem">
         <input type="hidden" {...register(`own_members.ID`)} />
-        <VForm.Item label="Parent">
-          <Input.Word {...registerEx(`own_members.Parent`)} />
-        </VForm.Item>
         <VForm.Item label="Label">
           <Input.Description {...registerEx(`own_members.Label`)} />
         </VForm.Item>
@@ -129,6 +126,9 @@ const RowView = ({ }: {
           <Input.ComboBoxRowType {...registerEx(`own_members.RowType`)} className='w-full' />
         </VForm.Item>
         <AttrsView />
+        <VForm.Item label="Indent">
+          <Input.Num {...registerEx(`own_members.Indent`)} />
+        </VForm.Item>
       </VForm.Container>
       <Row_RowOrderView />
     </>

@@ -201,10 +201,6 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.Row?.ID)) {
                 query = query.Where(x => x.Row.ID == filter.Row.ID);
             }
-            if (!string.IsNullOrWhiteSpace(filter?.Row?.Parent)) {
-                var trimmed = filter.Row.Parent.Trim();
-                query = query.Where(x => x.Row.Parent.Contains(trimmed));
-            }
             if (!string.IsNullOrWhiteSpace(filter?.Row?.Label)) {
                 var trimmed = filter.Row.Label.Trim();
                 query = query.Where(x => x.Row.Label.Contains(trimmed));
@@ -215,6 +211,12 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.Row?.RowType?.RowTypeName)) {
                 var trimmed = filter.Row.RowType.RowTypeName.Trim();
                 query = query.Where(x => x.Row.RowType.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.Row?.Indent?.From != default) {
+                query = query.Where(x => x.Row.Indent >= filter.Row.Indent.From);
+            }
+            if (filter?.Row?.Indent?.To != default) {
+                query = query.Where(x => x.Row.Indent <= filter.Row.Indent.To);
             }
             if (filter?.Order?.From != default) {
                 query = query.Where(x => x.Order >= filter.Order.From);
@@ -314,9 +316,9 @@ namespace Katchly {
     }
     public class RowOrder_RowSearchCondition {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
         public RowOrder_Row_RowTypeSearchCondition RowType { get; set; } = new();
+        public FromTo<int?> Indent { get; set; } = new();
     }
     public class RowOrder_Row_RowTypeSearchCondition {
         public string? ID { get; set; }

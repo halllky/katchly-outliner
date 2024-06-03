@@ -137,11 +137,13 @@ const Page = () => {
               <Input.Num {...registerExCondition(`Order.To`)} />
             </VForm.Item>
             <VForm.Container label="Row">
-              <VForm.Item label="Parent">
-                <Input.Word {...registerExCondition(`Row.Parent`)} />
-              </VForm.Item>
               <VForm.Item label="Label">
                 <Input.Description {...registerExCondition(`Row.Label`)} />
+              </VForm.Item>
+              <VForm.Item label="Indent">
+                <Input.Num {...registerExCondition(`Row.Indent.From`)} />
+                <span className="select-none">～</span>
+                <Input.Num {...registerExCondition(`Row.Indent.To`)} />
               </VForm.Item>
             </VForm.Container>
             <VForm.Container label="RowType">

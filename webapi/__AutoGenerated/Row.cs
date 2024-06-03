@@ -252,10 +252,6 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.ID)) {
                 query = query.Where(x => x.ID == filter.ID);
             }
-            if (!string.IsNullOrWhiteSpace(filter?.Parent)) {
-                var trimmed = filter.Parent.Trim();
-                query = query.Where(x => x.Parent.Contains(trimmed));
-            }
             if (!string.IsNullOrWhiteSpace(filter?.Label)) {
                 var trimmed = filter.Label.Trim();
                 query = query.Where(x => x.Label.Contains(trimmed));
@@ -266,6 +262,12 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.RowType?.RowTypeName)) {
                 var trimmed = filter.RowType.RowTypeName.Trim();
                 query = query.Where(x => x.RowType.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.Indent?.From != default) {
+                query = query.Where(x => x.Indent >= filter.Indent.From);
+            }
+            if (filter?.Indent?.To != default) {
+                query = query.Where(x => x.Indent <= filter.Indent.To);
             }
         
             // 順番
@@ -335,10 +337,10 @@ namespace Katchly {
     /// </summary>
     public partial class RowCreateCommand {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
         public RowTypeKeys? RowType { get; set; }
         public List<AttrsSaveCommand>? Attrs { get; set; }
+        public int? Indent { get; set; }
     
         /// <summary>
         /// Rowのオブジェクトをデータベースに保存する形に変換します。
@@ -346,7 +348,6 @@ namespace Katchly {
         public Katchly.RowDbEntity ToDbEntity() {
             return new Katchly.RowDbEntity {
                 ID = this.ID,
-                Parent = this.Parent,
                 Label = this.Label,
                 Attrs = this.Attrs?.Select(item1 => new Katchly.AttrsDbEntity {
                     Attrs_ID = this.ID,
@@ -354,6 +355,7 @@ namespace Katchly {
                     ColType_Columns_ID = item1.ColType?.Parent?.ID,
                     ColType_ColumnId = item1.ColType?.ColumnId,
                 }).ToHashSet() ?? new HashSet<Katchly.AttrsDbEntity>(),
+                Indent = this.Indent,
                 RowType_ID = this.RowType?.ID,
             };
         }
@@ -363,10 +365,10 @@ namespace Katchly {
     /// </summary>
     public partial class RowSaveCommand {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
         public RowTypeKeys? RowType { get; set; }
         public List<AttrsSaveCommand>? Attrs { get; set; }
+        public int? Indent { get; set; }
     
         /// <summary>
         /// Rowのオブジェクトをデータベースに保存する形に変換します。
@@ -374,7 +376,6 @@ namespace Katchly {
         public Katchly.RowDbEntity ToDbEntity() {
             return new Katchly.RowDbEntity {
                 ID = this.ID,
-                Parent = this.Parent,
                 Label = this.Label,
                 Attrs = this.Attrs?.Select(item1 => new Katchly.AttrsDbEntity {
                     Attrs_ID = this.ID,
@@ -382,6 +383,7 @@ namespace Katchly {
                     ColType_Columns_ID = item1.ColType?.Parent?.ID,
                     ColType_ColumnId = item1.ColType?.ColumnId,
                 }).ToHashSet() ?? new HashSet<Katchly.AttrsDbEntity>(),
+                Indent = this.Indent,
                 RowType_ID = this.RowType?.ID,
             };
         }
@@ -391,7 +393,6 @@ namespace Katchly {
         public static RowSaveCommand FromDbEntity(Katchly.RowDbEntity entity) {
             var instance = new RowSaveCommand {
                 ID = entity.ID,
-                Parent = entity.Parent,
                 Label = entity.Label,
                 RowType = new RowTypeKeys() {
                     ID = entity.RowType?.ID,
@@ -405,6 +406,7 @@ namespace Katchly {
                     },
                     Value = item.Value,
                 }).ToList(),
+                Indent = entity.Indent,
             };
             return instance;
         }
@@ -419,9 +421,9 @@ namespace Katchly {
     }
     public class RowSearchCondition {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
         public Row_RowTypeSearchCondition RowType { get; set; } = new();
+        public FromTo<int?> Indent { get; set; } = new();
     }
     public class AttrsSearchCondition {
         public Attrs_ColTypeSearchCondition ColType { get; set; } = new();
@@ -455,8 +457,8 @@ namespace Katchly {
     /// </summary>
     public partial class RowDbEntity {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
+        public int? Indent { get; set; }
         public string? RowType_ID { get; set; }
     
         public virtual RowTypeDbEntity? RowType { get; set; }
@@ -509,7 +511,6 @@ namespace Katchly {
                 willBeDeleted = false,
                 own_members = new() {
                     ID = dbEntity?.ID,
-                    Parent = dbEntity?.Parent,
                     Label = dbEntity?.Label,
                     RowType = new RowTypeRefInfo {
                         __instanceKey = new object?[] {
@@ -517,6 +518,7 @@ namespace Katchly {
                         }.ToJson(),
                         ID = dbEntity?.RowType?.ID,
                     },
+                    Indent = dbEntity?.Indent,
                 },
                 child_Attrs = dbEntity?.Attrs?.Select(x0 => new AttrsDisplayData {
                     localRepositoryItemKey = new object?[] { dbEntity.ID, x0?.ColType?.Parent?.ID, x0?.ColType?.ColumnId }.ToJson(),
@@ -543,9 +545,9 @@ namespace Katchly {
     }
     public class RowDisplayDataOwnMembers {
         public string? ID { get; set; }
-        public string? Parent { get; set; }
         public string? Label { get; set; }
         public RowTypeRefInfo? RowType { get; set; }
+        public int? Indent { get; set; }
     }
     /// <summary>
     /// Attrsの画面表示用データ
@@ -649,9 +651,9 @@ namespace Katchly {
             
                 entity.Property(e => e.ID)
                     .IsRequired(true);
-                entity.Property(e => e.Parent)
-                    .IsRequired(false);
                 entity.Property(e => e.Label)
+                    .IsRequired(false);
+                entity.Property(e => e.Indent)
                     .IsRequired(false);
                 entity.Property(e => e.RowType_ID)
                     .IsRequired(false);

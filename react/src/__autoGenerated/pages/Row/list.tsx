@@ -110,22 +110,6 @@ const Page = () => {
     },
     {
       id: 'col1',
-      header: 'Parent',
-      cell: cellProps => {
-        const value = cellProps.row.original.own_members?.Parent
-        return (
-          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-            {value}
-            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-          </span>
-        )
-      },
-      accessorFn: data => data.own_members?.Parent,
-      setValue: (row, value) => row.own_members.Parent = value,
-      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
-    },
-    {
-      id: 'col2',
       header: 'Label',
       cell: cellProps => {
         const value = cellProps.row.original.own_members?.Label
@@ -141,7 +125,7 @@ const Page = () => {
       cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
     },
     {
-      id: 'col3',
+      id: 'col2',
       header: 'RowType',
       cell: cellProps => {
         const value = cellProps.row.original.own_members?.RowType
@@ -156,6 +140,22 @@ const Page = () => {
       accessorFn: data => data.own_members?.RowType,
       setValue: (row, value) => row.own_members.RowType = value,
       cellEditor: (props, ref) => <Input.ComboBoxRowType ref={ref} {...props} />,
+    },
+    {
+      id: 'col3',
+      header: 'Indent',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.Indent
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: data => data.own_members?.Indent,
+      setValue: (row, value) => row.own_members.Indent = value,
+      cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,
     },
     {
       id: 'ref-from-ref_from_Row_RowOrder',
@@ -242,11 +242,13 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="Parent">
-              <Input.Word {...registerExCondition(`Parent`)} />
-            </VForm.Item>
             <VForm.Item label="Label">
               <Input.Description {...registerExCondition(`Label`)} />
+            </VForm.Item>
+            <VForm.Item label="Indent">
+              <Input.Num {...registerExCondition(`Indent.From`)} />
+              <span className="select-none">～</span>
+              <Input.Num {...registerExCondition(`Indent.To`)} />
             </VForm.Item>
             <VForm.Container label="RowType">
               <VForm.Item label="RowTypeName">
