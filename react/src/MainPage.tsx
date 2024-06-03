@@ -119,7 +119,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
         const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
         const style: React.CSSProperties = {
           marginLeft: cellProps.row.original.type === 'row'
-            ? cellProps.row.original.indent * indentSize
+            ? cellProps.row.original.item.indent * indentSize
             : undefined,
         }
         return (
@@ -198,9 +198,9 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
       if (selectedRows === undefined) return
       for (const { row, rowIndex } of selectedRows) {
         if (row.type === 'rowType') continue
-        row.indent = e.shiftKey
-          ? Math.max(0, row.indent - 1)
-          : (row.indent + 1)
+        row.item.indent = e.shiftKey
+          ? Math.max(0, row.item.indent - 1)
+          : (row.item.indent + 1)
         update(rowIndex, row)
       }
       e.preventDefault()

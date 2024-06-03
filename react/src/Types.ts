@@ -12,10 +12,10 @@ export type ColumnId = string & { [_ColumnIdSymbol]: never }
 
 export type RowObject = {
   id: RowObjectId
-  parent?: RowObjectId
   text: string
   type: RowTypeId
   attrs: { [key: ColumnId]: string }
+  indent: number
 }
 export type RowType = {
   id: RowTypeId
@@ -26,7 +26,6 @@ export type RowType = {
 export type GridRow = GridRowOfRowObject | GridRowOfRowType
 export type GridRowOfRowObject = {
   type: 'row'
-  indent: number
   item: RowObject
 }
 export type GridRowOfRowType = {
@@ -58,35 +57,22 @@ export const rowTypeMapReducer = Util.defineReducer((state: {
 // ---------------------------------------------------
 /** Rowを行順に並べ、RowTypeが変わったタイミングでその行の型を表す行を挿入する */
 export const toGridRows = (rowData: RowObject[]): GridRow[] => {
-  // orderを記憶
-  const rowOrder = new Map(rowData.map((row, i) => [row.id, i]))
-
-  // インデント計算のためにツリー構造にする
-  const tree = Util.toTree(rowData, {
-    getId: row => row.id,
-    getParent: row => row.parent,
-  })
-  const flattenTree = Util.flatten(tree)
-
-  // GridRowを組み立てる
   const gridRows: GridRow[] = []
-  for (let i = 0; i < flattenTree.length; i++) {
-    const currentRow = flattenTree[i]
-    const previousRow = i === 0 ? undefined : flattenTree[i - 1]
+  for (let i = 0; i < rowData.length; i++) {
+    const currentRow = rowData[i]
+    const previousRow = i === 0 ? undefined : rowData[i - 1]
 
-    // RowTypeを表す行を挿入する
-    if (previousRow === undefined || currentRow.item.type !== previousRow.item.type) {
+    // 行の型が変わったタイミングでRowTypeを表す行を挿入する
+    if (previousRow === undefined || currentRow.type !== previousRow.type) {
       gridRows.push({
         type: 'rowType',
-        rowTypeId: currentRow.item.type,
+        rowTypeId: currentRow.type,
       })
     }
 
-    // Rowを挿入する
     gridRows.push({
       type: 'row',
-      indent: currentRow.depth,
-      item: currentRow.item,
+      item: currentRow,
     })
   }
   return gridRows
@@ -194,16 +180,16 @@ export const insertNewRow = (aboveRow: GridRow): GridRowOfRowObject => {
     ? aboveRow.item.type
     : aboveRow?.rowTypeId
   const indent = aboveRow?.type === 'row'
-    ? aboveRow.indent
+    ? aboveRow.item.indent
     : 0
   return {
     type: 'row',
-    indent,
     item: {
       id: UUID.generate() as RowObjectId,
       text: '',
       type: type,
       attrs: {},
+      indent,
     },
   }
 }
