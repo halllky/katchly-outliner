@@ -6,7 +6,7 @@ import * as Util from './util'
 // ------------------ Row ------------------
 export type RowSaveCommand = {
   ID?: string
-  Label?: string
+  Text?: string
   RowType?: Util.ItemKey
   Attrs?: AttrsSaveCommand[]
   Indent?: number
@@ -27,7 +27,7 @@ export const createAttrs = (): AttrsSaveCommand => ({
 
 export type RowSearchCondition = {
   ID?: string
-  Label?: string
+  Text?: string
   RowType: Row_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
 }
@@ -72,7 +72,7 @@ export type RowDisplayData = {
   willBeDeleted: boolean
   own_members: {
     ID?: string
-    Label?: string
+    Text?: string
     RowType?: RowTypeRefInfo
     Indent?: number
   }
@@ -100,7 +100,7 @@ export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => 
     willBeDeleted: displayData.willBeDeleted,
     item: {
       ID: displayData?.own_members?.ID,
-      Label: displayData?.own_members?.Label,
+      Text: displayData?.own_members?.Text,
       RowType: displayData?.own_members?.RowType?.__instanceKey,
       Indent: displayData?.own_members?.Indent,
       Attrs: displayData.child_Attrs?.map(xAttrs => ({
@@ -136,7 +136,7 @@ export type RowRefInfo = {
   __instanceKey?: Util.ItemKey
 
   ID?: string,
-  Label?: string,
+  Text?: string,
 }
 
 /** Attrsを参照する他のデータの画面上に表示されるAttrsのデータ型。 */
@@ -147,7 +147,7 @@ export type AttrsRefInfo = {
 
   Parent?: {
     ID?: string,
-    Label?: string,
+    Text?: string,
   },
   ColType?: {
     Parent?: {
@@ -174,7 +174,7 @@ export type RowOrderSearchCondition = {
 }
 export type RowOrder_RowSearchCondition = {
   ID?: string
-  Label?: string
+  Text?: string
   RowType: RowOrder_Row_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
 }
@@ -232,7 +232,7 @@ export type RowOrderRefInfo = {
 
   Row?: {
     ID?: string,
-    Label?: string,
+    Text?: string,
   },
 }
 

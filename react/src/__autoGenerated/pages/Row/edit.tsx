@@ -69,7 +69,7 @@ const AfterLoaded = ({
   const { handleSubmit } = reactHookFormMethods
 
   const instanceName = useMemo(() => {
-    return `${defaultValues.own_members?.Label ?? ''}`
+    return `${defaultValues.own_members?.Text ?? ''}`
   }, [defaultValues.own_members])
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -119,8 +119,8 @@ const RowView = ({ }: {
     <>
       <VForm.Container leftColumnMinWidth="11.6rem">
         <input type="hidden" {...register(`own_members.ID`)} />
-        <VForm.Item label="Label">
-          <Input.Description {...registerEx(`own_members.Label`)} />
+        <VForm.Item label="Text">
+          <Input.Description {...registerEx(`own_members.Text`)} />
         </VForm.Item>
         <VForm.Item label="RowType">
           <Input.ComboBoxRowType {...registerEx(`own_members.RowType`)} className='w-full' />

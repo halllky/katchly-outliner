@@ -137,8 +137,8 @@ const Page = () => {
               <Input.Num {...registerExCondition(`Order.To`)} />
             </VForm.Item>
             <VForm.Container label="Row">
-              <VForm.Item label="Label">
-                <Input.Description {...registerExCondition(`Row.Label`)} />
+              <VForm.Item label="Text">
+                <Input.Description {...registerExCondition(`Row.Text`)} />
               </VForm.Item>
               <VForm.Item label="Indent">
                 <Input.Num {...registerExCondition(`Row.Indent.From`)} />

@@ -142,7 +142,7 @@ export const useRowRepository = (editRange?
       f.Row.ID = ID
     } else if (editRange) {
       f.Row.ID = editRange.filter.ID
-      f.Row.Label = editRange.filter.Label
+      f.Row.Text = editRange.filter.Text
       f.Row.Indent.From = editRange.filter.Indent?.From
       f.Row.Indent.To = editRange.filter.Indent?.To
       f.Row.RowType.ID = editRange.filter.RowType?.ID
@@ -205,8 +205,8 @@ export const useRowRepository = (editRange?
         // const item = cursor.value.item as AggregateType.RowDisplayData
         // if (editRange.filter.ID !== undefined
         //   && item.ID !== editRange.filter.ID) return
-        // if (editRange.filter.Label !== undefined
-        //   && item.Label !== editRange.filter.Label) return
+        // if (editRange.filter.Text !== undefined
+        //   && item.Text !== editRange.filter.Text) return
         // if (editRange.filter.RowType?.ID !== undefined
         //   && item.RowType?.ID !== editRange.filter.RowType.ID) return
         // if (editRange.filter.RowType?.RowTypeName !== undefined
@@ -246,7 +246,7 @@ export const useRowRepository = (editRange?
         await queryToTable(table => table.put({
           dataTypeKey: 'Row',
           itemKey: newValue.localRepositoryItemKey,
-          itemName: `${newValue.own_members?.Label}`,
+          itemName: `${newValue.own_members?.Text}`,
           item: newValue,
           existsInRemoteRepository: newValue.existsInRemoteRepository,
           willBeChanged: newValue.willBeChanged,
@@ -327,8 +327,8 @@ export const useRowOrderRepository = (editRange?
         // const item = cursor.value.item as AggregateType.RowOrderDisplayData
         // if (editRange.filter.Row?.ID !== undefined
         //   && item.Row?.ID !== editRange.filter.Row.ID) return
-        // if (editRange.filter.Row?.Label !== undefined
-        //   && item.Row?.Label !== editRange.filter.Row.Label) return
+        // if (editRange.filter.Row?.Text !== undefined
+        //   && item.Row?.Text !== editRange.filter.Row.Text) return
         // if (editRange.filter.Row?.RowType?.ID !== undefined
         //   && item.Row?.RowType?.ID !== editRange.filter.Row.RowType.ID) return
         // if (editRange.filter.Row?.RowType?.RowTypeName !== undefined

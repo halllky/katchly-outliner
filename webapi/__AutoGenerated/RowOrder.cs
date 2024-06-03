@@ -201,9 +201,9 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.Row?.ID)) {
                 query = query.Where(x => x.Row.ID == filter.Row.ID);
             }
-            if (!string.IsNullOrWhiteSpace(filter?.Row?.Label)) {
-                var trimmed = filter.Row.Label.Trim();
-                query = query.Where(x => x.Row.Label.Contains(trimmed));
+            if (!string.IsNullOrWhiteSpace(filter?.Row?.Text)) {
+                var trimmed = filter.Row.Text.Trim();
+                query = query.Where(x => x.Row.Text.Contains(trimmed));
             }
             if (!string.IsNullOrWhiteSpace(filter?.Row?.RowType?.ID)) {
                 query = query.Where(x => x.Row.RowType.ID == filter.Row.RowType.ID);
@@ -316,7 +316,7 @@ namespace Katchly {
     }
     public class RowOrder_RowSearchCondition {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public RowOrder_Row_RowTypeSearchCondition RowType { get; set; } = new();
         public FromTo<int?> Indent { get; set; } = new();
     }
@@ -365,7 +365,7 @@ namespace Katchly {
                             dbEntity?.Row?.ID,
                         }.ToJson(),
                         ID = dbEntity?.Row?.ID,
-                        Label = dbEntity?.Row?.Label,
+                        Text = dbEntity?.Row?.Text,
                     },
                     Order = dbEntity?.Order,
                 },
@@ -398,7 +398,7 @@ namespace Katchly {
                 }.ToJson(),
                 Row = new() {
                     ID = dbEntity.Row?.ID,
-                    Label = dbEntity.Row?.Label,
+                    Text = dbEntity.Row?.Text,
                 },
             };
             return instance;
@@ -406,7 +406,7 @@ namespace Katchly {
     }
     public partial class RowOrderRefInfo_Row {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
     }
 #endregion データ構造クラス
 }

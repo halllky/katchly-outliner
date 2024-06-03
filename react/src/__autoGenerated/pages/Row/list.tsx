@@ -110,9 +110,9 @@ const Page = () => {
     },
     {
       id: 'col1',
-      header: 'Label',
+      header: 'Text',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.Label
+        const value = cellProps.row.original.own_members?.Text
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -120,8 +120,8 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.own_members?.Label,
-      setValue: (row, value) => row.own_members.Label = value,
+      accessorFn: data => data.own_members?.Text,
+      setValue: (row, value) => row.own_members.Text = value,
       cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
     },
     {
@@ -242,8 +242,8 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="Label">
-              <Input.Description {...registerExCondition(`Label`)} />
+            <VForm.Item label="Text">
+              <Input.Description {...registerExCondition(`Text`)} />
             </VForm.Item>
             <VForm.Item label="Indent">
               <Input.Num {...registerExCondition(`Indent.From`)} />

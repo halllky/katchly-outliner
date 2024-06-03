@@ -22,7 +22,7 @@ export const ComboBoxRow = defineCustomComponent<Types.RowRefInfo>((props, ref) 
       emitValueSelector={item => item}
       matchingKeySelectorFromEmitValue={item => item.__instanceKey}
       matchingKeySelectorFromOption={item => item.__instanceKey}
-      textSelector={item => `${item.Label ?? ''}`}
+      textSelector={item => `${item.Text ?? ''}`}
     />
   )
 })

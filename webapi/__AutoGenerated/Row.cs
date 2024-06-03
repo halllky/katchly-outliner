@@ -252,9 +252,9 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(filter?.ID)) {
                 query = query.Where(x => x.ID == filter.ID);
             }
-            if (!string.IsNullOrWhiteSpace(filter?.Label)) {
-                var trimmed = filter.Label.Trim();
-                query = query.Where(x => x.Label.Contains(trimmed));
+            if (!string.IsNullOrWhiteSpace(filter?.Text)) {
+                var trimmed = filter.Text.Trim();
+                query = query.Where(x => x.Text.Contains(trimmed));
             }
             if (!string.IsNullOrWhiteSpace(filter?.RowType?.ID)) {
                 query = query.Where(x => x.RowType.ID == filter.RowType.ID);
@@ -295,7 +295,7 @@ namespace Katchly {
             if (!string.IsNullOrWhiteSpace(keyword)) {
                 var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
                 query = query.Where(item => EF.Functions.Like(item.ID, like)
-                                         || EF.Functions.Like(item.Label, like));
+                                         || EF.Functions.Like(item.Text, like));
             }
         
             var results = query
@@ -337,7 +337,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowCreateCommand {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public RowTypeKeys? RowType { get; set; }
         public List<AttrsSaveCommand>? Attrs { get; set; }
         public int? Indent { get; set; }
@@ -348,7 +348,7 @@ namespace Katchly {
         public Katchly.RowDbEntity ToDbEntity() {
             return new Katchly.RowDbEntity {
                 ID = this.ID,
-                Label = this.Label,
+                Text = this.Text,
                 Attrs = this.Attrs?.Select(item1 => new Katchly.AttrsDbEntity {
                     Attrs_ID = this.ID,
                     Value = item1.Value,
@@ -365,7 +365,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowSaveCommand {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public RowTypeKeys? RowType { get; set; }
         public List<AttrsSaveCommand>? Attrs { get; set; }
         public int? Indent { get; set; }
@@ -376,7 +376,7 @@ namespace Katchly {
         public Katchly.RowDbEntity ToDbEntity() {
             return new Katchly.RowDbEntity {
                 ID = this.ID,
-                Label = this.Label,
+                Text = this.Text,
                 Attrs = this.Attrs?.Select(item1 => new Katchly.AttrsDbEntity {
                     Attrs_ID = this.ID,
                     Value = item1.Value,
@@ -393,7 +393,7 @@ namespace Katchly {
         public static RowSaveCommand FromDbEntity(Katchly.RowDbEntity entity) {
             var instance = new RowSaveCommand {
                 ID = entity.ID,
-                Label = entity.Label,
+                Text = entity.Text,
                 RowType = new RowTypeKeys() {
                     ID = entity.RowType?.ID,
                 },
@@ -421,7 +421,7 @@ namespace Katchly {
     }
     public class RowSearchCondition {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public Row_RowTypeSearchCondition RowType { get; set; } = new();
         public FromTo<int?> Indent { get; set; } = new();
     }
@@ -457,7 +457,7 @@ namespace Katchly {
     /// </summary>
     public partial class RowDbEntity {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public int? Indent { get; set; }
         public string? RowType_ID { get; set; }
     
@@ -511,7 +511,7 @@ namespace Katchly {
                 willBeDeleted = false,
                 own_members = new() {
                     ID = dbEntity?.ID,
-                    Label = dbEntity?.Label,
+                    Text = dbEntity?.Text,
                     RowType = new RowTypeRefInfo {
                         __instanceKey = new object?[] {
                             dbEntity?.RowType?.ID,
@@ -545,7 +545,7 @@ namespace Katchly {
     }
     public class RowDisplayDataOwnMembers {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
         public RowTypeRefInfo? RowType { get; set; }
         public int? Indent { get; set; }
     }
@@ -576,7 +576,7 @@ namespace Katchly {
         public string? __instanceKey { get; set; }
     
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
     
         public static RowRefInfo FromDbEntity(RowDbEntity dbEntity) {
             var instance = new RowRefInfo {
@@ -584,7 +584,7 @@ namespace Katchly {
                     dbEntity.ID,
                 }.ToJson(),
                 ID = dbEntity.ID,
-                Label = dbEntity.Label,
+                Text = dbEntity.Text,
             };
             return instance;
         }
@@ -622,7 +622,7 @@ namespace Katchly {
     }
     public partial class AttrsRefInfo_Parent {
         public string? ID { get; set; }
-        public string? Label { get; set; }
+        public string? Text { get; set; }
     }
     public partial class AttrsRefInfo_ColType {
         public AttrsRefInfo_ColType_Parent? Parent { get; set; }
@@ -651,7 +651,7 @@ namespace Katchly {
             
                 entity.Property(e => e.ID)
                     .IsRequired(true);
-                entity.Property(e => e.Label)
+                entity.Property(e => e.Text)
                     .IsRequired(false);
                 entity.Property(e => e.Indent)
                     .IsRequired(false);

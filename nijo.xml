@@ -2,16 +2,13 @@
 
   <Row is="write-model">
     <ID is="uuid"/>
-
-    <!-- 本当はref-to:Rowとしたいがnijoが自身への参照をまだサポートしていない -->
-    <Parent is="word" />
-
-    <Label is="sentence" />
+    <Text is="sentence" />
     <RowType is="ref-to:RowType"/>
     <Attrs is="array">
       <ColType is="ref-to:RowType/Columns key" />
       <Value is="sentence" />
     </Attrs>
+    <Indent is="int" />
   </Row>
 
   <RowOrder is="write-model">

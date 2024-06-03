@@ -58,7 +58,7 @@ export const useDummyDataGenerator = () => {
     
     const data86237014 = AggregateType.createRow()
     
-    data86237014.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data86237014.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     const response67718114 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
     data86237014.RowType = response67718114.ok ? response67718114.data[0].__instanceKey : undefined
     
@@ -74,7 +74,7 @@ export const useDummyDataGenerator = () => {
     
     const data84805177 = AggregateType.createRow()
     
-    data84805177.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data84805177.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     const response03262519 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
     data84805177.RowType = response03262519.ok ? response03262519.data[1].__instanceKey : undefined
     
@@ -90,7 +90,7 @@ export const useDummyDataGenerator = () => {
     
     const data93401864 = AggregateType.createRow()
     
-    data93401864.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data93401864.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     const response54681542 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
     data93401864.RowType = response54681542.ok ? response54681542.data[2].__instanceKey : undefined
     
@@ -106,7 +106,7 @@ export const useDummyDataGenerator = () => {
     
     const data45332718 = AggregateType.createRow()
     
-    data45332718.Label = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data45332718.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     const response98854376 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
     data45332718.RowType = response98854376.ok ? response98854376.data[3].__instanceKey : undefined
     
