@@ -66,7 +66,8 @@ export const Page = () => {
 
   const handleSave = useCallback(async (data: { rows: RowObject[], rowTypes: RowType[] }) => {
     await saveAll(data)
-  }, [saveAll, setNowLoading])
+    setData(await loadAll())
+  }, [saveAll, loadAll, setNowLoading])
 
   useEffect(() => {
     handleLoad()
