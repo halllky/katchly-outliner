@@ -261,6 +261,14 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
       }
       e.preventDefault()
     }
+    // Ctrl + S による保存
+    else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      onSave({
+        rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
+        rowTypes: Array.from(rowTypeMap.values()),
+      })
+      e.preventDefault()
+    }
     // Ctrl + B によるサイドメニュー表示切替
     else if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
       toggleSideMenu()
@@ -276,7 +284,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
       handleDeleteRows()
       e.preventDefault()
     }
-  }, [update, toggleSideMenu, handleAddRow, handleDeleteRows])
+  }, [update, toggleSideMenu, handleAddRow, handleDeleteRows, onSave, fields, rowTypeMap])
 
   return (
     <PanelGroup direction="horizontal" className={className} style={style}>
