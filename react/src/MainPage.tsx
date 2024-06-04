@@ -217,10 +217,17 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
   // イベント
   const handleAddRow = useCallback(() => {
     const selectedRows = gridRef.current?.getSelectedRows()
-    if (!selectedRows || selectedRows.length === 0) return
-    const insertPoint = selectedRows[0]
-    insert(insertPoint.rowIndex, insertNewRow(insertPoint.row))
-  }, [insert])
+    if (!selectedRows || selectedRows.length === 0) {
+      const { newRow, newRowType } = insertNewRow(undefined)
+      insert(0, newRow)
+      if (newRowType !== undefined) dispatchRowType(state => state.set(newRowType))
+    } else {
+      const insertPoint = selectedRows[0]
+      const { newRow, newRowType } = insertNewRow(insertPoint.row)
+      insert(insertPoint.rowIndex, newRow)
+      if (newRowType !== undefined) dispatchRowType(state => state.set(newRowType))
+    }
+  }, [insert, dispatchRowType])
 
   const handleDeleteRows = useCallback(() => {
     if (!gridRef.current) return

@@ -1,12 +1,12 @@
 import { UUID } from 'uuidjs'
-import { RowType, RowObject, RowTypeId, ColumnId, RowObjectId } from './Types'
+import { RowObject, RowTypeId, RowObjectId, createNewRowType } from './Types'
 
 export default function (many: boolean) {
 
-  const task = newRowType('残タスク', ['ステータス', '備考'])
+  const task = createNewRowType('残タスク', ['ステータス', '備考'])
   const status = task.columns.find(c => c.name === 'ステータス')!.id
 
-  const parts = newRowType('構成要素')
+  const parts = createNewRowType('構成要素')
 
   const task1 = newRow('先方と要件を詰める', { type: task.id })
   const task1_1 = newRow('パワポの図を描く', { type: task.id, indent: 1, attrs: { [status]: '完了' } })
@@ -27,18 +27,6 @@ export default function (many: boolean) {
     ],
   }
 }
-
-const newRowType = (name?: string, columnNames?: string[]): RowType => ({
-  id: UUID.generate() as RowTypeId,
-  name,
-  columns: columnNames?.map(colName => ({
-    id: UUID.generate() as ColumnId,
-    name: colName
-  })) ?? [],
-  existsInRemoteRepository: false,
-  willBeChanged: true,
-  willBeDeleted: false,
-})
 
 const newRow = (text: string, { type, indent, attrs }: { type: RowTypeId, indent?: number, attrs?: RowObject['attrs'] }): RowObject => ({
   id: UUID.generate() as RowObjectId,

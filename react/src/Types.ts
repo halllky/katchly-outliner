@@ -180,26 +180,50 @@ const getBelowRowObjectIndex = (currentIndex: number, all: GridRow[]): number | 
 }
 // -----------------------------------------
 
-export const insertNewRow = (aboveRow: GridRow): GridRowOfRowObject => {
-  const type = aboveRow?.type === 'row'
-    ? aboveRow.item.type
-    : aboveRow?.rowTypeId
-  const indent = aboveRow?.type === 'row'
-    ? aboveRow.item.indent
-    : 0
-  return {
+export const createNewRowType = (name?: string, columnNames?: string[]): RowType => ({
+  id: UUID.generate() as RowTypeId,
+  name,
+  columns: columnNames?.map(colName => ({
+    id: UUID.generate() as ColumnId,
+    name: colName
+  })) ?? [],
+  existsInRemoteRepository: false,
+  willBeChanged: true,
+  willBeDeleted: false,
+})
+
+export const insertNewRow = (aboveRow: GridRow | undefined): { newRow: GridRowOfRowObject, newRowType: RowType | undefined } => {
+  let newRowType: RowType | undefined = undefined
+  let type: RowTypeId
+  if (aboveRow?.type === 'row') {
+    type = aboveRow.item.type
+
+  } else if (aboveRow?.type === 'rowType') {
+    type = aboveRow.rowTypeId
+
+  } else {
+    // 上の行が無い場合（グリッドが空の場合の新規作成など）は行型もこのタイミングで一緒に作成する
+    newRowType = createNewRowType()
+    type = newRowType.id
+  }
+
+  const newRow: GridRowOfRowObject = {
     type: 'row',
     item: {
       id: UUID.generate() as RowObjectId,
       text: '',
-      type: type,
+      type,
       attrs: {},
-      indent,
+      indent: aboveRow?.type === 'row'
+        ? aboveRow.item.indent
+        : 0,
       existsInRemoteRepository: false,
       willBeChanged: true,
       willBeDeleted: false,
     },
   }
+
+  return { newRow, newRowType }
 }
 
 /** 行の編集状態取得 */
