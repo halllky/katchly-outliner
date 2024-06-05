@@ -86,15 +86,14 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
 // -----------------------------------------
 /** 指定範囲の行の再計算 */
 export const useRecalculateGridRow = (
-  fields: UseFieldArrayReturnType['fields'],
   insert: UseFieldArrayReturnType['insert'],
   update: UseFieldArrayReturnType['update'],
   remove: UseFieldArrayReturnType['remove']
 ) => {
-  return useCallback((recalculateRange: [number, number]) => {
+  return useCallback((recalculateRange: [number, number], fields: UseFieldArrayReturnType['fields']) => {
     // ループ処理の始点を決める。行を挿入したり削除したりする都合上、下から順に処理する。
-    const min = Math.min(recalculateRange[0], recalculateRange[1], 0)
-    const max = Math.max(recalculateRange[0], recalculateRange[1], fields.length - 1)
+    const min = Math.max(Math.min(recalculateRange[0], recalculateRange[1]), 0)
+    const max = Math.min(Math.max(recalculateRange[0], recalculateRange[1]), fields.length - 1)
     const start = getBelowRowObjectIndex(max, fields) ?? (fields.length - 1)
     const end = getAboveRowObjectIndex(min, fields) ?? 0
 
@@ -159,24 +158,31 @@ export const useRecalculateGridRow = (
       const index = fields.findIndex(x => x.type === 'row' && x.item.id === aboveOf.item.id)
       update(index - 1, updateRow)
     }
-  }, [fields, insert, update, remove])
+  }, [insert, update, remove])
 }
 
 export type UseFieldArrayReturnType = ReturnType<typeof useFieldArray<PageFormState, 'gridRows'>>
 
-const getAboveRowObjectIndex = (currentIndex: number, all: GridRow[]): number | undefined => {
+export const getAboveRowObjectIndex = (currentIndex: number, all: GridRow[]): number | undefined => {
   while (currentIndex >= 0) {
     currentIndex--
     if (all[currentIndex]?.type === 'row') return currentIndex
   }
   return undefined
 }
-const getBelowRowObjectIndex = (currentIndex: number, all: GridRow[]): number | undefined => {
+export const getBelowRowObjectIndex = (currentIndex: number, all: GridRow[]): number | undefined => {
   while (currentIndex <= all.length - 1) {
     currentIndex++
     if (all[currentIndex]?.type === 'row') return currentIndex
   }
   return undefined
+}
+
+export const moveArrayItem = <T>(arr: T[], from: number, to: number): T[] => {
+  const clone = [...arr]
+  const movedItem = clone.splice(from, 1)[0]
+  clone.splice(to, 0, movedItem)
+  return clone
 }
 // -----------------------------------------
 
