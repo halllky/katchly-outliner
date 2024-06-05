@@ -11,14 +11,20 @@ import { useKatchlyRepository } from './MainPageRepos'
 
 export default function () {
 
+  const divRef = useRef<HTMLDivElement>(null)
+
   return (
-    <Util.ToastContextProvider>
-      <Util.MsgContextProvider>
-        <Util.InlineMessageList />
-        <Page />
-        <Util.Toast />
-      </Util.MsgContextProvider>
-    </Util.ToastContextProvider>
+    <Util.ImeContextProvider elementRef={divRef.current}>
+      <Util.ToastContextProvider>
+        <Util.MsgContextProvider>
+          <Util.InlineMessageList />
+          <div className="h-full w-full" ref={divRef}>
+            <Page />
+          </div>
+          <Util.Toast />
+        </Util.MsgContextProvider>
+      </Util.ToastContextProvider>
+    </Util.ImeContextProvider>
   )
 }
 
