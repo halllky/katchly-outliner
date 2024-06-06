@@ -84,6 +84,74 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
 }
 
 // -----------------------------------------
+/** 行範囲編集 */
+export const useEditRowObject = (
+  fields: UseFieldArrayReturnType['fields'],
+  insert: UseFieldArrayReturnType['insert'],
+  update: UseFieldArrayReturnType['update'],
+  remove: UseFieldArrayReturnType['remove'],
+) => {
+  return useCallback((range: [number, number], editFunction: (rows: GridRowOfRowObject[]) => GridRowOfRowObject[]) => {
+    // 指定範囲の行オブジェクトを編集
+    const min = Math.max(Math.min(range[0], range[1]), 0)
+    const max = Math.min(Math.max(range[0], range[1]), fields.length - 1)
+    const sliced = fields.slice(min, max + 1)
+    const onlyRowObject = sliced.filter(r => r.type === 'row') as GridRowOfRowObject[]
+    const editedRowObjects = editFunction(onlyRowObject)
+
+    // 指定範囲の1つ外側の行オブジェクトを含める
+    const recalculateRange = editedRowObjects
+    const above = getAboveRowObjectIndex(min, fields)
+    const below = getBelowRowObjectIndex(max, fields)
+    if (above !== undefined) recalculateRange.unshift(fields[above] as GridRowOfRowObject)
+    if (below !== undefined) recalculateRange.push(fields[below] as GridRowOfRowObject)
+
+    // 行型を再計算
+    const withRowType: GridRow[] = []
+    for (let i = recalculateRange.length - 1; i >= 0; i--) {
+      const currentRow = recalculateRange[i]
+      withRowType.unshift(currentRow)
+
+      if (i >= 1) {
+        // 行型が変化したタイミングで行型を表すデータを挿入する
+        const aboveRow = recalculateRange[i - 1]
+        if (aboveRow.item.type !== currentRow.item.type) {
+          withRowType.unshift({ type: 'rowType', rowTypeId: currentRow.item.type })
+        }
+      } else {
+        // 編集範囲の上端が表全体の上端の場合は行型を表すデータを挿入する
+        if (above === 0) {
+          withRowType.unshift({ type: 'rowType', rowTypeId: (fields[above] as GridRowOfRowObject).item.type })
+        }
+      }
+    }
+
+    // fieldsを更新
+    const updateRangeStartIndex = above ?? min
+    const updateRangeEndIndex = below ?? max
+    const itemCountBeforeUpdate = updateRangeEndIndex - updateRangeStartIndex + 1
+    const itemCountAfterUpdate = withRowType.length
+    const loopEnd = Math.max(itemCountBeforeUpdate, itemCountAfterUpdate)
+
+    for (let i = 0; i < loopEnd; i++) {
+      if (i >= itemCountBeforeUpdate) {
+        insert(updateRangeStartIndex + i, withRowType.slice(i))
+        break
+
+      } else if (i >= itemCountAfterUpdate) {
+        const removedIndexes = Array
+          .from({ length: loopEnd - i })
+          .map((_, j) => i + j + updateRangeStartIndex)
+        remove(removedIndexes)
+        break
+
+      } else {
+        update(updateRangeStartIndex + i, { ...withRowType[i] })
+      }
+    }
+  }, [fields, insert, update, remove])
+}
+
 /** 指定範囲の行の再計算 */
 export const useRecalculateGridRow = (
   insert: UseFieldArrayReturnType['insert'],
