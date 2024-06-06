@@ -277,10 +277,7 @@ namespace Katchly {
         
             // ページング
             if (skip != null) query = query.Skip(skip.Value);
-        
-            const int DEFAULT_PAGE_SIZE = 20;
-            var pageSize = take ?? DEFAULT_PAGE_SIZE;
-            query = query.Take(pageSize);
+            if (take != null) query = query.Take(take.Value);
         
             return query
                 .AsEnumerable()

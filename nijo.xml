@@ -1,4 +1,4 @@
-<Katchly>
+<Katchly DiscardSearchLimit="True">
 
   <Row is="write-model">
     <ID is="uuid"/>
