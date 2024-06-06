@@ -106,29 +106,30 @@ export const useEditRowObject = (
     if (above !== undefined) recalculateRange.unshift(fields[above] as GridRowOfRowObject)
     if (below !== undefined) recalculateRange.push(fields[below] as GridRowOfRowObject)
 
+    // 編集範囲に表の先頭の行型が含まれる場合
+    const udpateFirstRowType = above === undefined
+
     // 行型を再計算
     const withRowType: GridRow[] = []
-    for (let i = recalculateRange.length - 1; i >= 0; i--) {
+    for (let i = 0; i < recalculateRange.length; i++) {
       const currentRow = recalculateRange[i]
-      withRowType.unshift(currentRow)
 
+      // 行型が変化したタイミングで行型を表すデータを挿入する
       if (i >= 1) {
-        // 行型が変化したタイミングで行型を表すデータを挿入する
         const aboveRow = recalculateRange[i - 1]
         if (aboveRow.item.type !== currentRow.item.type) {
-          withRowType.unshift({ type: 'rowType', rowTypeId: currentRow.item.type })
+          withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
         }
-      } else {
-        // 編集範囲の上端が表全体の上端の場合は行型を表すデータを挿入する
-        if (above === 0) {
-          withRowType.unshift({ type: 'rowType', rowTypeId: (fields[above] as GridRowOfRowObject).item.type })
-        }
+      } else if (udpateFirstRowType) {
+        withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
       }
+
+      withRowType.push(currentRow)
     }
 
     // fieldsを更新
-    const updateRangeStartIndex = above ?? min
-    const updateRangeEndIndex = below ?? max
+    const updateRangeStartIndex = above ?? 0
+    const updateRangeEndIndex = below ?? fields.length - 1
     const itemCountBeforeUpdate = updateRangeEndIndex - updateRangeStartIndex + 1
     const itemCountAfterUpdate = withRowType.length
     const loopEnd = Math.max(itemCountBeforeUpdate, itemCountAfterUpdate)
