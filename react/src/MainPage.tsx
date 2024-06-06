@@ -229,19 +229,24 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
 
   // -------------------------------------
   // イベント
-  const handleAddRow = useCallback(() => {
+  const handleAddRow = useCallback((nextRow?: boolean) => {
     const selectedRows = gridRef.current?.getSelectedRows()
     if (!selectedRows || selectedRows.length === 0) {
       const { newRow, newRowType } = insertNewRow(undefined)
       insert(0, newRow)
       if (newRowType !== undefined) dispatchRowType(state => state.set(newRowType))
+
     } else {
-      const insertPoint = selectedRows[0]
+      const insertPoint = selectedRows[nextRow ? (selectedRows.length - 1) : 0]
+      const insertIndex = nextRow ? (insertPoint.rowIndex + 1) : insertPoint.rowIndex
       const { newRow, newRowType } = insertNewRow(insertPoint.row)
-      insert(insertPoint.rowIndex, newRow)
+      insert(insertIndex, newRow)
       if (newRowType !== undefined) dispatchRowType(state => state.set(newRowType))
     }
   }, [insert, dispatchRowType])
+  const handleAddRowByButton = useCallback(() => {
+    handleAddRow()
+  }, [handleAddRow])
 
   const handleDeleteRows = useCallback(() => {
     if (!gridRef.current) return
@@ -287,10 +292,17 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
       toggleSideMenu()
       e.preventDefault()
     }
-    // Ctrl + Enter による行追加
-    else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      handleAddRow()
-      e.preventDefault()
+    // Enter による行追加
+    else if (e.key === 'Enter') {
+      if (e.ctrlKey || e.metaKey) {
+        // カーソル位置に追加
+        handleAddRow()
+        e.preventDefault()
+      } else {
+        // カーソル位置の次の行に追加
+        handleAddRow(true)
+        e.preventDefault()
+      }
     }
     // Shift + Delete による行削除
     else if (e.shiftKey && e.key === 'Delete') {
@@ -328,7 +340,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
     <PanelGroup direction="horizontal" className={className} style={style}>
       <Panel className="flex flex-col gap-1">
         <div className="flex gap-1 items-center">
-          <Input.IconButton icon={PlusIcon} onClick={handleAddRow} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
+          <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
           <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
           <Input.IconButton fill onClick={handleSave}>保存</Input.IconButton>
           <div className="flex-1"></div>
