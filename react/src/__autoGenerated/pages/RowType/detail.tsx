@@ -120,6 +120,7 @@ const RowTypeView = ({ }: {
 }
 const ColumnsView = ({ }: {
 }) => {
+  const { get } = Util.useHttpRequest()
   const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -142,10 +143,17 @@ const ColumnsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.own_members?.ColumnName,
+        accessorFn: row => row.own_members?.ColumnName,
+        editSetting: {
+          type: 'text',
+          getTextValue: row => row.own_members?.ColumnName,
+          setTextValue: (row, value) => {
+            row.own_members.ColumnName = value
+          },
+        },
       },
     ],
-  }), [update])
+  }), [get, update])
 
   return (
     <VForm.Item wide

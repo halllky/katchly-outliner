@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
-import * as Collection from '../collection'
+import * as Layout from '../collection'
 import * as Util from '../util'
 
-const VForm = Collection.VerticalForm
+const VForm = Layout.VerticalForm
 
 export const BackgroundTaskList = () => {
 
@@ -19,7 +19,7 @@ export const BackgroundTaskList = () => {
   return (
     <VForm.Container label="バックグラウンドプロセス">
       <VForm.Item wide>
-        <Collection.DataTable
+        <Layout.DataTable
           data={rows}
           columns={COLUMN_DEFS}
           className="h-64"
@@ -42,7 +42,7 @@ type GridRow = {
   }
 }
 
-const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
+const COLUMN_DEFS: Layout.ColumnDefEx<GridRow>[] = [
 {
     id: 'col1',
     header: 'JobId',
@@ -55,7 +55,14 @@ const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
         </span>
       )
     },
-    accessorFn: data => data.own_members?.JobId,
+    accessorFn: row => row.own_members?.JobId,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.JobId,
+      setTextValue: (row, value) => {
+        row.own_members.JobId = value
+      },
+    },
   },
   {
     id: 'col2',
@@ -69,7 +76,14 @@ const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
         </span>
       )
     },
-    accessorFn: data => data.own_members?.Name,
+    accessorFn: row => row.own_members?.Name,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.Name,
+      setTextValue: (row, value) => {
+        row.own_members.Name = value
+      },
+    },
   },
   {
     id: 'col3',
@@ -83,7 +97,14 @@ const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
         </span>
       )
     },
-    accessorFn: data => data.own_members?.BatchType,
+    accessorFn: row => row.own_members?.BatchType,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.BatchType,
+      setTextValue: (row, value) => {
+        row.own_members.BatchType = value
+      },
+    },
   },
   {
     id: 'col4',
@@ -97,7 +118,14 @@ const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
         </span>
       )
     },
-    accessorFn: data => data.own_members?.ParameterJson,
+    accessorFn: row => row.own_members?.ParameterJson,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.ParameterJson,
+      setTextValue: (row, value) => {
+        row.own_members.ParameterJson = value
+      },
+    },
   },
   {
     id: 'col5',
@@ -111,57 +139,86 @@ const COLUMN_DEFS: Collection.ColumnDefEx<GridRow>[] = [
         </span>
       )
     },
-    accessorFn: data => data.own_members?.State,
+    accessorFn: row => row.own_members?.State,
+    editSetting: ({
+      type: 'combo',
+      getValueFromRow: row => row.own_members?.State,
+      setValueToRow: (row, value) => {
+        row.own_members.State = value
+      },
+      comboProps: {
+        options: ['WaitToStart' as const, 'Running' as const, 'Success' as const, 'Fault' as const],
+        emitValueSelector: opt => opt,
+        matchingKeySelectorFromEmitValue: value => value,
+        matchingKeySelectorFromOption: opt => opt,
+        textSelector: opt => opt,
+      },
+    } as Layout.ColumnEditSetting<GridRow, 'WaitToStart' | 'Running' | 'Success' | 'Fault'>) as Layout.ColumnEditSetting<GridRow, unknown>,
   },
   {
     id: 'col6',
     header: 'RequestTime',
     cell: cellProps => {
       const value = cellProps.row.original.own_members?.RequestTime
-      const formatted = value == undefined
-        ? ''
-        : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
       return (
         <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-          {formatted}
+          {value}
           &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
         </span>
       )
     },
-    accessorFn: data => data.own_members?.RequestTime,
+    accessorFn: row => row.own_members?.RequestTime,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.RequestTime,
+      setTextValue: (row, value) => {
+        const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+        row.own_members.RequestTime = formatted
+      },
+    },
   },
   {
     id: 'col7',
     header: 'StartTime',
     cell: cellProps => {
       const value = cellProps.row.original.own_members?.StartTime
-      const formatted = value == undefined
-        ? ''
-        : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
       return (
         <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-          {formatted}
+          {value}
           &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
         </span>
       )
     },
-    accessorFn: data => data.own_members?.StartTime,
+    accessorFn: row => row.own_members?.StartTime,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.StartTime,
+      setTextValue: (row, value) => {
+        const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+        row.own_members.StartTime = formatted
+      },
+    },
   },
   {
     id: 'col8',
     header: 'FinishTime',
     cell: cellProps => {
       const value = cellProps.row.original.own_members?.FinishTime
-      const formatted = value == undefined
-        ? ''
-        : dayjs(value).format('YYYY-MM-DD HH:mm:ss')
       return (
         <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-          {formatted}
+          {value}
           &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
         </span>
       )
     },
-    accessorFn: data => data.own_members?.FinishTime,
+    accessorFn: row => row.own_members?.FinishTime,
+    editSetting: {
+      type: 'text',
+      getTextValue: row => row.own_members?.FinishTime,
+      setTextValue: (row, value) => {
+        const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+        row.own_members.FinishTime = formatted
+      },
+    },
   },
 ]

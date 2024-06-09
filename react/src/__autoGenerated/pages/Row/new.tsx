@@ -185,6 +185,7 @@ const Row_RowOrderView = ({ }: {
 }
 const AttrsView = ({ }: {
 }) => {
+  const { get } = Util.useHttpRequest()
   const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowDisplayData>()
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -225,9 +226,26 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.own_members?.ColType,
-        setValue: (row, value) => row.own_members.ColType = value,
-        cellEditor: (props, ref) => <Input.ComboBoxColumns ref={ref} {...props} />,
+        accessorFn: row => row.own_members?.ColType,
+        editSetting: ({
+          type: 'async-combo',
+          getValueFromRow: row => row.own_members?.ColType,
+          setValueToRow: (row, value) => {
+            row.own_members.ColType = value
+          },
+          comboProps: {
+            queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
+            query: async keyword => {
+              const response = await get<AggregateType.ColumnsRefInfo []>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
+              if (!response.ok) return []
+              return response.data
+            },
+            emitValueSelector: item => item,
+            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+            matchingKeySelectorFromOption: item => item.__instanceKey,
+            textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
+          },
+        } as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, AggregateType.ColumnsRefInfo>) as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, unknown>,
       },
       {
         id: 'col2',
@@ -241,12 +259,17 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: data => data.own_members?.Value,
-        setValue: (row, value) => row.own_members.Value = value,
-        cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
+        accessorFn: row => row.own_members?.Value,
+        editSetting: {
+          type: 'text',
+          getTextValue: row => row.own_members?.Value,
+          setTextValue: (row, value) => {
+            row.own_members.Value = value
+          },
+        },
       },
     ],
-  }), [update])
+  }), [get, update])
 
   return (
     <VForm.Item wide

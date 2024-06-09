@@ -22,6 +22,7 @@ export default function () {
 const Page = () => {
   const [, dispatchMsg] = Util.useMsgContext()
   const [, dispatchToast] = Util.useToastContext()
+  const { get } = Util.useHttpRequest()
 
   // 検索条件
   const [filter, setFilter] = useState<AggregateType.RowSearchCondition>(() => AggregateType.createRowSearchCondition())
@@ -120,9 +121,14 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.own_members?.Text,
-      setValue: (row, value) => row.own_members.Text = value,
-      cellEditor: (props, ref) => <Input.Description ref={ref} {...props} />,
+      accessorFn: row => row.own_members?.Text,
+      editSetting: {
+        type: 'text',
+        getTextValue: row => row.own_members?.Text,
+        setTextValue: (row, value) => {
+          row.own_members.Text = value
+        },
+      },
     },
     {
       id: 'col2',
@@ -137,9 +143,26 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.own_members?.RowType,
-      setValue: (row, value) => row.own_members.RowType = value,
-      cellEditor: (props, ref) => <Input.ComboBoxRowType ref={ref} {...props} />,
+      accessorFn: row => row.own_members?.RowType,
+      editSetting: ({
+        type: 'async-combo',
+        getValueFromRow: row => row.own_members?.RowType,
+        setValueToRow: (row, value) => {
+          row.own_members.RowType = value
+        },
+        comboProps: {
+          queryKey: `combo-x482f568abd9568fda9b360b0bf991835::`,
+          query: async keyword => {
+            const response = await get<AggregateType.RowTypeRefInfo []>(`/api/RowType/list-by-keyword`, { keyword })
+            if (!response.ok) return []
+            return response.data
+          },
+          emitValueSelector: item => item,
+          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+          matchingKeySelectorFromOption: item => item.__instanceKey,
+          textSelector: item => `${item.ID ?? ''}`,
+        },
+      } as Layout.ColumnEditSetting<GridRow, AggregateType.RowTypeRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
     },
     {
       id: 'col3',
@@ -153,9 +176,23 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.own_members?.Indent,
-      setValue: (row, value) => row.own_members.Indent = value,
-      cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,
+      accessorFn: row => {
+        const value = row.own_members?.Indent
+        const formatted = value?.toString()
+        return formatted
+      },
+      editSetting: {
+        type: 'text',
+        getTextValue: row => {
+          const value = row.own_members?.Indent
+          const formatted = value?.toString()
+          return formatted
+        },
+        setTextValue: (row, value) => {
+          const { num: formatted } = Util.tryParseAsNumberOrEmpty(value)
+          row.own_members.Indent = formatted
+        },
+      },
     },
     {
       id: 'ref-from-ref_from_Row_RowOrder',
@@ -211,17 +248,29 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.ref_from_Row_RowOrder?.own_members?.Order,
-      setValue: (row, value) => {
-        if (row.ref_from_Row_RowOrder) {
-          row.ref_from_Row_RowOrder.own_members.Order = value
-          row.ref_from_Row_RowOrder.willBeChanged = true
-        }
+      accessorFn: row => {
+        const value = row.ref_from_Row_RowOrder?.own_members?.Order
+        const formatted = value?.toString()
+        return formatted
       },
-      cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,
       headerGroupName: 'RowOrder',
+      editSetting: {
+        type: 'text',
+        getTextValue: row => {
+          const value = row.ref_from_Row_RowOrder?.own_members?.Order
+          const formatted = value?.toString()
+          return formatted
+        },
+        setTextValue: (row, value) => {
+          if (row.ref_from_Row_RowOrder) {
+            const { num: formatted } = Util.tryParseAsNumberOrEmpty(value)
+            row.ref_from_Row_RowOrder.own_members.Order = formatted
+            row.ref_from_Row_RowOrder.willBeChanged = true
+          }
+        },
+      },
     },
-  ], [update])
+  ], [get, update])
 
   return (
     <div className="page-content-root gap-4">

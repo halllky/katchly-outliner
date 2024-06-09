@@ -163,18 +163,20 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
 
       },
       accessorFn: data => getLabelCellValue(data, rowTypeMap),
-      setValue: (row, value) => {
-        if (row.type === 'row') {
-          row.item.willBeChanged = true
-        }
-        const { updatedRowType } = setLabelCellValue(row, rowTypeMap, value)
-        if (updatedRowType) {
-          updatedRowType.willBeChanged = true
-          dispatchRowType(state => state.set({ ...updatedRowType }))
-        }
+      editSetting: {
+        type: 'text',
+        getTextValue: data => getLabelCellValue(data, rowTypeMap),
+        setTextValue: (row, value) => {
+          if (row.type === 'row') {
+            row.item.willBeChanged = true
+          }
+          const { updatedRowType } = setLabelCellValue(row, rowTypeMap, value)
+          if (updatedRowType) {
+            updatedRowType.willBeChanged = true
+            dispatchRowType(state => state.set({ ...updatedRowType }))
+          }
+        },
       },
-      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
-
     },
 
     // 属性の列
@@ -190,17 +192,20 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
         )
       },
       accessorFn: data => getAttrCellValue(data, rowTypeMap, i),
-      setValue: (row, value) => {
-        if (row.type === 'row') {
-          row.item.willBeChanged = true
-        }
-        const { updatedRowType } = setAttrCellValue(row, rowTypeMap, i, value)
-        if (updatedRowType) {
-          updatedRowType.willBeChanged = true
-          dispatchRowType(state => state.set({ ...updatedRowType }))
-        }
+      editSetting: {
+        type: 'text',
+        getTextValue: data => getAttrCellValue(data, rowTypeMap, i),
+        setTextValue: (row, value) => {
+          if (row.type === 'row') {
+            row.item.willBeChanged = true
+          }
+          const { updatedRowType } = setAttrCellValue(row, rowTypeMap, i, value)
+          if (updatedRowType) {
+            updatedRowType.willBeChanged = true
+            dispatchRowType(state => state.set({ ...updatedRowType }))
+          }
+        },
       },
-      cellEditor: (props, ref) => <Input.Word ref={ref} {...props} />,
     }))
   ], [columnCount, indentSize, rowTypeMap, update, dispatchRowType])
 

@@ -22,6 +22,7 @@ export default function () {
 const Page = () => {
   const [, dispatchMsg] = Util.useMsgContext()
   const [, dispatchToast] = Util.useToastContext()
+  const { get } = Util.useHttpRequest()
 
   // 検索条件
   const [filter, setFilter] = useState<AggregateType.RowOrderSearchCondition>(() => AggregateType.createRowOrderSearchCondition())
@@ -107,11 +108,25 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: data => data.own_members?.Order,
-      setValue: (row, value) => row.own_members.Order = value,
-      cellEditor: (props, ref) => <Input.Num ref={ref} {...props} />,
+      accessorFn: row => {
+        const value = row.own_members?.Order
+        const formatted = value?.toString()
+        return formatted
+      },
+      editSetting: {
+        type: 'text',
+        getTextValue: row => {
+          const value = row.own_members?.Order
+          const formatted = value?.toString()
+          return formatted
+        },
+        setTextValue: (row, value) => {
+          const { num: formatted } = Util.tryParseAsNumberOrEmpty(value)
+          row.own_members.Order = formatted
+        },
+      },
     },
-  ], [update])
+  ], [get, update])
 
   return (
     <div className="page-content-root gap-4">
