@@ -58,5 +58,36 @@ namespace Katchly {
             return true;
         }
         #endregion 非同期処理
+        #region 更新イベント引数
+        private class BeforeSaveEventArg {
+            public required bool IgnoreConfirm { get; init; }
+            public List<string> Confirms { get; } = new();
+            public List<(string Key, string Message)> Errors { get; } = new();
+        
+            public void AddConfirm(string message) => Confirms.Add(message);
+            public void AddError(string key, string message) => Errors.Add((key, message));
+        }
+        private class BeforeCreateEventArgs<TSaveCommand> : BeforeSaveEventArg, IBeforeCreateEventArgs<TSaveCommand> {
+            public required TSaveCommand Data { get; init; }
+        }
+        private class BeforeUpdateEventArgs<TSaveCommand> : BeforeSaveEventArg, IBeforeUpdateEventArgs<TSaveCommand> {
+            public required TSaveCommand Before { get; init; }
+            public required TSaveCommand After { get; init; }
+        }
+        private class BeforeDeleteEventArgs<TSaveCommand> : BeforeSaveEventArg, IBeforeDeleteEventArgs<TSaveCommand> {
+            public required TSaveCommand Data { get; init; }
+        }
+        
+        private class AfterCreateEventArgs<TSaveCommand> : IAfterCreateEventArgs<TSaveCommand> {
+            public required TSaveCommand Created { get; init; }
+        }
+        private class AfterUpdateEventArgs<TSaveCommand> : IAfterUpdateEventArgs<TSaveCommand> {
+            public required TSaveCommand BeforeUpdate { get; init; }
+            public required TSaveCommand AfterUpdate { get; init; }
+        }
+        private class AfterDeleteEventArgs<TSaveCommand> : IAfterDeleteEventArgs<TSaveCommand> {
+            public required TSaveCommand Deleted { get; init; }
+        }
+        #endregion 更新イベント引数
     }
 }

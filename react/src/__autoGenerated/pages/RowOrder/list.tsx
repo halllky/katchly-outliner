@@ -160,10 +160,42 @@ const Page = () => {
                 <span className="select-none">～</span>
                 <Input.Num {...registerExCondition(`Row.Indent.To`)} />
               </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`Row.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`Row.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`Row.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`Row.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`Row.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`Row.UpdateUser`)} />
+              </VForm.Item>
             </VForm.Container>
             <VForm.Container label="RowType">
               <VForm.Item label="RowTypeName">
                 <Input.Word {...registerExCondition(`Row.RowType.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`Row.RowType.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`Row.RowType.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`Row.RowType.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`Row.RowType.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`Row.RowType.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`Row.RowType.UpdateUser`)} />
               </VForm.Item>
             </VForm.Container>
           </VForm.Container>

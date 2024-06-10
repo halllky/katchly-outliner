@@ -19,8 +19,13 @@ export type RowObject = EditableObject & {
   id: RowObjectId
   text: string
   type: RowTypeId
-  attrs: { [key: ColumnId]: string }
+  attrs: { [key: ColumnId]: RowObjectAttr }
   indent: number
+  createdOn: string
+}
+export type RowObjectAttr = {
+  value: string
+  updatedOn: string
 }
 export type RowType = EditableObject & {
   id: RowTypeId
@@ -215,6 +220,7 @@ export const insertNewRow = (aboveRow: GridRow | undefined): { newRow: GridRowOf
       indent: aboveRow?.type === 'row'
         ? aboveRow.item.indent
         : 0,
+      createdOn: '', // どのみちサーバー側で自動設定されるので空文字で初期化する
       existsInRemoteRepository: false,
       willBeChanged: true,
       willBeDeleted: false,
@@ -264,7 +270,7 @@ export const getAttrCellValue = (gridRow: GridRow, rowTypeMap: Map<RowTypeId, Ro
     if (rowType === undefined) return undefined
     const colTypeId = rowType.columns[colIndex]?.id
     if (colTypeId === undefined) return undefined
-    return gridRow.item.attrs[colTypeId]
+    return gridRow.item.attrs[colTypeId]?.value
 
   } else {
     const rowType = rowTypeMap.get(gridRow.rowTypeId)
@@ -301,7 +307,8 @@ export const setAttrCellValue = (
     if (value === undefined || value === '') {
       delete gridRow.item.attrs[columnId]
     } else {
-      gridRow.item.attrs[columnId] = value
+      const currentValue = gridRow.item.attrs[columnId]
+      gridRow.item.attrs[columnId] = { value, updatedOn: currentValue?.updatedOn ?? '' }
     }
 
   } else {

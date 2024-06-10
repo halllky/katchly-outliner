@@ -71,4 +71,28 @@ namespace Katchly {
             Items = _data.ToList(),
         };
     }
+    
+    /// <summary>
+    /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス
+    /// </summary>
+    public class LogBatchUpdateParameter {
+        private readonly List<BatchUpdateData> _data = new();
+    
+        public LogBatchUpdateParameter Add(LogCreateCommand cmd) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Add, Data = cmd });
+            return this;
+        }
+        public LogBatchUpdateParameter Modify(LogSaveCommand item) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Modify, Data = item });
+            return this;
+        }
+        public LogBatchUpdateParameter Delete(string? ID) {
+            _data.Add(new BatchUpdateData { Action = E_BatchUpdateAction.Delete, Data = new object[] { ID } });
+            return this;
+        }
+        public BatchUpdateParameter Build() => new BatchUpdateParameter {
+            DataType = "Log",
+            Items = _data.ToList(),
+        };
+    }
 }

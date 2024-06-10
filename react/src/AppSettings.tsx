@@ -12,7 +12,7 @@ export const [AppSettingContext, useAppSettings] = Util.defineStorageContext({
   defaultValue: (): AppSetting => ({
     userName: '',
   }),
-  deserialize: str => ({ ok: true, obj: JSON.parse(str) }),
+  deserialize: str => ({ ok: true, obj: JSON.parse(str) as AppSetting }),
   serialize: obj => JSON.stringify(obj),
 })
 

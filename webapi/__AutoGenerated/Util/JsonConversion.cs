@@ -13,12 +13,14 @@ namespace Katchly {
 
             // カスタムコンバータ
             option.Converters.Add(new CustomJsonConverters.IntegerValueConverter());
+            option.Converters.Add(new CustomJsonConverters.DateTimeValueConverter());
 
             option.Converters.Add(new CustomJsonConverters.RowKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.AttrsKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowOrderKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.LogKeysJsonValueConverter());
         }
         public static JsonSerializerOptions GetJsonSrializerOptions() {
             var option = new System.Text.Json.JsonSerializerOptions();
@@ -112,6 +114,22 @@ namespace Katchly.CustomJsonConverters {
                 writer.WriteNumberValue((decimal)value);
             }
             // writer.WriteStringValue(value?.ToString());
+        }
+    }
+    class DateTimeValueConverter : JsonConverter<DateTime?> {
+        public override DateTime? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var strDateTime = reader.GetString();
+            return string.IsNullOrWhiteSpace(strDateTime)
+                ? null
+                : DateTime.Parse(strDateTime);
+        }
+    
+        public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+            } else {
+                writer.WriteStringValue(value.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
         }
     }
 
@@ -301,6 +319,39 @@ namespace Katchly.CustomJsonConverters {
                 object?[] objArray = [
                     value.Parent?.ID,
                     value.ColumnId,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="LogKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class LogKeysJsonValueConverter : JsonConverter<LogKeys?> {
+        public override LogKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var IDValue = objArray.ElementAtOrDefault(0);
+            if (IDValue != null && IDValue is not string)
+                throw new InvalidOperationException($"LogKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+    
+            return new LogKeys {
+                ID = (string?)IDValue,
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, LogKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.ID,
                 ];
                 var jsonArray = objArray.ToJson();
                 writer.WriteStringValue(jsonArray);

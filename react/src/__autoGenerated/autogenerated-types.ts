@@ -10,6 +10,10 @@ export type RowSaveCommand = {
   RowType?: Util.ItemKey
   Attrs?: AttrsSaveCommand[]
   Indent?: number
+  CreatedOn?: string
+  CreateUser?: string
+  UpdatedOn?: string
+  UpdateUser?: string
 }
 
 export const createRow = (): RowSaveCommand => ({
@@ -20,6 +24,7 @@ export const createRow = (): RowSaveCommand => ({
 export type AttrsSaveCommand = {
   ColType?: Util.ItemKey
   Value?: string
+  UpdatedOn?: string
 }
 
 export const createAttrs = (): AttrsSaveCommand => ({
@@ -30,14 +35,23 @@ export type RowSearchCondition = {
   Text?: string
   RowType: Row_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 export type AttrsSearchCondition = {
   ColType: Attrs_ColTypeSearchCondition
   Value?: string
+  UpdatedOn: { From?: string, To?: string }
 }
 export type Row_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 export type Attrs_ColTypeSearchCondition = {
   Parent: Attrs_ColType_ParentSearchCondition
@@ -47,21 +61,32 @@ export type Attrs_ColTypeSearchCondition = {
 export type Attrs_ColType_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 
 export const createRowSearchCondition = (): RowSearchCondition => ({
     RowType: createRow_RowTypeSearchCondition(),
     Indent: {},
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 export const createAttrsSearchCondition = (): AttrsSearchCondition => ({
     ColType: createAttrs_ColTypeSearchCondition(),
+    UpdatedOn: {},
 })
 export const createRow_RowTypeSearchCondition = (): Row_RowTypeSearchCondition => ({
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 export const createAttrs_ColTypeSearchCondition = (): Attrs_ColTypeSearchCondition => ({
     Parent: createAttrs_ColType_ParentSearchCondition(),
 })
 export const createAttrs_ColType_ParentSearchCondition = (): Attrs_ColType_ParentSearchCondition => ({
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 
 /** Rowの画面表示用データ */
@@ -75,6 +100,10 @@ export type RowDisplayData = {
     Text?: string
     RowType?: RowTypeRefInfo
     Indent?: number
+    CreatedOn?: string
+    CreateUser?: string
+    UpdatedOn?: string
+    UpdateUser?: string
   }
   child_Attrs?: AttrsDisplayData[]
   ref_from_Row_RowOrder?: RowOrderDisplayData
@@ -88,6 +117,7 @@ export type AttrsDisplayData = {
   own_members: {
     ColType?: ColumnsRefInfo
     Value?: string
+    UpdatedOn?: string
   }
 }
 
@@ -103,9 +133,14 @@ export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => 
       Text: displayData?.own_members?.Text,
       RowType: displayData?.own_members?.RowType?.__instanceKey,
       Indent: displayData?.own_members?.Indent,
+      CreatedOn: displayData?.own_members?.CreatedOn,
+      CreateUser: displayData?.own_members?.CreateUser,
+      UpdatedOn: displayData?.own_members?.UpdatedOn,
+      UpdateUser: displayData?.own_members?.UpdateUser,
       Attrs: displayData.child_Attrs?.map(xAttrs => ({
         ColType: xAttrs?.own_members?.ColType?.__instanceKey,
         Value: xAttrs?.own_members?.Value,
+        UpdatedOn: xAttrs?.own_members?.UpdatedOn,
       })),
     },
   }
@@ -177,10 +212,18 @@ export type RowOrder_RowSearchCondition = {
   Text?: string
   RowType: RowOrder_Row_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 export type RowOrder_Row_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 
 export const createRowOrderSearchCondition = (): RowOrderSearchCondition => ({
@@ -190,8 +233,12 @@ export const createRowOrderSearchCondition = (): RowOrderSearchCondition => ({
 export const createRowOrder_RowSearchCondition = (): RowOrder_RowSearchCondition => ({
     RowType: createRowOrder_Row_RowTypeSearchCondition(),
     Indent: {},
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 export const createRowOrder_Row_RowTypeSearchCondition = (): RowOrder_Row_RowTypeSearchCondition => ({
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 
 /** RowOrderの画面表示用データ */
@@ -242,6 +289,10 @@ export type RowTypeSaveCommand = {
   ID?: string
   RowTypeName?: string
   Columns?: ColumnsSaveCommand[]
+  CreatedOn?: string
+  CreateUser?: string
+  UpdatedOn?: string
+  UpdateUser?: string
 }
 
 export const createRowType = (): RowTypeSaveCommand => ({
@@ -261,6 +312,10 @@ export const createColumns = (): ColumnsSaveCommand => ({
 export type RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
+  CreatedOn: { From?: string, To?: string }
+  CreateUser?: string
+  UpdatedOn: { From?: string, To?: string }
+  UpdateUser?: string
 }
 export type ColumnsSearchCondition = {
   ColumnId?: string
@@ -268,6 +323,8 @@ export type ColumnsSearchCondition = {
 }
 
 export const createRowTypeSearchCondition = (): RowTypeSearchCondition => ({
+    CreatedOn: {},
+    UpdatedOn: {},
 })
 export const createColumnsSearchCondition = (): ColumnsSearchCondition => ({
 })
@@ -281,6 +338,10 @@ export type RowTypeDisplayData = {
   own_members: {
     ID?: string
     RowTypeName?: string
+    CreatedOn?: string
+    CreateUser?: string
+    UpdatedOn?: string
+    UpdateUser?: string
   }
   child_Columns?: ColumnsDisplayData[]
 }
@@ -306,6 +367,10 @@ export const convertRowTypeToLocalRepositoryItem = (displayData: RowTypeDisplayD
     item: {
       ID: displayData?.own_members?.ID,
       RowTypeName: displayData?.own_members?.RowTypeName,
+      CreatedOn: displayData?.own_members?.CreatedOn,
+      CreateUser: displayData?.own_members?.CreateUser,
+      UpdatedOn: displayData?.own_members?.UpdatedOn,
+      UpdateUser: displayData?.own_members?.UpdateUser,
       Columns: displayData.child_Columns?.map(xColumns => ({
         ColumnId: xColumns?.own_members?.ColumnId,
         ColumnName: xColumns?.own_members?.ColumnName,
@@ -337,6 +402,82 @@ export type ColumnsRefInfo = {
     ID?: string,
   },
   ColumnId?: string,
+}
+
+
+// ------------------ Log ------------------
+export type LogSaveCommand = {
+  ID?: string
+  LogTime?: string
+  UpdatedObject?: string
+  UpdateType?: string
+  RowIdOrRowTypeId?: string
+  Content?: string
+}
+
+export const createLog = (): LogSaveCommand => ({
+  ID: UUID.generate(),
+})
+
+export type LogSearchCondition = {
+  ID?: string
+  LogTime: { From?: string, To?: string }
+  UpdatedObject?: string
+  UpdateType?: string
+  RowIdOrRowTypeId?: string
+  Content?: string
+}
+
+export const createLogSearchCondition = (): LogSearchCondition => ({
+    LogTime: {},
+})
+
+/** Logの画面表示用データ */
+export type LogDisplayData = {
+  localRepositoryItemKey: Util.ItemKey
+  existsInRemoteRepository: boolean
+  willBeChanged: boolean
+  willBeDeleted: boolean
+  own_members: {
+    ID?: string
+    LogTime?: string
+    UpdatedObject?: string
+    UpdateType?: string
+    RowIdOrRowTypeId?: string
+    Content?: string
+  }
+}
+
+/** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
+export const convertLogToLocalRepositoryItem = (displayData: LogDisplayData) => {
+  const item0: Util.LocalRepositoryItem<LogSaveCommand> = {
+    itemKey: displayData.localRepositoryItemKey,
+    existsInRemoteRepository: displayData.existsInRemoteRepository,
+    willBeChanged: displayData.willBeChanged,
+    willBeDeleted: displayData.willBeDeleted,
+    item: {
+      ID: displayData?.own_members?.ID,
+      LogTime: displayData?.own_members?.LogTime,
+      UpdatedObject: displayData?.own_members?.UpdatedObject,
+      UpdateType: displayData?.own_members?.UpdateType,
+      RowIdOrRowTypeId: displayData?.own_members?.RowIdOrRowTypeId,
+      Content: displayData?.own_members?.Content,
+    },
+  }
+
+  return [
+    item0,
+  ] as const
+}
+
+/** Logを参照する他のデータの画面上に表示されるLogのデータ型。 */
+export type LogRefInfo = {
+  /** Logのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のLogをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+  __instanceKey?: Util.ItemKey
+
+  ID?: string,
+  Content?: string,
 }
 
 

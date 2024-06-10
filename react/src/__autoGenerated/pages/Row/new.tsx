@@ -106,7 +106,7 @@ const RowView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="11.6rem">
+      <VForm.Container leftColumnMinWidth="12.8rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="Text">
           <Input.Description {...registerEx(`own_members.Text`)} />
@@ -117,6 +117,18 @@ const RowView = ({ }: {
         <AttrsView />
         <VForm.Item label="Indent">
           <Input.Num {...registerEx(`own_members.Indent`)} />
+        </VForm.Item>
+        <VForm.Item label="CreatedOn">
+          <Input.Date {...registerEx(`own_members.CreatedOn`)} />
+        </VForm.Item>
+        <VForm.Item label="CreateUser">
+          <Input.Word {...registerEx(`own_members.CreateUser`)} />
+        </VForm.Item>
+        <VForm.Item label="UpdatedOn">
+          <Input.Date {...registerEx(`own_members.UpdatedOn`)} />
+        </VForm.Item>
+        <VForm.Item label="UpdateUser">
+          <Input.Word {...registerEx(`own_members.UpdateUser`)} />
         </VForm.Item>
       </VForm.Container>
       <Row_RowOrderView />
@@ -265,6 +277,28 @@ const AttrsView = ({ }: {
           getTextValue: row => row.own_members?.Value,
           setTextValue: (row, value) => {
             row.own_members.Value = value
+          },
+        },
+      },
+      {
+        id: 'col3',
+        header: 'UpdatedOn',
+        cell: cellProps => {
+          const value = cellProps.row.original.own_members?.UpdatedOn
+          return (
+            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+              {value}
+              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+            </span>
+          )
+        },
+        accessorFn: row => row.own_members?.UpdatedOn,
+        editSetting: {
+          type: 'text',
+          getTextValue: row => row.own_members?.UpdatedOn,
+          setTextValue: (row, value) => {
+            const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+            row.own_members.UpdatedOn = formatted
           },
         },
       },

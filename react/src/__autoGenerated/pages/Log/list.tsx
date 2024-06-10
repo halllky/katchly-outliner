@@ -25,10 +25,10 @@ const Page = () => {
   const { get } = Util.useHttpRequest()
 
   // 検索条件
-  const [filter, setFilter] = useState<AggregateType.RowTypeSearchCondition>(() => AggregateType.createRowTypeSearchCondition())
+  const [filter, setFilter] = useState<AggregateType.LogSearchCondition>(() => AggregateType.createLogSearchCondition())
   const [currentPage, dispatchPaging] = useReducer(pagingReducer, { pageIndex: 0 })
 
-  const rhfSearchMethods = Util.useFormEx<AggregateType.RowTypeSearchCondition>({})
+  const rhfSearchMethods = Util.useFormEx<AggregateType.LogSearchCondition>({})
   const getConditionValues = rhfSearchMethods.getValues
   const registerExCondition = rhfSearchMethods.registerEx
 
@@ -38,7 +38,7 @@ const Page = () => {
     skip: currentPage.pageIndex * 20,
     take: 20,
   }), [filter, currentPage])
-  const { load, commit } = Util.useRowTypeRepository(editRange)
+  const { load, commit } = Util.useLogRepository(editRange)
 
   const reactHookFormMethods = Util.useFormEx<{ currentPageItems: GridRow[] }>({})
   const { control, registerEx, handleSubmit, reset } = reactHookFormMethods
@@ -59,7 +59,7 @@ const Page = () => {
 
   // データ編集
   const handleAdd: React.MouseEventHandler<HTMLButtonElement> = useCallback(async () => {
-    const newRow: AggregateType.RowTypeDisplayData = {
+    const newRow: AggregateType.LogDisplayData = {
       localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
       existsInRemoteRepository: false,
       willBeChanged: true,
@@ -98,7 +98,7 @@ const Page = () => {
       cell: cellProps => {
         const row = cellProps.row.original
         const state = Util.getLocalRepositoryState(row)
-        const singleViewUrl = Util.getRowTypeSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
+        const singleViewUrl = Util.getLogSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
           <div className="flex items-center gap-1 pl-1">
             <Link to={singleViewUrl} className="text-link">詳細</Link>
@@ -111,9 +111,9 @@ const Page = () => {
     },
     {
       id: 'col1',
-      header: 'RowTypeName',
+      header: 'LogTime',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.RowTypeName
+        const value = cellProps.row.original.own_members?.LogTime
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -121,20 +121,21 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: row => row.own_members?.RowTypeName,
+      accessorFn: row => row.own_members?.LogTime,
       editSetting: {
         type: 'text',
-        getTextValue: row => row.own_members?.RowTypeName,
+        getTextValue: row => row.own_members?.LogTime,
         setTextValue: (row, value) => {
-          row.own_members.RowTypeName = value
+          const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+          row.own_members.LogTime = formatted
         },
       },
     },
     {
       id: 'col2',
-      header: 'CreatedOn',
+      header: 'UpdatedObject',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.CreatedOn
+        const value = cellProps.row.original.own_members?.UpdatedObject
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -142,21 +143,20 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: row => row.own_members?.CreatedOn,
+      accessorFn: row => row.own_members?.UpdatedObject,
       editSetting: {
         type: 'text',
-        getTextValue: row => row.own_members?.CreatedOn,
+        getTextValue: row => row.own_members?.UpdatedObject,
         setTextValue: (row, value) => {
-          const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
-          row.own_members.CreatedOn = formatted
+          row.own_members.UpdatedObject = value
         },
       },
     },
     {
       id: 'col3',
-      header: 'CreateUser',
+      header: 'UpdateType',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.CreateUser
+        const value = cellProps.row.original.own_members?.UpdateType
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -164,20 +164,20 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: row => row.own_members?.CreateUser,
+      accessorFn: row => row.own_members?.UpdateType,
       editSetting: {
         type: 'text',
-        getTextValue: row => row.own_members?.CreateUser,
+        getTextValue: row => row.own_members?.UpdateType,
         setTextValue: (row, value) => {
-          row.own_members.CreateUser = value
+          row.own_members.UpdateType = value
         },
       },
     },
     {
       id: 'col4',
-      header: 'UpdatedOn',
+      header: 'RowIdOrRowTypeId',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.UpdatedOn
+        const value = cellProps.row.original.own_members?.RowIdOrRowTypeId
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -185,21 +185,20 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: row => row.own_members?.UpdatedOn,
+      accessorFn: row => row.own_members?.RowIdOrRowTypeId,
       editSetting: {
         type: 'text',
-        getTextValue: row => row.own_members?.UpdatedOn,
+        getTextValue: row => row.own_members?.RowIdOrRowTypeId,
         setTextValue: (row, value) => {
-          const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
-          row.own_members.UpdatedOn = formatted
+          row.own_members.RowIdOrRowTypeId = value
         },
       },
     },
     {
       id: 'col5',
-      header: 'UpdateUser',
+      header: 'Content',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.UpdateUser
+        const value = cellProps.row.original.own_members?.Content
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
             {value}
@@ -207,12 +206,12 @@ const Page = () => {
           </span>
         )
       },
-      accessorFn: row => row.own_members?.UpdateUser,
+      accessorFn: row => row.own_members?.Content,
       editSetting: {
         type: 'text',
-        getTextValue: row => row.own_members?.UpdateUser,
+        getTextValue: row => row.own_members?.Content,
         setTextValue: (row, value) => {
-          row.own_members.UpdateUser = value
+          row.own_members.Content = value
         },
       },
     },
@@ -225,7 +224,7 @@ const Page = () => {
         <form className="flex flex-col gap-2">
           <div className="flex gap-2 justify-start">
             <h1 className="text-base font-semibold select-none py-1">
-              RowType
+              Log
             </h1>
             <Input.Button onClick={handleReload}>再読み込み</Input.Button>
             <div className="basis-4"></div>
@@ -237,24 +236,22 @@ const Page = () => {
           <Util.InlineMessageList />
 
           <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="RowTypeName">
-              <Input.Word {...registerExCondition(`RowTypeName`)} />
-            </VForm.Item>
-            <VForm.Item label="CreatedOn">
-              <Input.Date {...registerExCondition(`CreatedOn.From`)} />
+            <VForm.Item label="LogTime">
+              <Input.Date {...registerExCondition(`LogTime.From`)} />
               <span className="select-none">～</span>
-              <Input.Date {...registerExCondition(`CreatedOn.To`)} />
+              <Input.Date {...registerExCondition(`LogTime.To`)} />
             </VForm.Item>
-            <VForm.Item label="CreateUser">
-              <Input.Word {...registerExCondition(`CreateUser`)} />
+            <VForm.Item label="UpdatedObject">
+              <Input.Word {...registerExCondition(`UpdatedObject`)} />
             </VForm.Item>
-            <VForm.Item label="UpdatedOn">
-              <Input.Date {...registerExCondition(`UpdatedOn.From`)} />
-              <span className="select-none">～</span>
-              <Input.Date {...registerExCondition(`UpdatedOn.To`)} />
+            <VForm.Item label="UpdateType">
+              <Input.Word {...registerExCondition(`UpdateType`)} />
             </VForm.Item>
-            <VForm.Item label="UpdateUser">
-              <Input.Word {...registerExCondition(`UpdateUser`)} />
+            <VForm.Item label="RowIdOrRowTypeId">
+              <Input.Word {...registerExCondition(`RowIdOrRowTypeId`)} />
+            </VForm.Item>
+            <VForm.Item label="Content">
+              <Input.Description {...registerExCondition(`Content`)} />
             </VForm.Item>
           </VForm.Container>
         </form>
@@ -275,7 +272,7 @@ const Page = () => {
   )
 }
 
-type GridRow = AggregateType.RowTypeDisplayData
+type GridRow = AggregateType.LogDisplayData
 
 // TODO: utilに持っていく
 type PageState = { pageIndex: number, loaded?: boolean }

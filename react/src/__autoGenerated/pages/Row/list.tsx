@@ -195,6 +195,92 @@ const Page = () => {
       },
     },
     {
+      id: 'col4',
+      header: 'CreatedOn',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.CreatedOn
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.CreatedOn,
+      editSetting: {
+        type: 'text',
+        getTextValue: row => row.own_members?.CreatedOn,
+        setTextValue: (row, value) => {
+          const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+          row.own_members.CreatedOn = formatted
+        },
+      },
+    },
+    {
+      id: 'col5',
+      header: 'CreateUser',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.CreateUser
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.CreateUser,
+      editSetting: {
+        type: 'text',
+        getTextValue: row => row.own_members?.CreateUser,
+        setTextValue: (row, value) => {
+          row.own_members.CreateUser = value
+        },
+      },
+    },
+    {
+      id: 'col6',
+      header: 'UpdatedOn',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.UpdatedOn
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.UpdatedOn,
+      editSetting: {
+        type: 'text',
+        getTextValue: row => row.own_members?.UpdatedOn,
+        setTextValue: (row, value) => {
+          const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
+          row.own_members.UpdatedOn = formatted
+        },
+      },
+    },
+    {
+      id: 'col7',
+      header: 'UpdateUser',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.UpdateUser
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.UpdateUser,
+      editSetting: {
+        type: 'text',
+        getTextValue: row => row.own_members?.UpdateUser,
+        setTextValue: (row, value) => {
+          row.own_members.UpdateUser = value
+        },
+      },
+    },
+    {
       id: 'ref-from-ref_from_Row_RowOrder',
       header: '',
       cell: ({ row }) => {
@@ -237,7 +323,7 @@ const Page = () => {
       headerGroupName: 'RowOrder',
     },
     {
-      id: 'col4',
+      id: 'col8',
       header: 'Order',
       cell: cellProps => {
         const value = cellProps.row.original.ref_from_Row_RowOrder?.own_members?.Order
@@ -299,9 +385,41 @@ const Page = () => {
               <span className="select-none">～</span>
               <Input.Num {...registerExCondition(`Indent.To`)} />
             </VForm.Item>
+            <VForm.Item label="CreatedOn">
+              <Input.Date {...registerExCondition(`CreatedOn.From`)} />
+              <span className="select-none">～</span>
+              <Input.Date {...registerExCondition(`CreatedOn.To`)} />
+            </VForm.Item>
+            <VForm.Item label="CreateUser">
+              <Input.Word {...registerExCondition(`CreateUser`)} />
+            </VForm.Item>
+            <VForm.Item label="UpdatedOn">
+              <Input.Date {...registerExCondition(`UpdatedOn.From`)} />
+              <span className="select-none">～</span>
+              <Input.Date {...registerExCondition(`UpdatedOn.To`)} />
+            </VForm.Item>
+            <VForm.Item label="UpdateUser">
+              <Input.Word {...registerExCondition(`UpdateUser`)} />
+            </VForm.Item>
             <VForm.Container label="RowType">
               <VForm.Item label="RowTypeName">
                 <Input.Word {...registerExCondition(`RowType.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`RowType.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`RowType.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`RowType.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`RowType.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`RowType.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`RowType.UpdateUser`)} />
               </VForm.Item>
             </VForm.Container>
           </VForm.Container>

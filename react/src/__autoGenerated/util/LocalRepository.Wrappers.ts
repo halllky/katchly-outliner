@@ -75,6 +75,12 @@ export const useRowTypeRepository = (editRange?
         //   && item.ID !== editRange.filter.ID) return
         // if (editRange.filter.RowTypeName !== undefined
         //   && item.RowTypeName !== editRange.filter.RowTypeName) return
+        //
+        // if (editRange.filter.CreateUser !== undefined
+        //   && item.CreateUser !== editRange.filter.CreateUser) return
+        //
+        // if (editRange.filter.UpdateUser !== undefined
+        //   && item.UpdateUser !== editRange.filter.UpdateUser) return
         localItems.push(cursor.value.item as AggregateType.RowTypeDisplayData)
       })
     }
@@ -145,6 +151,12 @@ export const useRowRepository = (editRange?
       f.Row.Text = editRange.filter.Text
       f.Row.Indent.From = editRange.filter.Indent?.From
       f.Row.Indent.To = editRange.filter.Indent?.To
+      f.Row.CreatedOn.From = editRange.filter.CreatedOn?.From
+      f.Row.CreatedOn.To = editRange.filter.CreatedOn?.To
+      f.Row.CreateUser = editRange.filter.CreateUser
+      f.Row.UpdatedOn.From = editRange.filter.UpdatedOn?.From
+      f.Row.UpdatedOn.To = editRange.filter.UpdatedOn?.To
+      f.Row.UpdateUser = editRange.filter.UpdateUser
       f.Row.RowType.ID = editRange.filter.RowType?.ID
     }
     return { filter: f }
@@ -212,6 +224,18 @@ export const useRowRepository = (editRange?
         // if (editRange.filter.RowType?.RowTypeName !== undefined
         //   && item.RowType?.RowTypeName !== editRange.filter.RowType.RowTypeName) return
         //
+        // if (editRange.filter.RowType?.CreateUser !== undefined
+        //   && item.RowType?.CreateUser !== editRange.filter.RowType.CreateUser) return
+        //
+        // if (editRange.filter.RowType?.UpdateUser !== undefined
+        //   && item.RowType?.UpdateUser !== editRange.filter.RowType.UpdateUser) return
+        //
+        //
+        // if (editRange.filter.CreateUser !== undefined
+        //   && item.CreateUser !== editRange.filter.CreateUser) return
+        //
+        // if (editRange.filter.UpdateUser !== undefined
+        //   && item.UpdateUser !== editRange.filter.UpdateUser) return
         localItems.push(cursor.value.item as AggregateType.RowDisplayData)
       })
     }
@@ -334,6 +358,18 @@ export const useRowOrderRepository = (editRange?
         // if (editRange.filter.Row?.RowType?.RowTypeName !== undefined
         //   && item.Row?.RowType?.RowTypeName !== editRange.filter.Row.RowType.RowTypeName) return
         //
+        // if (editRange.filter.Row?.RowType?.CreateUser !== undefined
+        //   && item.Row?.RowType?.CreateUser !== editRange.filter.Row.RowType.CreateUser) return
+        //
+        // if (editRange.filter.Row?.RowType?.UpdateUser !== undefined
+        //   && item.Row?.RowType?.UpdateUser !== editRange.filter.Row.RowType.UpdateUser) return
+        //
+        //
+        // if (editRange.filter.Row?.CreateUser !== undefined
+        //   && item.Row?.CreateUser !== editRange.filter.Row.CreateUser) return
+        //
+        // if (editRange.filter.Row?.UpdateUser !== undefined
+        //   && item.Row?.UpdateUser !== editRange.filter.Row.UpdateUser) return
         //
         localItems.push(cursor.value.item as AggregateType.RowOrderDisplayData)
       })
@@ -360,6 +396,120 @@ export const useRowOrderRepository = (editRange?
           dataTypeKey: 'RowOrder',
           itemKey: newValue.localRepositoryItemKey,
           itemName: ``,
+          item: newValue,
+          existsInRemoteRepository: newValue.existsInRemoteRepository,
+          willBeChanged: newValue.willBeChanged,
+          willBeDeleted: newValue.willBeDeleted,
+        }))
+      }
+    }
+
+    await reloadContext() // 更新があったことをサイドメニューに知らせる
+  }, [reloadContext, queryToTable])
+
+  return {
+    ready: ready2,
+    load,
+    commit,
+  }
+}
+/** Logデータの読み込みと保存を行います。 */
+export const useLogRepository = (editRange?
+  // データ新規作成の場合
+  : ItemKey
+  // 複数件編集の場合
+  | { filter: AggregateType.LogSearchCondition, skip?: number, take?: number }
+  // 1件編集の場合
+  | [ID: string | undefined]
+) => {
+
+  const [, dispatchMsg] = useMsgContext()
+  const { get, post } = useHttpRequest()
+  const { reload: reloadContext } = useLocalRepositoryContext()
+  const { ready: ready2, openCursor, queryToTable } = useIndexedDbLocalRepositoryTable()
+
+  const load = useCallback(async (): Promise<AggregateType.LogDisplayData[] | undefined> => {
+    if (!ready2) return
+    if (editRange === undefined) return // 画面表示直後の検索条件が決まっていない場合など
+
+
+    let remoteItems: AggregateType.LogDisplayData[]
+    let localItems: AggregateType.LogDisplayData[]
+
+    if (typeof editRange === 'string') {
+      // 新規作成データの検索。
+      // まだリモートに存在しないためローカルにのみ検索をかける
+      remoteItems = []
+      const found = await queryToTable(table => table.get(['Log', editRange]))
+      localItems = found ? [found.item as AggregateType.LogDisplayData] : []
+
+    } else if (Array.isArray(editRange)) {
+      // 既存データのキーによる検索（リモートリポジトリ）
+      if (editRange[0] === undefined) {
+        remoteItems = []
+      } else {
+        const res = await get(`/api/Log/detail/${window.encodeURI(editRange[0].toString())}`)
+        remoteItems = res.ok
+          ? [res.data as AggregateType.LogDisplayData]
+          : []
+      }
+
+      // 既存データのキーによる検索（ローカルリポジトリ）
+      const itemKey = JSON.stringify(editRange)
+      const found = await queryToTable(table => table.get(['Log', itemKey]))
+      localItems = found ? [found.item as AggregateType.LogDisplayData] : []
+
+    } else {
+      // 既存データの検索条件による検索（リモートリポジトリ）
+      const searchParam = new URLSearchParams()
+      if (editRange.skip !== undefined) searchParam.append('skip', editRange.skip.toString())
+      if (editRange.take !== undefined) searchParam.append('take', editRange.take.toString())
+      const url = `/api/Log/load?${searchParam}`
+      const res = await post<AggregateType.LogDisplayData[]>(url, editRange.filter)
+      remoteItems = res.ok ? res.data : []
+
+      // 既存データの検索条件による検索（ローカルリポジトリ）
+      localItems = []
+      await openCursor('readonly', cursor => {
+        if (cursor.value.dataTypeKey !== 'Log') return
+        // TODO: ローカルリポジトリのデータは参照先のキーと名前しか持っていないのでfilterでそれらが検索条件に含まれていると正確な範囲がとれない
+        // const item = cursor.value.item as AggregateType.LogDisplayData
+        // if (editRange.filter.ID !== undefined
+        //   && item.ID !== editRange.filter.ID) return
+        //
+        // if (editRange.filter.UpdatedObject !== undefined
+        //   && item.UpdatedObject !== editRange.filter.UpdatedObject) return
+        // if (editRange.filter.UpdateType !== undefined
+        //   && item.UpdateType !== editRange.filter.UpdateType) return
+        // if (editRange.filter.RowIdOrRowTypeId !== undefined
+        //   && item.RowIdOrRowTypeId !== editRange.filter.RowIdOrRowTypeId) return
+        // if (editRange.filter.Content !== undefined
+        //   && item.Content !== editRange.filter.Content) return
+        localItems.push(cursor.value.item as AggregateType.LogDisplayData)
+      })
+    }
+
+    // ローカルリポジトリにあるデータはそちらを優先的に表示する
+    const remoteAndLocal =  crossJoin(
+      localItems, local => local.localRepositoryItemKey,
+      remoteItems, remote => remote.localRepositoryItemKey,
+    ).map<AggregateType.LogDisplayData>(pair => pair.left ?? pair.right)
+
+    return remoteAndLocal
+
+  }, [editRange, get, post, queryToTable, openCursor])
+
+  /** 引数に渡されたデータをローカルリポジトリに登録します。 */
+  const commit = useCallback(async (...items: AggregateType.LogDisplayData[]) => {
+    for (const newValue of items) {
+      if (newValue.willBeDeleted && !newValue.existsInRemoteRepository) {
+        await queryToTable(table => table.delete(['Log', newValue.localRepositoryItemKey]))
+
+      } else if (newValue.willBeChanged || newValue.willBeDeleted) {
+        await queryToTable(table => table.put({
+          dataTypeKey: 'Log',
+          itemKey: newValue.localRepositoryItemKey,
+          itemName: `${newValue.own_members?.Content}`,
           item: newValue,
           existsInRemoteRepository: newValue.existsInRemoteRepository,
           willBeChanged: newValue.willBeChanged,

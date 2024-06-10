@@ -26,9 +26,9 @@ const Page = () => {
     return [urlKeyID]
   }, [key0])
 
-  const { load } = Util.useRowTypeRepository(pkArray)
+  const { load } = Util.useLogRepository(pkArray)
 
-  const [defaultValues, setDefaultValues] = useState<AggregateType.RowTypeDisplayData | undefined>()
+  const [defaultValues, setDefaultValues] = useState<AggregateType.LogDisplayData | undefined>()
   useEffect(() => {
     load().then(items => {
       setDefaultValues(items?.[0])
@@ -52,7 +52,7 @@ const AfterLoaded = ({
   defaultValues,
 }: {
   pkArray: [string | undefined]
-  defaultValues: AggregateType.RowTypeDisplayData
+  defaultValues: AggregateType.LogDisplayData
 }) => {
 
   const navigate = useNavigate()
@@ -60,7 +60,7 @@ const AfterLoaded = ({
   const { handleSubmit } = reactHookFormMethods
 
   const instanceName = useMemo(() => {
-    return `${defaultValues.own_members?.ID ?? ''}`
+    return `${defaultValues.own_members?.Content ?? ''}`
   }, [defaultValues.own_members])
 
   const formRef = useRef<HTMLFormElement>(null)
@@ -77,7 +77,7 @@ const AfterLoaded = ({
   }, [])
 
   const navigateToEditView = useCallback((e: React.MouseEvent) => {
-    navigate(`/x482f568abd9568fda9b360b0bf991835/edit/${window.encodeURI(`${pkArray[0]}`)}`)
+    navigate(`/x2be65a1401b75f2cdd8deaec5a04a976/edit/${window.encodeURI(`${pkArray[0]}`)}`)
     e.preventDefault()
   }, [navigate, pkArray])
 
@@ -85,7 +85,7 @@ const AfterLoaded = ({
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2">
         <h1 className="flex text-base font-semibold select-none py-1">
-          <Link to="/x32605e58c9870700a3a2652f36a5c4b5">RowType</Link>
+          <Link to="/x1ee70bce22334c6e1db2bcea5959f16b">Log</Link>
           &nbsp;&#047;&nbsp;
           <span className="select-all">{instanceName}</span>
           <div className="flex-1"></div>
@@ -93,7 +93,7 @@ const AfterLoaded = ({
 
         <Util.InlineMessageList />
 
-        <RowTypeView />
+        <LogView />
 
         <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
       </form>
@@ -101,82 +101,31 @@ const AfterLoaded = ({
   )
 }
 
-const RowTypeView = ({ }: {
+const LogView = ({ }: {
 }) => {
-  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
+  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.LogDisplayData>()
   const item = getValues()
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="14.0rem">
+      <VForm.Container leftColumnMinWidth="17.6rem">
         <input type="hidden" {...register(`own_members.ID`)} />
-        <VForm.Item label="RowTypeName">
-          <Input.Word {...registerEx(`own_members.RowTypeName`)} readOnly />
+        <VForm.Item label="LogTime">
+          <Input.Date {...registerEx(`own_members.LogTime`)} readOnly />
         </VForm.Item>
-        <ColumnsView />
-        <VForm.Item label="CreatedOn">
-          <Input.Date {...registerEx(`own_members.CreatedOn`)} readOnly />
+        <VForm.Item label="UpdatedObject">
+          <Input.Word {...registerEx(`own_members.UpdatedObject`)} readOnly />
         </VForm.Item>
-        <VForm.Item label="CreateUser">
-          <Input.Word {...registerEx(`own_members.CreateUser`)} readOnly />
+        <VForm.Item label="UpdateType">
+          <Input.Word {...registerEx(`own_members.UpdateType`)} readOnly />
         </VForm.Item>
-        <VForm.Item label="UpdatedOn">
-          <Input.Date {...registerEx(`own_members.UpdatedOn`)} readOnly />
+        <VForm.Item label="RowIdOrRowTypeId">
+          <Input.Word {...registerEx(`own_members.RowIdOrRowTypeId`)} readOnly />
         </VForm.Item>
-        <VForm.Item label="UpdateUser">
-          <Input.Word {...registerEx(`own_members.UpdateUser`)} readOnly />
+        <VForm.Item label="Content">
+          <Input.Description {...registerEx(`own_members.Content`)} readOnly />
         </VForm.Item>
       </VForm.Container>
     </>
-  )
-}
-const ColumnsView = ({ }: {
-}) => {
-  const { get } = Util.useHttpRequest()
-  const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
-  const { fields, append, remove, update } = useFieldArray({
-    control,
-    name: `child_Columns`,
-  })
-  const dtRef = useRef<Layout.DataTableRef<AggregateType.ColumnsDisplayData>>(null)
-
-
-  const options = useMemo<Layout.DataTableProps<AggregateType.ColumnsDisplayData>>(() => ({
-    columns: [
-      {
-        id: 'col1',
-        header: 'ColumnName',
-        cell: cellProps => {
-          const value = cellProps.row.original.own_members?.ColumnName
-          return (
-            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-              {value}
-              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-            </span>
-          )
-        },
-        accessorFn: row => row.own_members?.ColumnName,
-        editSetting: {
-          type: 'text',
-          getTextValue: row => row.own_members?.ColumnName,
-          setTextValue: (row, value) => {
-            row.own_members.ColumnName = value
-          },
-        },
-      },
-    ],
-  }), [get, update])
-
-  return (
-    <VForm.Item wide
-      label="Columns"
-      >
-      <Layout.DataTable
-        ref={dtRef}
-        data={fields}
-        {...options}
-        className="h-64 w-full"
-      />
-    </VForm.Item>
   )
 }

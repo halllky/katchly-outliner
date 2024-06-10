@@ -394,8 +394,8 @@ const DetailViewOfRowObject = ({ row, rowIndex, rowTypeMap, changeRowType }: Det
         </ReadonlyTextarea>
       </Panel>
       <PanelResizeHandle className="h-2" />
-      <Panel id="panel-2">
-        <table className="table-fixed border border-neutral-200">
+      <Panel id="panel-2" className="flex flex-col">
+        <table className="flex-1 table-fixed border border-neutral-200">
           <tbody>
             <tr>
               <th>種別</th>
@@ -406,6 +406,9 @@ const DetailViewOfRowObject = ({ row, rowIndex, rowTypeMap, changeRowType }: Det
             <RowAttrsTR row={row} rowTypeMap={rowTypeMap} />
           </tbody>
         </table>
+        <span className="text-color-5">
+          作成: {row.item.createdOn}
+        </span>
       </Panel>
     </PanelGroup>
   )
@@ -495,7 +498,7 @@ const RowAttrsTR = ({ row, rowTypeMap }: {
           {col.name}
         </th>
         <td>
-          {row.item.attrs[col.id]}
+          {row.item.attrs[col.id]?.value}
         </td>
       </tr>
     ))}

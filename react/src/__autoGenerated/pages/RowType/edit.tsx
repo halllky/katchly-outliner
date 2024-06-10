@@ -123,6 +123,18 @@ const RowTypeView = ({ }: {
           <Input.Word {...registerEx(`own_members.RowTypeName`)} />
         </VForm.Item>
         <ColumnsView />
+        <VForm.Item label="CreatedOn">
+          <Input.Date {...registerEx(`own_members.CreatedOn`)} />
+        </VForm.Item>
+        <VForm.Item label="CreateUser">
+          <Input.Word {...registerEx(`own_members.CreateUser`)} />
+        </VForm.Item>
+        <VForm.Item label="UpdatedOn">
+          <Input.Date {...registerEx(`own_members.UpdatedOn`)} />
+        </VForm.Item>
+        <VForm.Item label="UpdateUser">
+          <Input.Word {...registerEx(`own_members.UpdateUser`)} />
+        </VForm.Item>
       </VForm.Container>
     </>
   )

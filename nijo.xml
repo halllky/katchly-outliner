@@ -7,8 +7,13 @@
     <Attrs is="array">
       <ColType is="ref-to:RowType/Columns key" />
       <Value is="sentence" />
+      <UpdatedOn is="datetime" />
     </Attrs>
     <Indent is="int" />
+    <CreatedOn is="datetime" />
+    <CreateUser is="word" />
+    <UpdatedOn is="datetime" />
+    <UpdateUser is="word" />
   </Row>
 
   <RowOrder is="write-model">
@@ -23,6 +28,24 @@
       <ColumnId is="uuid" />
       <ColumnName is="word" />
     </Columns>
+    <CreatedOn is="datetime" />
+    <CreateUser is="word" />
+    <UpdatedOn is="datetime" />
+    <UpdateUser is="word" />
   </RowType>
+
+  <!-- LogOrderの履歴管理をしていないのは、並び順のデータ構造の仕様が定まっていないため。 -->
+  <Log is="write-model">
+    <ID is="uuid"/>
+    <LogTime is="datetime" />
+
+    <!-- Row or RowType -->
+    <UpdatedObject is="word" />
+    <!-- INS or UPD or DEL -->
+    <UpdateType is="word" />
+
+    <RowIdOrRowTypeId is="word" />
+    <Content is="sentence" />
+  </Log>
 
 </Katchly>
