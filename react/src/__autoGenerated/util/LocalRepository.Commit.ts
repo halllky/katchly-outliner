@@ -82,6 +82,29 @@ export const useLocalRepositoryCommitHandling = () => {
         return { commit: false }
       }
     }],
+    ['Comment', async (localReposItem: LocalRepositoryStoredItem<AggregateType.CommentDisplayData>) => {
+      const [{ item: saveItem }] = AggregateType.convertCommentToLocalRepositoryItem(localReposItem.item)
+      const state = getLocalRepositoryState(localReposItem)
+      if (state === '+') {
+        const url = `/api/Comment/create`
+        const response = await post<AggregateType.CommentDisplayData>(url, saveItem)
+        return { commit: response.ok }
+    
+      } else if (state === '*') {
+        const url = `/api/Comment/update`
+        const response = await post<AggregateType.CommentDisplayData>(url, saveItem)
+        return { commit: response.ok }
+    
+      } else if (state === '-') {
+        const url = `/api/Comment/delete`
+        const response = await httpDelete(url, saveItem)
+        return { commit: response.ok }
+    
+      } else {
+        dispatchMsg(msg => msg.error(`'${saveItem}' の状態 '${state}' が不正です。`))
+        return { commit: false }
+      }
+    }],
     ['Log', async (localReposItem: LocalRepositoryStoredItem<AggregateType.LogDisplayData>) => {
       const [{ item: saveItem }] = AggregateType.convertLogToLocalRepositoryItem(localReposItem.item)
       const state = getLocalRepositoryState(localReposItem)

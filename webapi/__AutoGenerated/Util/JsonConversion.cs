@@ -20,6 +20,12 @@ namespace Katchly {
             option.Converters.Add(new CustomJsonConverters.RowOrderKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentTargetRowKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentTargetCellKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentTargetRowTypeKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentTargetColumnKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.CommentTargetCommentKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.LogKeysJsonValueConverter());
         }
         public static JsonSerializerOptions GetJsonSrializerOptions() {
@@ -319,6 +325,220 @@ namespace Katchly.CustomJsonConverters {
                 object?[] objArray = [
                     value.Parent?.ID,
                     value.ColumnId,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentKeysJsonValueConverter : JsonConverter<CommentKeys?> {
+        public override CommentKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var IDValue = objArray.ElementAtOrDefault(0);
+            if (IDValue != null && IDValue is not string)
+                throw new InvalidOperationException($"CommentKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+    
+            return new CommentKeys {
+                ID = (string?)IDValue,
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.ID,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentTargetRowKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentTargetRowKeysJsonValueConverter : JsonConverter<CommentTargetRowKeys?> {
+        public override CommentTargetRowKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var CommentTargetRow_IDValue = objArray.ElementAtOrDefault(0);
+            if (CommentTargetRow_IDValue != null && CommentTargetRow_IDValue is not string)
+                throw new InvalidOperationException($"CommentTargetRowKeysの値の変換に失敗しました。CommentTargetRow_IDの位置の値がstring型ではありません: {CommentTargetRow_IDValue}");
+    
+            return new CommentTargetRowKeys {
+                Parent = new() {
+                    ID = (string?)CommentTargetRow_IDValue,
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentTargetRowKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.ID,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentTargetCellKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentTargetCellKeysJsonValueConverter : JsonConverter<CommentTargetCellKeys?> {
+        public override CommentTargetCellKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var CommentTargetCell_IDValue = objArray.ElementAtOrDefault(0);
+            if (CommentTargetCell_IDValue != null && CommentTargetCell_IDValue is not string)
+                throw new InvalidOperationException($"CommentTargetCellKeysの値の変換に失敗しました。CommentTargetCell_IDの位置の値がstring型ではありません: {CommentTargetCell_IDValue}");
+    
+            return new CommentTargetCellKeys {
+                Parent = new() {
+                    ID = (string?)CommentTargetCell_IDValue,
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentTargetCellKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.ID,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentTargetRowTypeKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentTargetRowTypeKeysJsonValueConverter : JsonConverter<CommentTargetRowTypeKeys?> {
+        public override CommentTargetRowTypeKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var CommentTargetRowType_IDValue = objArray.ElementAtOrDefault(0);
+            if (CommentTargetRowType_IDValue != null && CommentTargetRowType_IDValue is not string)
+                throw new InvalidOperationException($"CommentTargetRowTypeKeysの値の変換に失敗しました。CommentTargetRowType_IDの位置の値がstring型ではありません: {CommentTargetRowType_IDValue}");
+    
+            return new CommentTargetRowTypeKeys {
+                Parent = new() {
+                    ID = (string?)CommentTargetRowType_IDValue,
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentTargetRowTypeKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.ID,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentTargetColumnKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentTargetColumnKeysJsonValueConverter : JsonConverter<CommentTargetColumnKeys?> {
+        public override CommentTargetColumnKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var CommentTargetColumn_IDValue = objArray.ElementAtOrDefault(0);
+            if (CommentTargetColumn_IDValue != null && CommentTargetColumn_IDValue is not string)
+                throw new InvalidOperationException($"CommentTargetColumnKeysの値の変換に失敗しました。CommentTargetColumn_IDの位置の値がstring型ではありません: {CommentTargetColumn_IDValue}");
+    
+            return new CommentTargetColumnKeys {
+                Parent = new() {
+                    ID = (string?)CommentTargetColumn_IDValue,
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentTargetColumnKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.ID,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="CommentTargetCommentKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class CommentTargetCommentKeysJsonValueConverter : JsonConverter<CommentTargetCommentKeys?> {
+        public override CommentTargetCommentKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var CommentTargetComment_IDValue = objArray.ElementAtOrDefault(0);
+            if (CommentTargetComment_IDValue != null && CommentTargetComment_IDValue is not string)
+                throw new InvalidOperationException($"CommentTargetCommentKeysの値の変換に失敗しました。CommentTargetComment_IDの位置の値がstring型ではありません: {CommentTargetComment_IDValue}");
+    
+            var CommentIdValue = objArray.ElementAtOrDefault(1);
+            if (CommentIdValue != null && CommentIdValue is not string)
+                throw new InvalidOperationException($"CommentTargetCommentKeysの値の変換に失敗しました。CommentIdの位置の値がstring型ではありません: {CommentIdValue}");
+    
+            return new CommentTargetCommentKeys {
+                Parent = new() {
+                    ID = (string?)CommentTargetComment_IDValue,
+                },
+                CommentId = (string?)CommentIdValue,
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, CommentTargetCommentKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.ID,
+                    value.CommentId,
                 ];
                 var jsonArray = objArray.ToJson();
                 writer.WriteStringValue(jsonArray);

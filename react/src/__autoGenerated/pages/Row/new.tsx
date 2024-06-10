@@ -198,7 +198,7 @@ const Row_RowOrderView = ({ }: {
 const AttrsView = ({ }: {
 }) => {
   const { get } = Util.useHttpRequest()
-  const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowDisplayData>()
+  const { register, registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowDisplayData>()
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `child_Attrs`,

@@ -13,6 +13,7 @@ export type BatchUpdateItem
   = { type: 'Row', act: ActionType, item: Types.RowSaveCommand }
   | { type: 'RowOrder', act: ActionType, item: Types.RowOrderSaveCommand }
   | { type: 'RowType', act: ActionType, item: Types.RowTypeSaveCommand }
+  | { type: 'Comment', act: ActionType, item: Types.CommentSaveCommand }
   | { type: 'Log', act: ActionType, item: Types.LogSaveCommand }
 export type ActionType = 'a' | 'm' | 'd' // add, modify, delete
 

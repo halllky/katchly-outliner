@@ -10,6 +10,10 @@ import RowTypeCreateView from './pages/RowType/new'
 import RowTypeMultiView from './pages/RowType/list'
 import RowTypeDetailView from './pages/RowType/detail'
 import RowTypeEditView from './pages/RowType/edit'
+import CommentCreateView from './pages/Comment/new'
+import CommentMultiView from './pages/Comment/list'
+import CommentDetailView from './pages/Comment/detail'
+import CommentEditView from './pages/Comment/edit'
 import LogCreateView from './pages/Log/new'
 import LogMultiView from './pages/Log/list'
 import LogDetailView from './pages/Log/detail'
@@ -30,6 +34,10 @@ export const routes: { url: string, el: JSX.Element }[] = [
   { url: '/x32605e58c9870700a3a2652f36a5c4b5', el: <RowTypeMultiView /> },
   { url: '/x482f568abd9568fda9b360b0bf991835/detail/:key0', el: <RowTypeDetailView /> },
   { url: '/x482f568abd9568fda9b360b0bf991835/edit/:key0', el: <RowTypeEditView /> },
+  { url: '/xcc9c15b1503ef15d999d64ce6d5fe189/new/:key0?', el: <CommentCreateView /> },
+  { url: '/x6940e80bcd51a8fd2f00f79328cf4efc', el: <CommentMultiView /> },
+  { url: '/xcc9c15b1503ef15d999d64ce6d5fe189/detail/:key0', el: <CommentDetailView /> },
+  { url: '/xcc9c15b1503ef15d999d64ce6d5fe189/edit/:key0', el: <CommentEditView /> },
   { url: '/x2be65a1401b75f2cdd8deaec5a04a976/new/:key0?', el: <LogCreateView /> },
   { url: '/x1ee70bce22334c6e1db2bcea5959f16b', el: <LogMultiView /> },
   { url: '/x2be65a1401b75f2cdd8deaec5a04a976/detail/:key0', el: <LogDetailView /> },
@@ -39,5 +47,6 @@ export const menuItems: { url: string, text: string }[] = [
   { url: '/xaa6703a7b77c514e0f4f9413ccf059d3', text: 'Row' },
   { url: '/x1827ce8197ce65dd7400e6eeb2155790', text: 'RowOrder' },
   { url: '/x32605e58c9870700a3a2652f36a5c4b5', text: 'RowType' },
+  { url: '/x6940e80bcd51a8fd2f00f79328cf4efc', text: 'Comment' },
   { url: '/x1ee70bce22334c6e1db2bcea5959f16b', text: 'Log' },
 ]

@@ -11,6 +11,7 @@ namespace Katchly {
             this.OnModelCreating_Row(modelBuilder);
             this.OnModelCreating_RowOrder(modelBuilder);
             this.OnModelCreating_RowType(modelBuilder);
+            this.OnModelCreating_Comment(modelBuilder);
             this.OnModelCreating_Log(modelBuilder);
         }
 

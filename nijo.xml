@@ -34,6 +34,36 @@
     <UpdateUser is="word" />
   </RowType>
 
+  <Comment is="write-model">
+    <ID is="uuid"/>
+    <Text is="sentence" />
+    <Author is="word" />
+    <CreatedOn is="datetime" />
+    <UpdatedOn is="datetime" />
+
+    <Target is="variation">
+      <CommentTargetRow is="variation-key:1">
+        <Row is="ref-to:Row" />
+      </CommentTargetRow>
+      <CommentTargetCell is="variation-key:2">
+        <Cell is="ref-to:Row/Attrs" />
+      </CommentTargetCell>
+
+      <CommentTargetRowType is="variation-key:3">
+        <RowType is="ref-to:RowType" />
+      </CommentTargetRowType>
+      <CommentTargetColumn is="variation-key:4">
+        <Column is="ref-to:RowType/Columns" />
+      </CommentTargetColumn>
+
+      <CommentTargetComment is="variation-key:5">
+        <!-- 自分自身へのRefが未実装のため -->
+        <!-- <Comment is="ref-to:Comment" /> -->
+        <CommentId is="uuid" />
+      </CommentTargetComment>
+    </Target>
+  </Comment>
+
   <!-- LogOrderの履歴管理をしていないのは、並び順のデータ構造の仕様が定まっていないため。 -->
   <Log is="write-model">
     <ID is="uuid"/>

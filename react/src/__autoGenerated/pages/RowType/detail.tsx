@@ -133,7 +133,7 @@ const RowTypeView = ({ }: {
 const ColumnsView = ({ }: {
 }) => {
   const { get } = Util.useHttpRequest()
-  const { registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
+  const { register, registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowTypeDisplayData>()
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `child_Columns`,

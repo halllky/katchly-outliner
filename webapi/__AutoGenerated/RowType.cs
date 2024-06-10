@@ -516,6 +516,7 @@ namespace Katchly {
     
         public virtual ICollection<ColumnsDbEntity> Columns { get; set; }
         public virtual ICollection<RowDbEntity> RefferedBy_RowDbEntity_RowType { get; set; }
+        public virtual ICollection<CommentTargetRowTypeDbEntity> RefferedBy_CommentTargetRowTypeDbEntity_RowType { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(RowTypeDbEntity entity) {
@@ -533,6 +534,7 @@ namespace Katchly {
     
         public virtual RowTypeDbEntity? Parent { get; set; }
         public virtual ICollection<AttrsDbEntity> RefferedBy_AttrsDbEntity_ColType { get; set; }
+        public virtual ICollection<CommentTargetColumnDbEntity> RefferedBy_CommentTargetColumnDbEntity_Column { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(ColumnsDbEntity entity) {
@@ -698,6 +700,12 @@ namespace Katchly {
                         e.RowType_ID,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(e => e.RefferedBy_CommentTargetRowTypeDbEntity_RowType)
+                    .WithOne(e => e.RowType)
+                    .HasForeignKey(e => new {
+                        e.RowType_ID,
+                    })
+                    .OnDelete(DeleteBehavior.NoAction);
             });
             modelBuilder.Entity<Katchly.ColumnsDbEntity>(entity => {
             
@@ -718,6 +726,13 @@ namespace Katchly {
                     .HasForeignKey(e => new {
                         e.ColType_Columns_ID,
                         e.ColType_ColumnId,
+                    })
+                    .OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(e => e.RefferedBy_CommentTargetColumnDbEntity_Column)
+                    .WithOne(e => e.Column)
+                    .HasForeignKey(e => new {
+                        e.Column_Columns_ID,
+                        e.Column_ColumnId,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
             });

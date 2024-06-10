@@ -626,6 +626,7 @@ namespace Katchly {
         public virtual RowTypeDbEntity? RowType { get; set; }
         public virtual ICollection<AttrsDbEntity> Attrs { get; set; }
         public virtual RowOrderDbEntity? RefferedBy_RowOrderDbEntity_Row { get; set; }
+        public virtual ICollection<CommentTargetRowDbEntity> RefferedBy_CommentTargetRowDbEntity_Row { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(RowDbEntity entity) {
@@ -645,6 +646,7 @@ namespace Katchly {
     
         public virtual RowDbEntity? Parent { get; set; }
         public virtual ColumnsDbEntity? ColType { get; set; }
+        public virtual ICollection<CommentTargetCellDbEntity> RefferedBy_CommentTargetCellDbEntity_Cell { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(AttrsDbEntity entity) {
@@ -851,6 +853,12 @@ namespace Katchly {
                         e.Row_ID,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(e => e.RefferedBy_CommentTargetRowDbEntity_Row)
+                    .WithOne(e => e.Row)
+                    .HasForeignKey(e => new {
+                        e.Row_ID,
+                    })
+                    .OnDelete(DeleteBehavior.NoAction);
             });
             modelBuilder.Entity<Katchly.AttrsDbEntity>(entity => {
             
@@ -871,7 +879,14 @@ namespace Katchly {
                 entity.Property(e => e.ColType_ColumnId)
                     .IsRequired(true);
             
-                
+                entity.HasMany(e => e.RefferedBy_CommentTargetCellDbEntity_Cell)
+                    .WithOne(e => e.Cell)
+                    .HasForeignKey(e => new {
+                        e.Cell_Attrs_ID,
+                        e.Cell_ColType_Columns_ID,
+                        e.Cell_ColType_ColumnId,
+                    })
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }
