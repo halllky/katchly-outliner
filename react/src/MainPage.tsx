@@ -525,7 +525,7 @@ const ThreadView = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType, clas
               <div className="flex-1"></div>
               {comment.createdOn}
             </div>
-            <span className="text-sm">
+            <span className="text-sm whitespace-pre-wrap">
               {comment.text}
             </span>
           </div>
