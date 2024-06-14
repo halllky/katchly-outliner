@@ -210,6 +210,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
         item: {
           ...row.item,
           type: (updatedRow as GridRowOfRowObject).item.type,
+          willBeChanged: true,
         },
       }))
     })
