@@ -349,7 +349,7 @@ export type Comment = EditableObject & {
   responses: Comment[]
 }
 
-export const createNewThread = (author: string): Comment => {
+export const createNewComment = (author: string): Comment => {
   const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
   return {
     id: UUID.generate() as CommentId,
@@ -362,23 +362,6 @@ export const createNewThread = (author: string): Comment => {
     willBeDeleted: false,
     responses: [],
   }
-}
-
-export const appendResponse = (comment: Comment, author: string): Comment => {
-  const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
-  const newComment: Comment = {
-    id: UUID.generate() as CommentId,
-    text: '',
-    author,
-    createdOn: now,
-    updatedOn: now,
-    existsInRemoteRepository: false,
-    willBeChanged: true,
-    willBeDeleted: false,
-    responses: [],
-  }
-  comment.responses.push(newComment)
-  return newComment
 }
 
 export const countComment = (row: GridRow, rowTypeMap: Map<RowTypeId, RowType>): number => {
