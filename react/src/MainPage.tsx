@@ -485,15 +485,7 @@ const ThreadView = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType, clas
 }) => {
   const { data: { userName } } = useAppSettings()
   const [viewMode, setViewMode] = useState<ThreadViewMode>(() => ({ mode: 'new' }))
-  const selectedCommentId = useMemo(() => {
-    if (viewMode.mode === 'new') {
-      return undefined
-    } else if (viewMode.mode === 'edit') {
-      return viewMode.editingCommentId
-    } else if (viewMode.mode === 'response') {
-      return viewMode.responseTo
-    }
-  }, [viewMode])
+
   const asTree = useMemo(() => {
     if (!row) return []
     const threads = row.type === 'row'
@@ -623,12 +615,24 @@ const ThreadView = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType, clas
     }
   }, [viewMode, tryCommitNewThread, tryCommitEditing, tryCommitResponse, setNewItemText, setViewMode])
 
-  return (
-    <div className={`flex flex-col gap-1 ${className ?? ''}`}>
+  // 選択
+  const [selectedCommentId, setSelectedCommentId] = useState<CommentId>()
+  const containerRef = useRef<HTMLDivElement>(null)
+  Util.useOutsideClick(containerRef, () => {
+    setSelectedCommentId(undefined)
+  }, [containerRef, setSelectedCommentId])
 
-      <div className="flex-1 flex flex-col overflow-y-scroll">
+  return (
+    <div ref={containerRef} className={`flex flex-col gap-1 ${className ?? ''}`}>
+
+      <div className="flex-1 flex flex-col overflow-y-scroll p-1">
         {asTree.map(({ depth, item: comment }) => (
-          <div key={comment.id} className="flex flex-col border-b border-color-3" style={{ paddingLeft: depth * 28 }}>
+          <div
+            key={comment.id}
+            className="flex flex-col border-b border-color-3 relative"
+            style={{ paddingLeft: depth * 28 }}
+            onMouseDown={() => setSelectedCommentId(comment.id)}
+          >
             <div className="flex flex-wrap text-xs text-color-5">
               {comment.author}
               <div className="flex-1"></div>
@@ -637,6 +641,9 @@ const ThreadView = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType, clas
             <span className="text-sm whitespace-pre-wrap">
               {comment.text}
             </span>
+            {comment.id === selectedCommentId && (
+              <SelectedCommentBorder />
+            )}
           </div>
         ))}
       </div>
@@ -654,5 +661,11 @@ const ThreadView = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType, clas
       </div>
 
     </div>
+  )
+}
+
+const SelectedCommentBorder = () => {
+  return (
+    <div className="absolute inset-0 border-2 border-color-6"></div>
   )
 }
