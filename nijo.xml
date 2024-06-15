@@ -43,21 +43,12 @@
     <CreatedOn is="datetime" />
     <UpdatedOn is="datetime" />
 
-    <Target is="variation">
-      <CommentTargetRow is="variation-key:1">
-        <Row is="ref-to:Row" />
-      </CommentTargetRow>
-      <CommentTargetCell is="variation-key:2">
-        <Cell is="ref-to:Row/Attrs" />
-      </CommentTargetCell>
-
-      <CommentTargetRowType is="variation-key:3">
-        <RowType is="ref-to:RowType" />
-      </CommentTargetRowType>
-      <CommentTargetColumn is="variation-key:4">
-        <Column is="ref-to:RowType/Columns" />
-      </CommentTargetColumn>
-    </Target>
+    <!-- コメント対象のオブジェクト。これらのうちいずれか1つのみ値が入る -->
+    <TargetRow is="ref-to:Row" />
+    <TargetCell is="ref-to:Row/Attrs" />
+    <TargetRowType is="ref-to:RowType" />
+    <TargetColumn is="ref-to:RowType/Columns" />
+    <!-- コメント対象のオブジェクト。これらのうちいずれか1つのみ値が入る -->
   </Comment>
 
   <!-- LogOrderの履歴管理をしていないのは、並び順のデータ構造の仕様が定まっていないため。 -->

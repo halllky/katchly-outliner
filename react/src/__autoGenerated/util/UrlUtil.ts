@@ -90,66 +90,6 @@ export const getCommentSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 
   }
 }
 
-export const getCommentTargetRowSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
-  if (!key) {
-    return ''
-  }
-  if (mode === 'new') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/new/${window.encodeURI(`${key}`)}`
-  }
-  const [CommentTargetRow_ID] = JSON.parse(key) as [string | undefined]
-  if (mode === 'view') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/detail/${window.encodeURI(`${CommentTargetRow_ID}`)}`
-  } else {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/edit/${window.encodeURI(`${CommentTargetRow_ID}`)}`
-  }
-}
-
-export const getCommentTargetCellSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
-  if (!key) {
-    return ''
-  }
-  if (mode === 'new') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/new/${window.encodeURI(`${key}`)}`
-  }
-  const [CommentTargetCell_ID] = JSON.parse(key) as [string | undefined]
-  if (mode === 'view') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/detail/${window.encodeURI(`${CommentTargetCell_ID}`)}`
-  } else {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/edit/${window.encodeURI(`${CommentTargetCell_ID}`)}`
-  }
-}
-
-export const getCommentTargetRowTypeSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
-  if (!key) {
-    return ''
-  }
-  if (mode === 'new') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/new/${window.encodeURI(`${key}`)}`
-  }
-  const [CommentTargetRowType_ID] = JSON.parse(key) as [string | undefined]
-  if (mode === 'view') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/detail/${window.encodeURI(`${CommentTargetRowType_ID}`)}`
-  } else {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/edit/${window.encodeURI(`${CommentTargetRowType_ID}`)}`
-  }
-}
-
-export const getCommentTargetColumnSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
-  if (!key) {
-    return ''
-  }
-  if (mode === 'new') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/new/${window.encodeURI(`${key}`)}`
-  }
-  const [CommentTargetColumn_ID] = JSON.parse(key) as [string | undefined]
-  if (mode === 'view') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/detail/${window.encodeURI(`${CommentTargetColumn_ID}`)}`
-  } else {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/edit/${window.encodeURI(`${CommentTargetColumn_ID}`)}`
-  }
-}
-
 export const getLogSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''

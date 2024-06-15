@@ -484,8 +484,89 @@ export const useCommentRepository = (editRange?
         //
         //
         //
-        // if (editRange.filter.Target !== undefined
-        //   && item.Target !== editRange.filter.Target) return
+        // if (editRange.filter.TargetRow?.ID !== undefined
+        //   && item.TargetRow?.ID !== editRange.filter.TargetRow.ID) return
+        // if (editRange.filter.TargetRow?.Text !== undefined
+        //   && item.TargetRow?.Text !== editRange.filter.TargetRow.Text) return
+        // if (editRange.filter.TargetRow?.RowType?.ID !== undefined
+        //   && item.TargetRow?.RowType?.ID !== editRange.filter.TargetRow.RowType.ID) return
+        // if (editRange.filter.TargetRow?.RowType?.RowTypeName !== undefined
+        //   && item.TargetRow?.RowType?.RowTypeName !== editRange.filter.TargetRow.RowType.RowTypeName) return
+        //
+        // if (editRange.filter.TargetRow?.RowType?.CreateUser !== undefined
+        //   && item.TargetRow?.RowType?.CreateUser !== editRange.filter.TargetRow.RowType.CreateUser) return
+        //
+        // if (editRange.filter.TargetRow?.RowType?.UpdateUser !== undefined
+        //   && item.TargetRow?.RowType?.UpdateUser !== editRange.filter.TargetRow.RowType.UpdateUser) return
+        //
+        //
+        // if (editRange.filter.TargetRow?.CreateUser !== undefined
+        //   && item.TargetRow?.CreateUser !== editRange.filter.TargetRow.CreateUser) return
+        //
+        // if (editRange.filter.TargetRow?.UpdateUser !== undefined
+        //   && item.TargetRow?.UpdateUser !== editRange.filter.TargetRow.UpdateUser) return
+        // if (editRange.filter.TargetCell?.Parent?.ID !== undefined
+        //   && item.TargetCell?.Parent?.ID !== editRange.filter.TargetCell.Parent.ID) return
+        // if (editRange.filter.TargetCell?.Parent?.Text !== undefined
+        //   && item.TargetCell?.Parent?.Text !== editRange.filter.TargetCell.Parent.Text) return
+        // if (editRange.filter.TargetCell?.Parent?.RowType?.ID !== undefined
+        //   && item.TargetCell?.Parent?.RowType?.ID !== editRange.filter.TargetCell.Parent.RowType.ID) return
+        // if (editRange.filter.TargetCell?.Parent?.RowType?.RowTypeName !== undefined
+        //   && item.TargetCell?.Parent?.RowType?.RowTypeName !== editRange.filter.TargetCell.Parent.RowType.RowTypeName) return
+        //
+        // if (editRange.filter.TargetCell?.Parent?.RowType?.CreateUser !== undefined
+        //   && item.TargetCell?.Parent?.RowType?.CreateUser !== editRange.filter.TargetCell.Parent.RowType.CreateUser) return
+        //
+        // if (editRange.filter.TargetCell?.Parent?.RowType?.UpdateUser !== undefined
+        //   && item.TargetCell?.Parent?.RowType?.UpdateUser !== editRange.filter.TargetCell.Parent.RowType.UpdateUser) return
+        //
+        //
+        // if (editRange.filter.TargetCell?.Parent?.CreateUser !== undefined
+        //   && item.TargetCell?.Parent?.CreateUser !== editRange.filter.TargetCell.Parent.CreateUser) return
+        //
+        // if (editRange.filter.TargetCell?.Parent?.UpdateUser !== undefined
+        //   && item.TargetCell?.Parent?.UpdateUser !== editRange.filter.TargetCell.Parent.UpdateUser) return
+        // if (editRange.filter.TargetCell?.ColType?.Parent?.ID !== undefined
+        //   && item.TargetCell?.ColType?.Parent?.ID !== editRange.filter.TargetCell.ColType.Parent.ID) return
+        // if (editRange.filter.TargetCell?.ColType?.Parent?.RowTypeName !== undefined
+        //   && item.TargetCell?.ColType?.Parent?.RowTypeName !== editRange.filter.TargetCell.ColType.Parent.RowTypeName) return
+        //
+        // if (editRange.filter.TargetCell?.ColType?.Parent?.CreateUser !== undefined
+        //   && item.TargetCell?.ColType?.Parent?.CreateUser !== editRange.filter.TargetCell.ColType.Parent.CreateUser) return
+        //
+        // if (editRange.filter.TargetCell?.ColType?.Parent?.UpdateUser !== undefined
+        //   && item.TargetCell?.ColType?.Parent?.UpdateUser !== editRange.filter.TargetCell.ColType.Parent.UpdateUser) return
+        // if (editRange.filter.TargetCell?.ColType?.ColumnId !== undefined
+        //   && item.TargetCell?.ColType?.ColumnId !== editRange.filter.TargetCell.ColType.ColumnId) return
+        // if (editRange.filter.TargetCell?.ColType?.ColumnName !== undefined
+        //   && item.TargetCell?.ColType?.ColumnName !== editRange.filter.TargetCell.ColType.ColumnName) return
+        // if (editRange.filter.TargetCell?.Value !== undefined
+        //   && item.TargetCell?.Value !== editRange.filter.TargetCell.Value) return
+        //
+        // if (editRange.filter.TargetRowType?.ID !== undefined
+        //   && item.TargetRowType?.ID !== editRange.filter.TargetRowType.ID) return
+        // if (editRange.filter.TargetRowType?.RowTypeName !== undefined
+        //   && item.TargetRowType?.RowTypeName !== editRange.filter.TargetRowType.RowTypeName) return
+        //
+        // if (editRange.filter.TargetRowType?.CreateUser !== undefined
+        //   && item.TargetRowType?.CreateUser !== editRange.filter.TargetRowType.CreateUser) return
+        //
+        // if (editRange.filter.TargetRowType?.UpdateUser !== undefined
+        //   && item.TargetRowType?.UpdateUser !== editRange.filter.TargetRowType.UpdateUser) return
+        // if (editRange.filter.TargetColumn?.Parent?.ID !== undefined
+        //   && item.TargetColumn?.Parent?.ID !== editRange.filter.TargetColumn.Parent.ID) return
+        // if (editRange.filter.TargetColumn?.Parent?.RowTypeName !== undefined
+        //   && item.TargetColumn?.Parent?.RowTypeName !== editRange.filter.TargetColumn.Parent.RowTypeName) return
+        //
+        // if (editRange.filter.TargetColumn?.Parent?.CreateUser !== undefined
+        //   && item.TargetColumn?.Parent?.CreateUser !== editRange.filter.TargetColumn.Parent.CreateUser) return
+        //
+        // if (editRange.filter.TargetColumn?.Parent?.UpdateUser !== undefined
+        //   && item.TargetColumn?.Parent?.UpdateUser !== editRange.filter.TargetColumn.Parent.UpdateUser) return
+        // if (editRange.filter.TargetColumn?.ColumnId !== undefined
+        //   && item.TargetColumn?.ColumnId !== editRange.filter.TargetColumn.ColumnId) return
+        // if (editRange.filter.TargetColumn?.ColumnName !== undefined
+        //   && item.TargetColumn?.ColumnName !== editRange.filter.TargetColumn.ColumnName) return
         localItems.push(cursor.value.item as AggregateType.CommentDisplayData)
       })
     }

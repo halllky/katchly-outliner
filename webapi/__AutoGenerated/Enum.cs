@@ -7,14 +7,4 @@ namespace Katchly {
         Success = 2,
         Fault = 3,
     }
-    public enum E_Target {
-        [Display(Name = "CommentTargetRow")]
-        CommentTargetRow = 1,
-        [Display(Name = "CommentTargetCell")]
-        CommentTargetCell = 2,
-        [Display(Name = "CommentTargetRowType")]
-        CommentTargetRowType = 3,
-        [Display(Name = "CommentTargetColumn")]
-        CommentTargetColumn = 4,
-    }
 }

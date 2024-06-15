@@ -108,7 +108,7 @@ const CommentView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="11.6rem">
+      <VForm.Container leftColumnMinWidth="15.2rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="Text">
           <Input.Description {...registerEx(`own_members.Text`)} readOnly />
@@ -128,110 +128,27 @@ const CommentView = ({ }: {
         <VForm.Item label="UpdatedOn">
           <Input.Date {...registerEx(`own_members.UpdatedOn`)} readOnly />
         </VForm.Item>
-        <VForm.Container
-          labelSide={<>
-            Target
-            <Input.Selection
-              {...registerEx(`own_members.Target`)}
-              options={['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const]}
-              textSelector={item => item}
-            />
-          </>}
-        >
-          <CommentTargetRowView />
-          <CommentTargetCellView />
-          <CommentTargetRowTypeView />
-          <CommentTargetColumnView />
-        </VForm.Container>
+        <VForm.Item label="TargetRow">
+          <Link className="text-link" to={Util.getRowSingleViewUrl(getValues('own_members.TargetRow.__instanceKey'), 'view')}>
+            {`${item.own_members?.TargetRow?.Text ?? ''}`}
+          </Link>
+        </VForm.Item>
+        <VForm.Item label="TargetCell">
+          <Link className="text-link" to={Util.getAttrsSingleViewUrl(getValues('own_members.TargetCell.__instanceKey'), 'view')}>
+            {`${item.own_members?.TargetCell?.Value ?? ''}`}
+          </Link>
+        </VForm.Item>
+        <VForm.Item label="TargetRowType">
+          <Link className="text-link" to={Util.getRowTypeSingleViewUrl(getValues('own_members.TargetRowType.__instanceKey'), 'view')}>
+            {`${item.own_members?.TargetRowType?.ID ?? ''}`}
+          </Link>
+        </VForm.Item>
+        <VForm.Item label="TargetColumn">
+          <Link className="text-link" to={Util.getColumnsSingleViewUrl(getValues('own_members.TargetColumn.__instanceKey'), 'view')}>
+            {`${item.own_members?.TargetColumn?.Parent?.ID ?? ''}${item.own_members?.TargetColumn?.ColumnId ?? ''}`}
+          </Link>
+        </VForm.Item>
       </VForm.Container>
     </>
   )
-}
-const CommentTargetRowView = ({ }: {
-}) => {
-  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.CommentDisplayData>()
-  const item = getValues(`child_CommentTargetRow`)
-
-  const body = (
-    <>
-      <input type="hidden" {...register(`child_CommentTargetRow.own_members.Row`)} />
-    </>
-  )
-
-  return watch(`own_members.Target`) === 'CommentTargetRow'
-    ? (
-      <>
-        {body}
-      </>
-    ) : (
-      <div className="hidden">
-        {body}
-      </div>
-    )
-}
-const CommentTargetCellView = ({ }: {
-}) => {
-  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.CommentDisplayData>()
-  const item = getValues(`child_CommentTargetCell`)
-
-  const body = (
-    <>
-      <input type="hidden" {...register(`child_CommentTargetCell.own_members.Cell`)} />
-    </>
-  )
-
-  return watch(`own_members.Target`) === 'CommentTargetCell'
-    ? (
-      <>
-        {body}
-      </>
-    ) : (
-      <div className="hidden">
-        {body}
-      </div>
-    )
-}
-const CommentTargetRowTypeView = ({ }: {
-}) => {
-  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.CommentDisplayData>()
-  const item = getValues(`child_CommentTargetRowType`)
-
-  const body = (
-    <>
-      <input type="hidden" {...register(`child_CommentTargetRowType.own_members.RowType`)} />
-    </>
-  )
-
-  return watch(`own_members.Target`) === 'CommentTargetRowType'
-    ? (
-      <>
-        {body}
-      </>
-    ) : (
-      <div className="hidden">
-        {body}
-      </div>
-    )
-}
-const CommentTargetColumnView = ({ }: {
-}) => {
-  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.CommentDisplayData>()
-  const item = getValues(`child_CommentTargetColumn`)
-
-  const body = (
-    <>
-      <input type="hidden" {...register(`child_CommentTargetColumn.own_members.Column`)} />
-    </>
-  )
-
-  return watch(`own_members.Target`) === 'CommentTargetColumn'
-    ? (
-      <>
-        {body}
-      </>
-    ) : (
-      <div className="hidden">
-        {body}
-      </div>
-    )
 }

@@ -66,7 +66,6 @@ const Page = () => {
       willBeDeleted: false,
       own_members: {
         ID: UUID.generate(),
-        Target: 'CommentTargetRow',
       },
     }
     append(newRow)
@@ -258,31 +257,139 @@ const Page = () => {
     },
     {
       id: 'col7',
-      header: 'Target',
+      header: 'TargetRow',
       cell: cellProps => {
-        const value = cellProps.row.original.own_members?.Target
+        const value = cellProps.row.original.own_members?.TargetRow
+        const formatted = `${value?.Text ?? ''}`
         return (
           <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-            {value}
+            {formatted}
             &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
           </span>
         )
       },
-      accessorFn: row => row.own_members?.Target,
+      accessorFn: row => row.own_members?.TargetRow,
       editSetting: ({
-        type: 'combo',
-        getValueFromRow: row => row.own_members?.Target,
+        type: 'async-combo',
+        getValueFromRow: row => row.own_members?.TargetRow,
         setValueToRow: (row, value) => {
-          row.own_members.Target = value
+          row.own_members.TargetRow = value
         },
         comboProps: {
-          options: ['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const],
-          emitValueSelector: opt => opt,
-          matchingKeySelectorFromEmitValue: value => value,
-          matchingKeySelectorFromOption: opt => opt,
-          textSelector: opt => opt,
+          queryKey: `combo-xc431ca892f0ec48c9bbc3311bb00c38c::`,
+          query: async keyword => {
+            const response = await get<AggregateType.RowRefInfo []>(`/api/Row/list-by-keyword`, { keyword })
+            if (!response.ok) return []
+            return response.data
+          },
+          emitValueSelector: item => item,
+          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+          matchingKeySelectorFromOption: item => item.__instanceKey,
+          textSelector: item => `${item.Text ?? ''}`,
         },
-      } as Layout.ColumnEditSetting<GridRow, 'CommentTargetRow' | 'CommentTargetCell' | 'CommentTargetRowType' | 'CommentTargetColumn'>) as Layout.ColumnEditSetting<GridRow, unknown>,
+      } as Layout.ColumnEditSetting<GridRow, AggregateType.RowRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+    },
+    {
+      id: 'col8',
+      header: 'TargetCell',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.TargetCell
+        const formatted = `${value?.Value ?? ''}`
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {formatted}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.TargetCell,
+      editSetting: ({
+        type: 'async-combo',
+        getValueFromRow: row => row.own_members?.TargetCell,
+        setValueToRow: (row, value) => {
+          row.own_members.TargetCell = value
+        },
+        comboProps: {
+          queryKey: `combo-x218859120e2951a46aa6ad9fb9e627cc::`,
+          query: async keyword => {
+            const response = await get<AggregateType.AttrsRefInfo []>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, { keyword })
+            if (!response.ok) return []
+            return response.data
+          },
+          emitValueSelector: item => item,
+          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+          matchingKeySelectorFromOption: item => item.__instanceKey,
+          textSelector: item => `${item.Value ?? ''}`,
+        },
+      } as Layout.ColumnEditSetting<GridRow, AggregateType.AttrsRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+    },
+    {
+      id: 'col9',
+      header: 'TargetRowType',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.TargetRowType
+        const formatted = `${value?.ID ?? ''}`
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {formatted}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.TargetRowType,
+      editSetting: ({
+        type: 'async-combo',
+        getValueFromRow: row => row.own_members?.TargetRowType,
+        setValueToRow: (row, value) => {
+          row.own_members.TargetRowType = value
+        },
+        comboProps: {
+          queryKey: `combo-x482f568abd9568fda9b360b0bf991835::`,
+          query: async keyword => {
+            const response = await get<AggregateType.RowTypeRefInfo []>(`/api/RowType/list-by-keyword`, { keyword })
+            if (!response.ok) return []
+            return response.data
+          },
+          emitValueSelector: item => item,
+          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+          matchingKeySelectorFromOption: item => item.__instanceKey,
+          textSelector: item => `${item.ID ?? ''}`,
+        },
+      } as Layout.ColumnEditSetting<GridRow, AggregateType.RowTypeRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+    },
+    {
+      id: 'col10',
+      header: 'TargetColumn',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.TargetColumn
+        const formatted = `${value?.Parent?.ID ?? ''}${value?.ColumnId ?? ''}`
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {formatted}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => row.own_members?.TargetColumn,
+      editSetting: ({
+        type: 'async-combo',
+        getValueFromRow: row => row.own_members?.TargetColumn,
+        setValueToRow: (row, value) => {
+          row.own_members.TargetColumn = value
+        },
+        comboProps: {
+          queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
+          query: async keyword => {
+            const response = await get<AggregateType.ColumnsRefInfo []>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
+            if (!response.ok) return []
+            return response.data
+          },
+          emitValueSelector: item => item,
+          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+          matchingKeySelectorFromOption: item => item.__instanceKey,
+          textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
+        },
+      } as Layout.ColumnEditSetting<GridRow, AggregateType.ColumnsRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
     },
   ], [get, update])
 
@@ -331,24 +438,171 @@ const Page = () => {
               <span className="select-none">～</span>
               <Input.Date {...registerExCondition(`UpdatedOn.To`)} />
             </VForm.Item>
-            <VForm.Item label="Target">
-              <label className="inline-flex items-center">
-                <Input.CheckBox {...registerExCondition(`Target_CommentTargetRow`)} />
-                CommentTargetRow
-              </label>
-              <label className="inline-flex items-center">
-                <Input.CheckBox {...registerExCondition(`Target_CommentTargetCell`)} />
-                CommentTargetCell
-              </label>
-              <label className="inline-flex items-center">
-                <Input.CheckBox {...registerExCondition(`Target_CommentTargetRowType`)} />
-                CommentTargetRowType
-              </label>
-              <label className="inline-flex items-center">
-                <Input.CheckBox {...registerExCondition(`Target_CommentTargetColumn`)} />
-                CommentTargetColumn
-              </label>
-            </VForm.Item>
+            <VForm.Container label="Row">
+              <VForm.Item label="Text">
+                <Input.Description {...registerExCondition(`TargetRow.Text`)} />
+              </VForm.Item>
+              <VForm.Item label="Indent">
+                <Input.Num {...registerExCondition(`TargetRow.Indent.From`)} />
+                <span className="select-none">～</span>
+                <Input.Num {...registerExCondition(`TargetRow.Indent.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetRow.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRow.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetRow.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetRow.UpdateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="Text">
+                <Input.Description {...registerExCondition(`TargetCell.Parent.Text`)} />
+              </VForm.Item>
+              <VForm.Item label="Indent">
+                <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.From`)} />
+                <span className="select-none">～</span>
+                <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetCell.Parent.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetCell.Parent.UpdateUser`)} />
+              </VForm.Item>
+            </VForm.Container>
+            <VForm.Container label="RowType">
+              <VForm.Item label="RowTypeName">
+                <Input.Word {...registerExCondition(`TargetRow.RowType.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetRow.RowType.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetRow.RowType.UpdateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="RowTypeName">
+                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.UpdateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="RowTypeName">
+                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.UpdateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="RowTypeName">
+                <Input.Word {...registerExCondition(`TargetRowType.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetRowType.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetRowType.UpdateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="RowTypeName">
+                <Input.Word {...registerExCondition(`TargetColumn.Parent.RowTypeName`)} />
+              </VForm.Item>
+              <VForm.Item label="CreatedOn">
+                <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="CreateUser">
+                <Input.Word {...registerExCondition(`TargetColumn.Parent.CreateUser`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.To`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdateUser">
+                <Input.Word {...registerExCondition(`TargetColumn.Parent.UpdateUser`)} />
+              </VForm.Item>
+            </VForm.Container>
+            <VForm.Container label="Columns">
+              <VForm.Item label="ColumnName">
+                <Input.Word {...registerExCondition(`TargetCell.ColType.ColumnName`)} />
+              </VForm.Item>
+              <VForm.Item label="ColumnName">
+                <Input.Word {...registerExCondition(`TargetColumn.ColumnName`)} />
+              </VForm.Item>
+            </VForm.Container>
+            <VForm.Container label="Attrs">
+              <VForm.Item label="Value">
+                <Input.Description {...registerExCondition(`TargetCell.Value`)} />
+              </VForm.Item>
+              <VForm.Item label="UpdatedOn">
+                <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.From`)} />
+                <span className="select-none">～</span>
+                <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.To`)} />
+              </VForm.Item>
+            </VForm.Container>
           </VForm.Container>
         </form>
       </FormProvider>

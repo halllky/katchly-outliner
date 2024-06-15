@@ -64,26 +64,6 @@ namespace Katchly {
             var items = _applicationService.SearchByKeywordComment(keyword);
             return this.JsonContent(items);
         }
-        [HttpGet("list-by-keyword-x0317596766f8a7909d19342a344697c1")]
-        public virtual IActionResult SearchByKeywordx0317596766f8a7909d19342a344697c1([FromQuery] string? keyword) {
-            var items = _applicationService.SearchByKeywordCommentTargetRow(keyword);
-            return this.JsonContent(items);
-        }
-        [HttpGet("list-by-keyword-x79f0174a9ab298d2244bc58cc96d624e")]
-        public virtual IActionResult SearchByKeywordx79f0174a9ab298d2244bc58cc96d624e([FromQuery] string? keyword) {
-            var items = _applicationService.SearchByKeywordCommentTargetCell(keyword);
-            return this.JsonContent(items);
-        }
-        [HttpGet("list-by-keyword-x150a10f7804962ded6de2c5f43488a3e")]
-        public virtual IActionResult SearchByKeywordx150a10f7804962ded6de2c5f43488a3e([FromQuery] string? keyword) {
-            var items = _applicationService.SearchByKeywordCommentTargetRowType(keyword);
-            return this.JsonContent(items);
-        }
-        [HttpGet("list-by-keyword-xd90e13e83b393023c5380cbf9deb685f")]
-        public virtual IActionResult SearchByKeywordxd90e13e83b393023c5380cbf9deb685f([FromQuery] string? keyword) {
-            var items = _applicationService.SearchByKeywordCommentTargetColumn(keyword);
-            return this.JsonContent(items);
-        }
     }
 
 
@@ -152,29 +132,18 @@ namespace Katchly {
         
             var entity = DbContext.CommentDbSet
                 .AsNoTracking()
-                .Include(x => x.CommentTargetRow)
-                .Include(x => x.CommentTargetCell)
-                .Include(x => x.CommentTargetRowType)
-                .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetRow)
-                .ThenInclude(x => x.Row)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetRow)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.ColType)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
-                .ThenInclude(x => x.ColType)
-                .Include(x => x.CommentTargetRowType)
-                .ThenInclude(x => x.RowType)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetRowType)
+                .Include(x => x.TargetColumn)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetCell)
+                .ThenInclude(x => x.ColType)
+                .Include(x => x.TargetColumn)
                 .SingleOrDefault(x => x.ID == ID);
         
             if (entity == null) return null;
@@ -187,29 +156,18 @@ namespace Katchly {
         
             var beforeDbEntity = DbContext.CommentDbSet
                 .AsNoTracking()
-                .Include(x => x.CommentTargetRow)
-                .Include(x => x.CommentTargetCell)
-                .Include(x => x.CommentTargetRowType)
-                .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetRow)
-                .ThenInclude(x => x.Row)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetRow)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.ColType)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
-                .ThenInclude(x => x.ColType)
-                .Include(x => x.CommentTargetRowType)
-                .ThenInclude(x => x.RowType)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetRowType)
+                .Include(x => x.TargetColumn)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetCell)
+                .ThenInclude(x => x.ColType)
+                .Include(x => x.TargetColumn)
                 .SingleOrDefault(x => x.ID == after.ID);
         
             if (beforeDbEntity == null) {
@@ -242,86 +200,6 @@ namespace Katchly {
             // Attach
             DbContext.Entry(afterDbEntity).State = EntityState.Modified;
         
-            var arr0_before = new CommentTargetRowDbEntity?[] {
-                beforeDbEntity.CommentTargetRow,
-            }.OfType<CommentTargetRowDbEntity>().ToArray();
-            var arr0_after = new CommentTargetRowDbEntity?[] {
-                afterDbEntity.CommentTargetRow,
-            }.OfType<CommentTargetRowDbEntity>().ToArray();
-            foreach (var a in arr0_after) {
-                var b = arr0_before.SingleOrDefault(b => b.KeyEquals(a));
-                if (b == null) {
-                    DbContext.Entry(a).State = EntityState.Added;
-                } else {
-                    DbContext.Entry(a).State = EntityState.Modified;
-                }
-            }
-            foreach (var b in arr0_before) {
-                var a = arr0_after.SingleOrDefault(a => a.KeyEquals(b));
-                if (a == null) {
-                    DbContext.Entry(b).State = EntityState.Deleted;
-                }
-            }
-            var arr1_before = new CommentTargetCellDbEntity?[] {
-                beforeDbEntity.CommentTargetCell,
-            }.OfType<CommentTargetCellDbEntity>().ToArray();
-            var arr1_after = new CommentTargetCellDbEntity?[] {
-                afterDbEntity.CommentTargetCell,
-            }.OfType<CommentTargetCellDbEntity>().ToArray();
-            foreach (var a in arr1_after) {
-                var b = arr1_before.SingleOrDefault(b => b.KeyEquals(a));
-                if (b == null) {
-                    DbContext.Entry(a).State = EntityState.Added;
-                } else {
-                    DbContext.Entry(a).State = EntityState.Modified;
-                }
-            }
-            foreach (var b in arr1_before) {
-                var a = arr1_after.SingleOrDefault(a => a.KeyEquals(b));
-                if (a == null) {
-                    DbContext.Entry(b).State = EntityState.Deleted;
-                }
-            }
-            var arr2_before = new CommentTargetRowTypeDbEntity?[] {
-                beforeDbEntity.CommentTargetRowType,
-            }.OfType<CommentTargetRowTypeDbEntity>().ToArray();
-            var arr2_after = new CommentTargetRowTypeDbEntity?[] {
-                afterDbEntity.CommentTargetRowType,
-            }.OfType<CommentTargetRowTypeDbEntity>().ToArray();
-            foreach (var a in arr2_after) {
-                var b = arr2_before.SingleOrDefault(b => b.KeyEquals(a));
-                if (b == null) {
-                    DbContext.Entry(a).State = EntityState.Added;
-                } else {
-                    DbContext.Entry(a).State = EntityState.Modified;
-                }
-            }
-            foreach (var b in arr2_before) {
-                var a = arr2_after.SingleOrDefault(a => a.KeyEquals(b));
-                if (a == null) {
-                    DbContext.Entry(b).State = EntityState.Deleted;
-                }
-            }
-            var arr3_before = new CommentTargetColumnDbEntity?[] {
-                beforeDbEntity.CommentTargetColumn,
-            }.OfType<CommentTargetColumnDbEntity>().ToArray();
-            var arr3_after = new CommentTargetColumnDbEntity?[] {
-                afterDbEntity.CommentTargetColumn,
-            }.OfType<CommentTargetColumnDbEntity>().ToArray();
-            foreach (var a in arr3_after) {
-                var b = arr3_before.SingleOrDefault(b => b.KeyEquals(a));
-                if (b == null) {
-                    DbContext.Entry(a).State = EntityState.Added;
-                } else {
-                    DbContext.Entry(a).State = EntityState.Modified;
-                }
-            }
-            foreach (var b in arr3_before) {
-                var a = arr3_after.SingleOrDefault(a => a.KeyEquals(b));
-                if (a == null) {
-                    DbContext.Entry(b).State = EntityState.Deleted;
-                }
-            }
             
         
             try {
@@ -376,29 +254,18 @@ namespace Katchly {
             }
         
             var entity = DbContext.CommentDbSet
-                .Include(x => x.CommentTargetRow)
-                .Include(x => x.CommentTargetCell)
-                .Include(x => x.CommentTargetRowType)
-                .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetRow)
-                .ThenInclude(x => x.Row)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetRow)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.ColType)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
-                .ThenInclude(x => x.ColType)
-                .Include(x => x.CommentTargetRowType)
-                .ThenInclude(x => x.RowType)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetRowType)
+                .Include(x => x.TargetColumn)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetCell)
+                .ThenInclude(x => x.ColType)
+                .Include(x => x.TargetColumn)
                 .SingleOrDefault(x => x.ID == data.ID);
         
             if (entity == null) {
@@ -444,29 +311,18 @@ namespace Katchly {
         
             var query = (IQueryable<CommentDbEntity>)DbContext.CommentDbSet
                 .AsNoTracking()
-                .Include(x => x.CommentTargetRow)
-                .Include(x => x.CommentTargetCell)
-                .Include(x => x.CommentTargetRowType)
-                .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetRow)
-                .ThenInclude(x => x.Row)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetRow)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
+                .Include(x => x.TargetCell)
                 .ThenInclude(x => x.ColType)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetCell)
-                .ThenInclude(x => x.Cell)
-                .ThenInclude(x => x.ColType)
-                .Include(x => x.CommentTargetRowType)
-                .ThenInclude(x => x.RowType)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetRowType)
+                .Include(x => x.TargetColumn)
                 .ThenInclude(x => x.Parent)
-                .Include(x => x.CommentTargetColumn)
-                .ThenInclude(x => x.Column)
+                .Include(x => x.TargetCell)
+                .ThenInclude(x => x.ColType)
+                .Include(x => x.TargetColumn)
                 ;
         
             // 絞り込み
@@ -505,22 +361,230 @@ namespace Katchly {
             if (filter?.UpdatedOn?.To != default) {
                 query = query.Where(x => x.UpdatedOn <= filter.UpdatedOn.To);
             }
-            var checkedTarget = new[] {
-                filter?.Target_CommentTargetRow,
-                filter?.Target_CommentTargetCell,
-                filter?.Target_CommentTargetRowType,
-                filter?.Target_CommentTargetColumn,
-            };
-            if (!checkedTarget.All(check => check == true)
-             && !checkedTarget.All(check => check == false || check == null)) {
-            
-                var keyList = new List<E_Target>();
-                if (filter?.Target_CommentTargetRow == true) keyList.Add(E_Target.CommentTargetRow);
-                if (filter?.Target_CommentTargetCell == true) keyList.Add(E_Target.CommentTargetCell);
-                if (filter?.Target_CommentTargetRowType == true) keyList.Add(E_Target.CommentTargetRowType);
-                if (filter?.Target_CommentTargetColumn == true) keyList.Add(E_Target.CommentTargetColumn);
-            
-                query = query.Where(x => x.Target != null && keyList.Contains(x.Target.Value));
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.ID)) {
+                query = query.Where(x => x.TargetRow.ID == filter.TargetRow.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.Text)) {
+                var trimmed = filter.TargetRow.Text.Trim();
+                query = query.Where(x => x.TargetRow.Text.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.RowType?.ID)) {
+                query = query.Where(x => x.TargetRow.RowType.ID == filter.TargetRow.RowType.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.RowType?.RowTypeName)) {
+                var trimmed = filter.TargetRow.RowType.RowTypeName.Trim();
+                query = query.Where(x => x.TargetRow.RowType.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.TargetRow?.RowType?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetRow.RowType.CreatedOn >= filter.TargetRow.RowType.CreatedOn.From);
+            }
+            if (filter?.TargetRow?.RowType?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetRow.RowType.CreatedOn <= filter.TargetRow.RowType.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.RowType?.CreateUser)) {
+                var trimmed = filter.TargetRow.RowType.CreateUser.Trim();
+                query = query.Where(x => x.TargetRow.RowType.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetRow?.RowType?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetRow.RowType.UpdatedOn >= filter.TargetRow.RowType.UpdatedOn.From);
+            }
+            if (filter?.TargetRow?.RowType?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetRow.RowType.UpdatedOn <= filter.TargetRow.RowType.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.RowType?.UpdateUser)) {
+                var trimmed = filter.TargetRow.RowType.UpdateUser.Trim();
+                query = query.Where(x => x.TargetRow.RowType.UpdateUser.Contains(trimmed));
+            }
+            if (filter?.TargetRow?.Indent?.From != default) {
+                query = query.Where(x => x.TargetRow.Indent >= filter.TargetRow.Indent.From);
+            }
+            if (filter?.TargetRow?.Indent?.To != default) {
+                query = query.Where(x => x.TargetRow.Indent <= filter.TargetRow.Indent.To);
+            }
+            if (filter?.TargetRow?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetRow.CreatedOn >= filter.TargetRow.CreatedOn.From);
+            }
+            if (filter?.TargetRow?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetRow.CreatedOn <= filter.TargetRow.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.CreateUser)) {
+                var trimmed = filter.TargetRow.CreateUser.Trim();
+                query = query.Where(x => x.TargetRow.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetRow?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetRow.UpdatedOn >= filter.TargetRow.UpdatedOn.From);
+            }
+            if (filter?.TargetRow?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetRow.UpdatedOn <= filter.TargetRow.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRow?.UpdateUser)) {
+                var trimmed = filter.TargetRow.UpdateUser.Trim();
+                query = query.Where(x => x.TargetRow.UpdateUser.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.ID)) {
+                query = query.Where(x => x.TargetCell.Parent.ID == filter.TargetCell.Parent.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.Text)) {
+                var trimmed = filter.TargetCell.Parent.Text.Trim();
+                query = query.Where(x => x.TargetCell.Parent.Text.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.RowType?.ID)) {
+                query = query.Where(x => x.TargetCell.Parent.RowType.ID == filter.TargetCell.Parent.RowType.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.RowType?.RowTypeName)) {
+                var trimmed = filter.TargetCell.Parent.RowType.RowTypeName.Trim();
+                query = query.Where(x => x.TargetCell.Parent.RowType.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.Parent?.RowType?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.Parent.RowType.CreatedOn >= filter.TargetCell.Parent.RowType.CreatedOn.From);
+            }
+            if (filter?.TargetCell?.Parent?.RowType?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.Parent.RowType.CreatedOn <= filter.TargetCell.Parent.RowType.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.RowType?.CreateUser)) {
+                var trimmed = filter.TargetCell.Parent.RowType.CreateUser.Trim();
+                query = query.Where(x => x.TargetCell.Parent.RowType.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.Parent?.RowType?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.Parent.RowType.UpdatedOn >= filter.TargetCell.Parent.RowType.UpdatedOn.From);
+            }
+            if (filter?.TargetCell?.Parent?.RowType?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.Parent.RowType.UpdatedOn <= filter.TargetCell.Parent.RowType.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.RowType?.UpdateUser)) {
+                var trimmed = filter.TargetCell.Parent.RowType.UpdateUser.Trim();
+                query = query.Where(x => x.TargetCell.Parent.RowType.UpdateUser.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.Parent?.Indent?.From != default) {
+                query = query.Where(x => x.TargetCell.Parent.Indent >= filter.TargetCell.Parent.Indent.From);
+            }
+            if (filter?.TargetCell?.Parent?.Indent?.To != default) {
+                query = query.Where(x => x.TargetCell.Parent.Indent <= filter.TargetCell.Parent.Indent.To);
+            }
+            if (filter?.TargetCell?.Parent?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.Parent.CreatedOn >= filter.TargetCell.Parent.CreatedOn.From);
+            }
+            if (filter?.TargetCell?.Parent?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.Parent.CreatedOn <= filter.TargetCell.Parent.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.CreateUser)) {
+                var trimmed = filter.TargetCell.Parent.CreateUser.Trim();
+                query = query.Where(x => x.TargetCell.Parent.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.Parent?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.Parent.UpdatedOn >= filter.TargetCell.Parent.UpdatedOn.From);
+            }
+            if (filter?.TargetCell?.Parent?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.Parent.UpdatedOn <= filter.TargetCell.Parent.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Parent?.UpdateUser)) {
+                var trimmed = filter.TargetCell.Parent.UpdateUser.Trim();
+                query = query.Where(x => x.TargetCell.Parent.UpdateUser.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.Parent?.ID)) {
+                query = query.Where(x => x.TargetCell.ColType.Parent.ID == filter.TargetCell.ColType.Parent.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.Parent?.RowTypeName)) {
+                var trimmed = filter.TargetCell.ColType.Parent.RowTypeName.Trim();
+                query = query.Where(x => x.TargetCell.ColType.Parent.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.ColType?.Parent?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.ColType.Parent.CreatedOn >= filter.TargetCell.ColType.Parent.CreatedOn.From);
+            }
+            if (filter?.TargetCell?.ColType?.Parent?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.ColType.Parent.CreatedOn <= filter.TargetCell.ColType.Parent.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.Parent?.CreateUser)) {
+                var trimmed = filter.TargetCell.ColType.Parent.CreateUser.Trim();
+                query = query.Where(x => x.TargetCell.ColType.Parent.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.ColType?.Parent?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.ColType.Parent.UpdatedOn >= filter.TargetCell.ColType.Parent.UpdatedOn.From);
+            }
+            if (filter?.TargetCell?.ColType?.Parent?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.ColType.Parent.UpdatedOn <= filter.TargetCell.ColType.Parent.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.Parent?.UpdateUser)) {
+                var trimmed = filter.TargetCell.ColType.Parent.UpdateUser.Trim();
+                query = query.Where(x => x.TargetCell.ColType.Parent.UpdateUser.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.ColumnId)) {
+                query = query.Where(x => x.TargetCell.ColType.ColumnId == filter.TargetCell.ColType.ColumnId);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.ColumnName)) {
+                var trimmed = filter.TargetCell.ColType.ColumnName.Trim();
+                query = query.Where(x => x.TargetCell.ColType.ColumnName.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Value)) {
+                var trimmed = filter.TargetCell.Value.Trim();
+                query = query.Where(x => x.TargetCell.Value.Contains(trimmed));
+            }
+            if (filter?.TargetCell?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetCell.UpdatedOn >= filter.TargetCell.UpdatedOn.From);
+            }
+            if (filter?.TargetCell?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetCell.UpdatedOn <= filter.TargetCell.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRowType?.ID)) {
+                query = query.Where(x => x.TargetRowType.ID == filter.TargetRowType.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRowType?.RowTypeName)) {
+                var trimmed = filter.TargetRowType.RowTypeName.Trim();
+                query = query.Where(x => x.TargetRowType.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.TargetRowType?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetRowType.CreatedOn >= filter.TargetRowType.CreatedOn.From);
+            }
+            if (filter?.TargetRowType?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetRowType.CreatedOn <= filter.TargetRowType.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRowType?.CreateUser)) {
+                var trimmed = filter.TargetRowType.CreateUser.Trim();
+                query = query.Where(x => x.TargetRowType.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetRowType?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetRowType.UpdatedOn >= filter.TargetRowType.UpdatedOn.From);
+            }
+            if (filter?.TargetRowType?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetRowType.UpdatedOn <= filter.TargetRowType.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetRowType?.UpdateUser)) {
+                var trimmed = filter.TargetRowType.UpdateUser.Trim();
+                query = query.Where(x => x.TargetRowType.UpdateUser.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.Parent?.ID)) {
+                query = query.Where(x => x.TargetColumn.Parent.ID == filter.TargetColumn.Parent.ID);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.Parent?.RowTypeName)) {
+                var trimmed = filter.TargetColumn.Parent.RowTypeName.Trim();
+                query = query.Where(x => x.TargetColumn.Parent.RowTypeName.Contains(trimmed));
+            }
+            if (filter?.TargetColumn?.Parent?.CreatedOn?.From != default) {
+                query = query.Where(x => x.TargetColumn.Parent.CreatedOn >= filter.TargetColumn.Parent.CreatedOn.From);
+            }
+            if (filter?.TargetColumn?.Parent?.CreatedOn?.To != default) {
+                query = query.Where(x => x.TargetColumn.Parent.CreatedOn <= filter.TargetColumn.Parent.CreatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.Parent?.CreateUser)) {
+                var trimmed = filter.TargetColumn.Parent.CreateUser.Trim();
+                query = query.Where(x => x.TargetColumn.Parent.CreateUser.Contains(trimmed));
+            }
+            if (filter?.TargetColumn?.Parent?.UpdatedOn?.From != default) {
+                query = query.Where(x => x.TargetColumn.Parent.UpdatedOn >= filter.TargetColumn.Parent.UpdatedOn.From);
+            }
+            if (filter?.TargetColumn?.Parent?.UpdatedOn?.To != default) {
+                query = query.Where(x => x.TargetColumn.Parent.UpdatedOn <= filter.TargetColumn.Parent.UpdatedOn.To);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.Parent?.UpdateUser)) {
+                var trimmed = filter.TargetColumn.Parent.UpdateUser.Trim();
+                query = query.Where(x => x.TargetColumn.Parent.UpdateUser.Contains(trimmed));
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.ColumnId)) {
+                query = query.Where(x => x.TargetColumn.ColumnId == filter.TargetColumn.ColumnId);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.ColumnName)) {
+                var trimmed = filter.TargetColumn.ColumnName.Trim();
+                query = query.Where(x => x.TargetColumn.ColumnName.Contains(trimmed));
             }
         
             // 順番
@@ -556,82 +620,6 @@ namespace Katchly {
         
             return results;
         }
-        /// <summary>
-        /// CommentTargetRowをキーワードで検索します。
-        /// </summary>
-        public virtual IEnumerable<CommentTargetRowRefInfo> SearchByKeywordCommentTargetRow(string? keyword) {
-            var query = (IQueryable<CommentTargetRowDbEntity>)DbContext.CommentTargetRowDbSet;
-        
-            if (!string.IsNullOrWhiteSpace(keyword)) {
-                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
-                query = query.Where(item => EF.Functions.Like(item.Parent.ID, like));
-            }
-        
-            var results = query
-                .OrderBy(m => m.Parent.ID)
-                .Take(101)
-                .AsEnumerable()
-                .Select(entity => CommentTargetRowRefInfo.FromDbEntity(entity));
-        
-            return results;
-        }
-        /// <summary>
-        /// CommentTargetCellをキーワードで検索します。
-        /// </summary>
-        public virtual IEnumerable<CommentTargetCellRefInfo> SearchByKeywordCommentTargetCell(string? keyword) {
-            var query = (IQueryable<CommentTargetCellDbEntity>)DbContext.CommentTargetCellDbSet;
-        
-            if (!string.IsNullOrWhiteSpace(keyword)) {
-                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
-                query = query.Where(item => EF.Functions.Like(item.Parent.ID, like));
-            }
-        
-            var results = query
-                .OrderBy(m => m.Parent.ID)
-                .Take(101)
-                .AsEnumerable()
-                .Select(entity => CommentTargetCellRefInfo.FromDbEntity(entity));
-        
-            return results;
-        }
-        /// <summary>
-        /// CommentTargetRowTypeをキーワードで検索します。
-        /// </summary>
-        public virtual IEnumerable<CommentTargetRowTypeRefInfo> SearchByKeywordCommentTargetRowType(string? keyword) {
-            var query = (IQueryable<CommentTargetRowTypeDbEntity>)DbContext.CommentTargetRowTypeDbSet;
-        
-            if (!string.IsNullOrWhiteSpace(keyword)) {
-                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
-                query = query.Where(item => EF.Functions.Like(item.Parent.ID, like));
-            }
-        
-            var results = query
-                .OrderBy(m => m.Parent.ID)
-                .Take(101)
-                .AsEnumerable()
-                .Select(entity => CommentTargetRowTypeRefInfo.FromDbEntity(entity));
-        
-            return results;
-        }
-        /// <summary>
-        /// CommentTargetColumnをキーワードで検索します。
-        /// </summary>
-        public virtual IEnumerable<CommentTargetColumnRefInfo> SearchByKeywordCommentTargetColumn(string? keyword) {
-            var query = (IQueryable<CommentTargetColumnDbEntity>)DbContext.CommentTargetColumnDbSet;
-        
-            if (!string.IsNullOrWhiteSpace(keyword)) {
-                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
-                query = query.Where(item => EF.Functions.Like(item.Parent.ID, like));
-            }
-        
-            var results = query
-                .OrderBy(m => m.Parent.ID)
-                .Take(101)
-                .AsEnumerable()
-                .Select(entity => CommentTargetColumnRefInfo.FromDbEntity(entity));
-        
-            return results;
-        }
     }
 
 
@@ -647,17 +635,23 @@ namespace Katchly {
         public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public E_Target? Target { get; set; }
-        public CommentTargetRowSaveCommand? CommentTargetRow { get; set; }
-        public CommentTargetCellSaveCommand? CommentTargetCell { get; set; }
-        public CommentTargetRowTypeSaveCommand? CommentTargetRowType { get; set; }
-        public CommentTargetColumnSaveCommand? CommentTargetColumn { get; set; }
+        public RowKeys? TargetRow { get; set; }
+        public AttrsKeys? TargetCell { get; set; }
+        public RowTypeKeys? TargetRowType { get; set; }
+        public ColumnsKeys? TargetColumn { get; set; }
     
         /// <summary>
         /// Commentのオブジェクトをデータベースに保存する形に変換します。
         /// </summary>
         public Katchly.CommentDbEntity ToDbEntity() {
             return new Katchly.CommentDbEntity {
+                TargetRow_ID = this.TargetRow?.ID,
+                TargetCell_Attrs_ID = this.TargetCell?.Parent?.ID,
+                TargetCell_ColType_Columns_ID = this.TargetCell?.ColType?.Parent?.ID,
+                TargetRowType_ID = this.TargetRowType?.ID,
+                TargetColumn_Columns_ID = this.TargetColumn?.Parent?.ID,
+                TargetCell_ColType_ColumnId = this.TargetCell?.ColType?.ColumnId,
+                TargetColumn_ColumnId = this.TargetColumn?.ColumnId,
                 ID = this.ID,
                 Text = this.Text,
                 Author = this.Author,
@@ -665,26 +659,6 @@ namespace Katchly {
                 Order = this.Order,
                 CreatedOn = this.CreatedOn,
                 UpdatedOn = this.UpdatedOn,
-                Target = this.Target,
-                CommentTargetRow = new Katchly.CommentTargetRowDbEntity {
-                    Row_ID = this.CommentTargetRow?.Row?.ID,
-                    CommentTargetRow_ID = this.ID,
-                },
-                CommentTargetCell = new Katchly.CommentTargetCellDbEntity {
-                    Cell_Attrs_ID = this.CommentTargetCell?.Cell?.Parent?.ID,
-                    Cell_ColType_Columns_ID = this.CommentTargetCell?.Cell?.ColType?.Parent?.ID,
-                    Cell_ColType_ColumnId = this.CommentTargetCell?.Cell?.ColType?.ColumnId,
-                    CommentTargetCell_ID = this.ID,
-                },
-                CommentTargetRowType = new Katchly.CommentTargetRowTypeDbEntity {
-                    RowType_ID = this.CommentTargetRowType?.RowType?.ID,
-                    CommentTargetRowType_ID = this.ID,
-                },
-                CommentTargetColumn = new Katchly.CommentTargetColumnDbEntity {
-                    Column_Columns_ID = this.CommentTargetColumn?.Column?.Parent?.ID,
-                    Column_ColumnId = this.CommentTargetColumn?.Column?.ColumnId,
-                    CommentTargetColumn_ID = this.ID,
-                },
             };
         }
     }
@@ -699,17 +673,23 @@ namespace Katchly {
         public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public E_Target? Target { get; set; }
-        public CommentTargetRowSaveCommand? CommentTargetRow { get; set; }
-        public CommentTargetCellSaveCommand? CommentTargetCell { get; set; }
-        public CommentTargetRowTypeSaveCommand? CommentTargetRowType { get; set; }
-        public CommentTargetColumnSaveCommand? CommentTargetColumn { get; set; }
+        public RowKeys? TargetRow { get; set; }
+        public AttrsKeys? TargetCell { get; set; }
+        public RowTypeKeys? TargetRowType { get; set; }
+        public ColumnsKeys? TargetColumn { get; set; }
     
         /// <summary>
         /// Commentのオブジェクトをデータベースに保存する形に変換します。
         /// </summary>
         public Katchly.CommentDbEntity ToDbEntity() {
             return new Katchly.CommentDbEntity {
+                TargetRow_ID = this.TargetRow?.ID,
+                TargetCell_Attrs_ID = this.TargetCell?.Parent?.ID,
+                TargetCell_ColType_Columns_ID = this.TargetCell?.ColType?.Parent?.ID,
+                TargetRowType_ID = this.TargetRowType?.ID,
+                TargetColumn_Columns_ID = this.TargetColumn?.Parent?.ID,
+                TargetCell_ColType_ColumnId = this.TargetCell?.ColType?.ColumnId,
+                TargetColumn_ColumnId = this.TargetColumn?.ColumnId,
                 ID = this.ID,
                 Text = this.Text,
                 Author = this.Author,
@@ -717,26 +697,6 @@ namespace Katchly {
                 Order = this.Order,
                 CreatedOn = this.CreatedOn,
                 UpdatedOn = this.UpdatedOn,
-                Target = this.Target,
-                CommentTargetRow = new Katchly.CommentTargetRowDbEntity {
-                    Row_ID = this.CommentTargetRow?.Row?.ID,
-                    CommentTargetRow_ID = this.ID,
-                },
-                CommentTargetCell = new Katchly.CommentTargetCellDbEntity {
-                    Cell_Attrs_ID = this.CommentTargetCell?.Cell?.Parent?.ID,
-                    Cell_ColType_Columns_ID = this.CommentTargetCell?.Cell?.ColType?.Parent?.ID,
-                    Cell_ColType_ColumnId = this.CommentTargetCell?.Cell?.ColType?.ColumnId,
-                    CommentTargetCell_ID = this.ID,
-                },
-                CommentTargetRowType = new Katchly.CommentTargetRowTypeDbEntity {
-                    RowType_ID = this.CommentTargetRowType?.RowType?.ID,
-                    CommentTargetRowType_ID = this.ID,
-                },
-                CommentTargetColumn = new Katchly.CommentTargetColumnDbEntity {
-                    Column_Columns_ID = this.CommentTargetColumn?.Column?.Parent?.ID,
-                    Column_ColumnId = this.CommentTargetColumn?.Column?.ColumnId,
-                    CommentTargetColumn_ID = this.ID,
-                },
             };
         }
         /// <summary>
@@ -751,69 +711,32 @@ namespace Katchly {
                 Order = entity.Order,
                 CreatedOn = entity.CreatedOn,
                 UpdatedOn = entity.UpdatedOn,
-                Target = entity.Target,
-                CommentTargetRow = new CommentTargetRowSaveCommand() {
-                    Row = new RowKeys() {
-                        ID = entity.CommentTargetRow?.Row?.ID,
-                    },
+                TargetRow = new RowKeys() {
+                    ID = entity.TargetRow?.ID,
                 },
-                CommentTargetCell = new CommentTargetCellSaveCommand() {
-                    Cell = new AttrsKeys() {
-                        Parent = new RowKeys() {
-                            ID = entity.CommentTargetCell?.Cell?.Parent?.ID,
-                        },
-                        ColType = new ColumnsKeys() {
-                            Parent = new RowTypeKeys() {
-                                ID = entity.CommentTargetCell?.Cell?.ColType?.Parent?.ID,
-                            },
-                            ColumnId = entity.CommentTargetCell?.Cell?.ColType?.ColumnId,
-                        },
+                TargetCell = new AttrsKeys() {
+                    Parent = new RowKeys() {
+                        ID = entity.TargetCell?.Parent?.ID,
                     },
-                },
-                CommentTargetRowType = new CommentTargetRowTypeSaveCommand() {
-                    RowType = new RowTypeKeys() {
-                        ID = entity.CommentTargetRowType?.RowType?.ID,
-                    },
-                },
-                CommentTargetColumn = new CommentTargetColumnSaveCommand() {
-                    Column = new ColumnsKeys() {
+                    ColType = new ColumnsKeys() {
                         Parent = new RowTypeKeys() {
-                            ID = entity.CommentTargetColumn?.Column?.Parent?.ID,
+                            ID = entity.TargetCell?.ColType?.Parent?.ID,
                         },
-                        ColumnId = entity.CommentTargetColumn?.Column?.ColumnId,
+                        ColumnId = entity.TargetCell?.ColType?.ColumnId,
                     },
+                },
+                TargetRowType = new RowTypeKeys() {
+                    ID = entity.TargetRowType?.ID,
+                },
+                TargetColumn = new ColumnsKeys() {
+                    Parent = new RowTypeKeys() {
+                        ID = entity.TargetColumn?.Parent?.ID,
+                    },
+                    ColumnId = entity.TargetColumn?.ColumnId,
                 },
             };
             return instance;
         }
-    }
-    /// <summary>
-    /// CommentTargetRowのデータ1件の詳細を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetRowSaveCommand {
-        public RowKeys? Row { get; set; }
-    
-    }
-    /// <summary>
-    /// CommentTargetCellのデータ1件の詳細を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetCellSaveCommand {
-        public AttrsKeys? Cell { get; set; }
-    
-    }
-    /// <summary>
-    /// CommentTargetRowTypeのデータ1件の詳細を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetRowTypeSaveCommand {
-        public RowTypeKeys? RowType { get; set; }
-    
-    }
-    /// <summary>
-    /// CommentTargetColumnのデータ1件の詳細を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetColumnSaveCommand {
-        public ColumnsKeys? Column { get; set; }
-    
     }
     public class CommentSearchCondition {
         public string? ID { get; set; }
@@ -823,38 +746,22 @@ namespace Katchly {
         public FromTo<int?> Order { get; set; } = new();
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
-        public bool? Target_CommentTargetRow { get; set; }
-        public bool? Target_CommentTargetCell { get; set; }
-        public bool? Target_CommentTargetRowType { get; set; }
-        public bool? Target_CommentTargetColumn { get; set; }
-        public CommentTargetRowSearchCondition CommentTargetRow { get; set; } = new();
-        public CommentTargetCellSearchCondition CommentTargetCell { get; set; } = new();
-        public CommentTargetRowTypeSearchCondition CommentTargetRowType { get; set; } = new();
-        public CommentTargetColumnSearchCondition CommentTargetColumn { get; set; } = new();
+        public Comment_TargetRowSearchCondition TargetRow { get; set; } = new();
+        public Comment_TargetCellSearchCondition TargetCell { get; set; } = new();
+        public Comment_TargetRowTypeSearchCondition TargetRowType { get; set; } = new();
+        public Comment_TargetColumnSearchCondition TargetColumn { get; set; } = new();
     }
-    public class CommentTargetRowSearchCondition {
-        public CommentTargetRow_RowSearchCondition Row { get; set; } = new();
-    }
-    public class CommentTargetCellSearchCondition {
-        public CommentTargetCell_CellSearchCondition Cell { get; set; } = new();
-    }
-    public class CommentTargetRowTypeSearchCondition {
-        public CommentTargetRowType_RowTypeSearchCondition RowType { get; set; } = new();
-    }
-    public class CommentTargetColumnSearchCondition {
-        public CommentTargetColumn_ColumnSearchCondition Column { get; set; } = new();
-    }
-    public class CommentTargetRow_RowSearchCondition {
+    public class Comment_TargetRowSearchCondition {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetRow_Row_RowTypeSearchCondition RowType { get; set; } = new();
+        public Comment_TargetRow_RowTypeSearchCondition RowType { get; set; } = new();
         public FromTo<int?> Indent { get; set; } = new();
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
         public string? CreateUser { get; set; }
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetRow_Row_RowTypeSearchCondition {
+    public class Comment_TargetRow_RowTypeSearchCondition {
         public string? ID { get; set; }
         public string? RowTypeName { get; set; }
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
@@ -862,23 +769,23 @@ namespace Katchly {
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetCell_CellSearchCondition {
-        public CommentTargetCell_Cell_ParentSearchCondition Parent { get; set; } = new();
-        public CommentTargetCell_Cell_ColTypeSearchCondition ColType { get; set; } = new();
+    public class Comment_TargetCellSearchCondition {
+        public Comment_TargetCell_ParentSearchCondition Parent { get; set; } = new();
+        public Comment_TargetCell_ColTypeSearchCondition ColType { get; set; } = new();
         public string? Value { get; set; }
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
     }
-    public class CommentTargetCell_Cell_ParentSearchCondition {
+    public class Comment_TargetCell_ParentSearchCondition {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetCell_Cell_Parent_RowTypeSearchCondition RowType { get; set; } = new();
+        public Comment_TargetCell_Parent_RowTypeSearchCondition RowType { get; set; } = new();
         public FromTo<int?> Indent { get; set; } = new();
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
         public string? CreateUser { get; set; }
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetCell_Cell_Parent_RowTypeSearchCondition {
+    public class Comment_TargetCell_Parent_RowTypeSearchCondition {
         public string? ID { get; set; }
         public string? RowTypeName { get; set; }
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
@@ -886,12 +793,12 @@ namespace Katchly {
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetCell_Cell_ColTypeSearchCondition {
-        public CommentTargetCell_Cell_ColType_ParentSearchCondition Parent { get; set; } = new();
+    public class Comment_TargetCell_ColTypeSearchCondition {
+        public Comment_TargetCell_ColType_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
     }
-    public class CommentTargetCell_Cell_ColType_ParentSearchCondition {
+    public class Comment_TargetCell_ColType_ParentSearchCondition {
         public string? ID { get; set; }
         public string? RowTypeName { get; set; }
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
@@ -899,7 +806,7 @@ namespace Katchly {
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetRowType_RowTypeSearchCondition {
+    public class Comment_TargetRowTypeSearchCondition {
         public string? ID { get; set; }
         public string? RowTypeName { get; set; }
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
@@ -907,12 +814,12 @@ namespace Katchly {
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public string? UpdateUser { get; set; }
     }
-    public class CommentTargetColumn_ColumnSearchCondition {
-        public CommentTargetColumn_Column_ParentSearchCondition Parent { get; set; } = new();
+    public class Comment_TargetColumnSearchCondition {
+        public Comment_TargetColumn_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
     }
-    public class CommentTargetColumn_Column_ParentSearchCondition {
+    public class Comment_TargetColumn_ParentSearchCondition {
         public string? ID { get; set; }
         public string? RowTypeName { get; set; }
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
@@ -924,26 +831,17 @@ namespace Katchly {
         [Key]
         public string? ID { get; set; }
     }
-    public class CommentTargetRowKeys {
-        [Key]
-        public CommentKeys? Parent { get; set; }
-    }
-    public class CommentTargetCellKeys {
-        [Key]
-        public CommentKeys? Parent { get; set; }
-    }
-    public class CommentTargetRowTypeKeys {
-        [Key]
-        public CommentKeys? Parent { get; set; }
-    }
-    public class CommentTargetColumnKeys {
-        [Key]
-        public CommentKeys? Parent { get; set; }
-    }
     /// <summary>
     /// Commentのデータベースに保存されるデータの形を表すクラスです。
     /// </summary>
     public partial class CommentDbEntity {
+        public string? TargetRow_ID { get; set; }
+        public string? TargetCell_Attrs_ID { get; set; }
+        public string? TargetCell_ColType_Columns_ID { get; set; }
+        public string? TargetRowType_ID { get; set; }
+        public string? TargetColumn_Columns_ID { get; set; }
+        public string? TargetCell_ColType_ColumnId { get; set; }
+        public string? TargetColumn_ColumnId { get; set; }
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
@@ -951,83 +849,15 @@ namespace Katchly {
         public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public E_Target? Target { get; set; }
     
-        public virtual CommentTargetRowDbEntity? CommentTargetRow { get; set; }
-        public virtual CommentTargetCellDbEntity? CommentTargetCell { get; set; }
-        public virtual CommentTargetRowTypeDbEntity? CommentTargetRowType { get; set; }
-        public virtual CommentTargetColumnDbEntity? CommentTargetColumn { get; set; }
+        public virtual RowDbEntity? TargetRow { get; set; }
+        public virtual AttrsDbEntity? TargetCell { get; set; }
+        public virtual RowTypeDbEntity? TargetRowType { get; set; }
+        public virtual ColumnsDbEntity? TargetColumn { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(CommentDbEntity entity) {
             if (entity.ID != this.ID) return false;
-            return true;
-        }
-    }
-    /// <summary>
-    /// CommentTargetRowのデータベースに保存されるデータの形を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetRowDbEntity {
-        public string? Row_ID { get; set; }
-        public string? CommentTargetRow_ID { get; set; }
-    
-        public virtual CommentDbEntity? Parent { get; set; }
-        public virtual RowDbEntity? Row { get; set; }
-    
-        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
-        public bool KeyEquals(CommentTargetRowDbEntity entity) {
-            if (entity.CommentTargetRow_ID != this.CommentTargetRow_ID) return false;
-            return true;
-        }
-    }
-    /// <summary>
-    /// CommentTargetCellのデータベースに保存されるデータの形を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetCellDbEntity {
-        public string? Cell_Attrs_ID { get; set; }
-        public string? Cell_ColType_Columns_ID { get; set; }
-        public string? Cell_ColType_ColumnId { get; set; }
-        public string? CommentTargetCell_ID { get; set; }
-    
-        public virtual CommentDbEntity? Parent { get; set; }
-        public virtual AttrsDbEntity? Cell { get; set; }
-    
-        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
-        public bool KeyEquals(CommentTargetCellDbEntity entity) {
-            if (entity.CommentTargetCell_ID != this.CommentTargetCell_ID) return false;
-            return true;
-        }
-    }
-    /// <summary>
-    /// CommentTargetRowTypeのデータベースに保存されるデータの形を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetRowTypeDbEntity {
-        public string? RowType_ID { get; set; }
-        public string? CommentTargetRowType_ID { get; set; }
-    
-        public virtual CommentDbEntity? Parent { get; set; }
-        public virtual RowTypeDbEntity? RowType { get; set; }
-    
-        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
-        public bool KeyEquals(CommentTargetRowTypeDbEntity entity) {
-            if (entity.CommentTargetRowType_ID != this.CommentTargetRowType_ID) return false;
-            return true;
-        }
-    }
-    /// <summary>
-    /// CommentTargetColumnのデータベースに保存されるデータの形を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetColumnDbEntity {
-        public string? Column_Columns_ID { get; set; }
-        public string? Column_ColumnId { get; set; }
-        public string? CommentTargetColumn_ID { get; set; }
-    
-        public virtual CommentDbEntity? Parent { get; set; }
-        public virtual ColumnsDbEntity? Column { get; set; }
-    
-        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
-        public bool KeyEquals(CommentTargetColumnDbEntity entity) {
-            if (entity.CommentTargetColumn_ID != this.CommentTargetColumn_ID) return false;
             return true;
         }
     }
@@ -1040,10 +870,6 @@ namespace Katchly {
         public bool willBeChanged { get; set; }
         public bool willBeDeleted { get; set; }
         public CommentDisplayDataOwnMembers own_members { get; set; } = new();
-        public CommentTargetRowDisplayData? child_CommentTargetRow { get; set; }
-        public CommentTargetCellDisplayData? child_CommentTargetCell { get; set; }
-        public CommentTargetRowTypeDisplayData? child_CommentTargetRowType { get; set; }
-        public CommentTargetColumnDisplayData? child_CommentTargetColumn { get; set; }
     
         public static CommentDisplayData FromDbEntity(CommentDbEntity dbEntity) {
             var displayData = new CommentDisplayData {
@@ -1059,53 +885,36 @@ namespace Katchly {
                     Order = dbEntity?.Order,
                     CreatedOn = dbEntity?.CreatedOn,
                     UpdatedOn = dbEntity?.UpdatedOn,
-                    Target = dbEntity?.Target,
-                },
-                child_CommentTargetRow = new CommentTargetRowDisplayData {
-                    own_members = new() {
-                        Row = new RowRefInfo {
-                            __instanceKey = new object?[] {
-                                dbEntity?.CommentTargetRow?.Row?.ID,
-                            }.ToJson(),
-                            ID = dbEntity?.CommentTargetRow?.Row?.ID,
-                            Text = dbEntity?.CommentTargetRow?.Row?.Text,
-                        },
+                    TargetRow = new RowRefInfo {
+                        __instanceKey = new object?[] {
+                            dbEntity?.TargetRow?.ID,
+                        }.ToJson(),
+                        ID = dbEntity?.TargetRow?.ID,
+                        Text = dbEntity?.TargetRow?.Text,
                     },
-                },
-                child_CommentTargetCell = new CommentTargetCellDisplayData {
-                    own_members = new() {
-                        Cell = new AttrsRefInfo {
-                            __instanceKey = new object?[] {
-                                dbEntity?.CommentTargetCell?.Cell?.Attrs_ID,
-                                dbEntity?.CommentTargetCell?.Cell?.ColType_Columns_ID,
-                                dbEntity?.CommentTargetCell?.Cell?.ColType_ColumnId,
-                            }.ToJson(),
-                            ColType = new() {
-                                ColumnId = dbEntity?.CommentTargetCell?.Cell?.ColType?.ColumnId,
-                            },
-                            Value = dbEntity?.CommentTargetCell?.Cell?.Value,
+                    TargetCell = new AttrsRefInfo {
+                        __instanceKey = new object?[] {
+                            dbEntity?.TargetCell?.Attrs_ID,
+                            dbEntity?.TargetCell?.ColType_Columns_ID,
+                            dbEntity?.TargetCell?.ColType_ColumnId,
+                        }.ToJson(),
+                        ColType = new() {
+                            ColumnId = dbEntity?.TargetCell?.ColType?.ColumnId,
                         },
+                        Value = dbEntity?.TargetCell?.Value,
                     },
-                },
-                child_CommentTargetRowType = new CommentTargetRowTypeDisplayData {
-                    own_members = new() {
-                        RowType = new RowTypeRefInfo {
-                            __instanceKey = new object?[] {
-                                dbEntity?.CommentTargetRowType?.RowType?.ID,
-                            }.ToJson(),
-                            ID = dbEntity?.CommentTargetRowType?.RowType?.ID,
-                        },
+                    TargetRowType = new RowTypeRefInfo {
+                        __instanceKey = new object?[] {
+                            dbEntity?.TargetRowType?.ID,
+                        }.ToJson(),
+                        ID = dbEntity?.TargetRowType?.ID,
                     },
-                },
-                child_CommentTargetColumn = new CommentTargetColumnDisplayData {
-                    own_members = new() {
-                        Column = new ColumnsRefInfo {
-                            __instanceKey = new object?[] {
-                                dbEntity?.CommentTargetColumn?.Column?.Columns_ID,
-                                dbEntity?.CommentTargetColumn?.Column?.ColumnId,
-                            }.ToJson(),
-                            ColumnId = dbEntity?.CommentTargetColumn?.Column?.ColumnId,
-                        },
+                    TargetColumn = new ColumnsRefInfo {
+                        __instanceKey = new object?[] {
+                            dbEntity?.TargetColumn?.Columns_ID,
+                            dbEntity?.TargetColumn?.ColumnId,
+                        }.ToJson(),
+                        ColumnId = dbEntity?.TargetColumn?.ColumnId,
                     },
                 },
             };
@@ -1120,43 +929,10 @@ namespace Katchly {
         public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public E_Target? Target { get; set; }
-    }
-    /// <summary>
-    /// CommentTargetRowの画面表示用データ
-    /// </summary>
-    public partial class CommentTargetRowDisplayData {
-        public CommentTargetRowDisplayDataOwnMembers own_members { get; set; } = new();
-    }
-    public class CommentTargetRowDisplayDataOwnMembers {
-        public RowRefInfo? Row { get; set; }
-    }
-    /// <summary>
-    /// CommentTargetCellの画面表示用データ
-    /// </summary>
-    public partial class CommentTargetCellDisplayData {
-        public CommentTargetCellDisplayDataOwnMembers own_members { get; set; } = new();
-    }
-    public class CommentTargetCellDisplayDataOwnMembers {
-        public AttrsRefInfo? Cell { get; set; }
-    }
-    /// <summary>
-    /// CommentTargetRowTypeの画面表示用データ
-    /// </summary>
-    public partial class CommentTargetRowTypeDisplayData {
-        public CommentTargetRowTypeDisplayDataOwnMembers own_members { get; set; } = new();
-    }
-    public class CommentTargetRowTypeDisplayDataOwnMembers {
-        public RowTypeRefInfo? RowType { get; set; }
-    }
-    /// <summary>
-    /// CommentTargetColumnの画面表示用データ
-    /// </summary>
-    public partial class CommentTargetColumnDisplayData {
-        public CommentTargetColumnDisplayDataOwnMembers own_members { get; set; } = new();
-    }
-    public class CommentTargetColumnDisplayDataOwnMembers {
-        public ColumnsRefInfo? Column { get; set; }
+        public RowRefInfo? TargetRow { get; set; }
+        public AttrsRefInfo? TargetCell { get; set; }
+        public RowTypeRefInfo? TargetRowType { get; set; }
+        public ColumnsRefInfo? TargetColumn { get; set; }
     }
     
     // ----------------------- CommentRefInfo -----------------------
@@ -1184,118 +960,6 @@ namespace Katchly {
             return instance;
         }
     }
-    
-    // ----------------------- CommentTargetRowRefInfo -----------------------
-    /// <summary>
-    /// CommentTargetRowを参照する他のデータの画面上に表示されるCommentTargetRowのデータ型。
-    /// </summary>
-    public partial class CommentTargetRowRefInfo {
-        /// <summary>
-        /// CommentTargetRowのキー。保存するときはこの値が使用される。
-        /// 新規作成されてからDBに登録されるまでの間のCommentTargetRowをUUID等の不変の値で参照できるようにするために文字列になっている。
-        /// </summary>
-        public string? __instanceKey { get; set; }
-    
-        public CommentTargetRowRefInfo_Parent? Parent { get; set; }
-    
-        public static CommentTargetRowRefInfo FromDbEntity(CommentTargetRowDbEntity dbEntity) {
-            var instance = new CommentTargetRowRefInfo {
-                __instanceKey = new object?[] {
-                    dbEntity.CommentTargetRow_ID,
-                }.ToJson(),
-                
-            };
-            return instance;
-        }
-    }
-    public partial class CommentTargetRowRefInfo_Parent {
-        public string? ID { get; set; }
-        public string? Text { get; set; }
-    }
-    
-    // ----------------------- CommentTargetCellRefInfo -----------------------
-    /// <summary>
-    /// CommentTargetCellを参照する他のデータの画面上に表示されるCommentTargetCellのデータ型。
-    /// </summary>
-    public partial class CommentTargetCellRefInfo {
-        /// <summary>
-        /// CommentTargetCellのキー。保存するときはこの値が使用される。
-        /// 新規作成されてからDBに登録されるまでの間のCommentTargetCellをUUID等の不変の値で参照できるようにするために文字列になっている。
-        /// </summary>
-        public string? __instanceKey { get; set; }
-    
-        public CommentTargetCellRefInfo_Parent? Parent { get; set; }
-    
-        public static CommentTargetCellRefInfo FromDbEntity(CommentTargetCellDbEntity dbEntity) {
-            var instance = new CommentTargetCellRefInfo {
-                __instanceKey = new object?[] {
-                    dbEntity.CommentTargetCell_ID,
-                }.ToJson(),
-                
-            };
-            return instance;
-        }
-    }
-    public partial class CommentTargetCellRefInfo_Parent {
-        public string? ID { get; set; }
-        public string? Text { get; set; }
-    }
-    
-    // ----------------------- CommentTargetRowTypeRefInfo -----------------------
-    /// <summary>
-    /// CommentTargetRowTypeを参照する他のデータの画面上に表示されるCommentTargetRowTypeのデータ型。
-    /// </summary>
-    public partial class CommentTargetRowTypeRefInfo {
-        /// <summary>
-        /// CommentTargetRowTypeのキー。保存するときはこの値が使用される。
-        /// 新規作成されてからDBに登録されるまでの間のCommentTargetRowTypeをUUID等の不変の値で参照できるようにするために文字列になっている。
-        /// </summary>
-        public string? __instanceKey { get; set; }
-    
-        public CommentTargetRowTypeRefInfo_Parent? Parent { get; set; }
-    
-        public static CommentTargetRowTypeRefInfo FromDbEntity(CommentTargetRowTypeDbEntity dbEntity) {
-            var instance = new CommentTargetRowTypeRefInfo {
-                __instanceKey = new object?[] {
-                    dbEntity.CommentTargetRowType_ID,
-                }.ToJson(),
-                
-            };
-            return instance;
-        }
-    }
-    public partial class CommentTargetRowTypeRefInfo_Parent {
-        public string? ID { get; set; }
-        public string? Text { get; set; }
-    }
-    
-    // ----------------------- CommentTargetColumnRefInfo -----------------------
-    /// <summary>
-    /// CommentTargetColumnを参照する他のデータの画面上に表示されるCommentTargetColumnのデータ型。
-    /// </summary>
-    public partial class CommentTargetColumnRefInfo {
-        /// <summary>
-        /// CommentTargetColumnのキー。保存するときはこの値が使用される。
-        /// 新規作成されてからDBに登録されるまでの間のCommentTargetColumnをUUID等の不変の値で参照できるようにするために文字列になっている。
-        /// </summary>
-        public string? __instanceKey { get; set; }
-    
-        public CommentTargetColumnRefInfo_Parent? Parent { get; set; }
-    
-        public static CommentTargetColumnRefInfo FromDbEntity(CommentTargetColumnDbEntity dbEntity) {
-            var instance = new CommentTargetColumnRefInfo {
-                __instanceKey = new object?[] {
-                    dbEntity.CommentTargetColumn_ID,
-                }.ToJson(),
-                
-            };
-            return instance;
-        }
-    }
-    public partial class CommentTargetColumnRefInfo_Parent {
-        public string? ID { get; set; }
-        public string? Text { get; set; }
-    }
 #endregion データ構造クラス
 }
 
@@ -1305,10 +969,6 @@ namespace Katchly {
 
     partial class MyDbContext {
         public virtual DbSet<CommentDbEntity> CommentDbSet { get; set; }
-        public virtual DbSet<CommentTargetRowDbEntity> CommentTargetRowDbSet { get; set; }
-        public virtual DbSet<CommentTargetCellDbEntity> CommentTargetCellDbSet { get; set; }
-        public virtual DbSet<CommentTargetRowTypeDbEntity> CommentTargetRowTypeDbSet { get; set; }
-        public virtual DbSet<CommentTargetColumnDbEntity> CommentTargetColumnDbSet { get; set; }
 
         private void OnModelCreating_Comment(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Katchly.CommentDbEntity>(entity => {
@@ -1317,6 +977,20 @@ namespace Katchly {
                     e.ID,
                 });
             
+                entity.Property(e => e.TargetRow_ID)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetCell_Attrs_ID)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetCell_ColType_Columns_ID)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetRowType_ID)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetColumn_Columns_ID)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetCell_ColType_ColumnId)
+                    .IsRequired(false);
+                entity.Property(e => e.TargetColumn_ColumnId)
+                    .IsRequired(false);
                 entity.Property(e => e.ID)
                     .IsRequired(true);
                 entity.Property(e => e.Text)
@@ -1331,89 +1005,6 @@ namespace Katchly {
                     .IsRequired(false);
                 entity.Property(e => e.UpdatedOn)
                     .IsRequired(false);
-                entity.Property(e => e.Target)
-                    .IsRequired(false);
-            
-                entity.HasOne(e => e.CommentTargetRow)
-                    .WithOne(e => e.Parent)
-                    .HasForeignKey<CommentTargetRowDbEntity>(e => new {
-                        e.CommentTargetRow_ID,
-                    })
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.CommentTargetCell)
-                    .WithOne(e => e.Parent)
-                    .HasForeignKey<CommentTargetCellDbEntity>(e => new {
-                        e.CommentTargetCell_ID,
-                    })
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.CommentTargetRowType)
-                    .WithOne(e => e.Parent)
-                    .HasForeignKey<CommentTargetRowTypeDbEntity>(e => new {
-                        e.CommentTargetRowType_ID,
-                    })
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.CommentTargetColumn)
-                    .WithOne(e => e.Parent)
-                    .HasForeignKey<CommentTargetColumnDbEntity>(e => new {
-                        e.CommentTargetColumn_ID,
-                    })
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-            modelBuilder.Entity<Katchly.CommentTargetRowDbEntity>(entity => {
-            
-                entity.HasKey(e => new {
-                    e.CommentTargetRow_ID,
-                });
-            
-                entity.Property(e => e.Row_ID)
-                    .IsRequired(false);
-                entity.Property(e => e.CommentTargetRow_ID)
-                    .IsRequired(true);
-            
-                
-            });
-            modelBuilder.Entity<Katchly.CommentTargetCellDbEntity>(entity => {
-            
-                entity.HasKey(e => new {
-                    e.CommentTargetCell_ID,
-                });
-            
-                entity.Property(e => e.Cell_Attrs_ID)
-                    .IsRequired(false);
-                entity.Property(e => e.Cell_ColType_Columns_ID)
-                    .IsRequired(false);
-                entity.Property(e => e.Cell_ColType_ColumnId)
-                    .IsRequired(false);
-                entity.Property(e => e.CommentTargetCell_ID)
-                    .IsRequired(true);
-            
-                
-            });
-            modelBuilder.Entity<Katchly.CommentTargetRowTypeDbEntity>(entity => {
-            
-                entity.HasKey(e => new {
-                    e.CommentTargetRowType_ID,
-                });
-            
-                entity.Property(e => e.RowType_ID)
-                    .IsRequired(false);
-                entity.Property(e => e.CommentTargetRowType_ID)
-                    .IsRequired(true);
-            
-                
-            });
-            modelBuilder.Entity<Katchly.CommentTargetColumnDbEntity>(entity => {
-            
-                entity.HasKey(e => new {
-                    e.CommentTargetColumn_ID,
-                });
-            
-                entity.Property(e => e.Column_Columns_ID)
-                    .IsRequired(false);
-                entity.Property(e => e.Column_ColumnId)
-                    .IsRequired(false);
-                entity.Property(e => e.CommentTargetColumn_ID)
-                    .IsRequired(true);
             
                 
             });

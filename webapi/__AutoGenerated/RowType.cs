@@ -516,7 +516,7 @@ namespace Katchly {
     
         public virtual ICollection<ColumnsDbEntity> Columns { get; set; }
         public virtual ICollection<RowDbEntity> RefferedBy_RowDbEntity_RowType { get; set; }
-        public virtual ICollection<CommentTargetRowTypeDbEntity> RefferedBy_CommentTargetRowTypeDbEntity_RowType { get; set; }
+        public virtual ICollection<CommentDbEntity> RefferedBy_CommentDbEntity_TargetRowType { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(RowTypeDbEntity entity) {
@@ -534,7 +534,7 @@ namespace Katchly {
     
         public virtual RowTypeDbEntity? Parent { get; set; }
         public virtual ICollection<AttrsDbEntity> RefferedBy_AttrsDbEntity_ColType { get; set; }
-        public virtual ICollection<CommentTargetColumnDbEntity> RefferedBy_CommentTargetColumnDbEntity_Column { get; set; }
+        public virtual ICollection<CommentDbEntity> RefferedBy_CommentDbEntity_TargetColumn { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(ColumnsDbEntity entity) {
@@ -700,10 +700,10 @@ namespace Katchly {
                         e.RowType_ID,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasMany(e => e.RefferedBy_CommentTargetRowTypeDbEntity_RowType)
-                    .WithOne(e => e.RowType)
+                entity.HasMany(e => e.RefferedBy_CommentDbEntity_TargetRowType)
+                    .WithOne(e => e.TargetRowType)
                     .HasForeignKey(e => new {
-                        e.RowType_ID,
+                        e.TargetRowType_ID,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
             });
@@ -728,11 +728,11 @@ namespace Katchly {
                         e.ColType_ColumnId,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
-                entity.HasMany(e => e.RefferedBy_CommentTargetColumnDbEntity_Column)
-                    .WithOne(e => e.Column)
+                entity.HasMany(e => e.RefferedBy_CommentDbEntity_TargetColumn)
+                    .WithOne(e => e.TargetColumn)
                     .HasForeignKey(e => new {
-                        e.Column_Columns_ID,
-                        e.Column_ColumnId,
+                        e.TargetColumn_Columns_ID,
+                        e.TargetColumn_ColumnId,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
             });

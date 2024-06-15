@@ -414,48 +414,14 @@ export type CommentSaveCommand = {
   Order?: number
   CreatedOn?: string
   UpdatedOn?: string
-  Target?: 'CommentTargetRow' | 'CommentTargetCell' | 'CommentTargetRowType' | 'CommentTargetColumn'
-  CommentTargetRow?: CommentTargetRowSaveCommand
-  CommentTargetCell?: CommentTargetCellSaveCommand
-  CommentTargetRowType?: CommentTargetRowTypeSaveCommand
-  CommentTargetColumn?: CommentTargetColumnSaveCommand
+  TargetRow?: Util.ItemKey
+  TargetCell?: Util.ItemKey
+  TargetRowType?: Util.ItemKey
+  TargetColumn?: Util.ItemKey
 }
 
 export const createComment = (): CommentSaveCommand => ({
   ID: UUID.generate(),
-  CommentTargetRow: createCommentTargetRow(),
-  CommentTargetCell: createCommentTargetCell(),
-  CommentTargetRowType: createCommentTargetRowType(),
-  CommentTargetColumn: createCommentTargetColumn(),
-  Target: 'CommentTargetRow',
-})
-
-export type CommentTargetRowSaveCommand = {
-  Row?: Util.ItemKey
-}
-
-export const createCommentTargetRow = (): CommentTargetRowSaveCommand => ({
-})
-
-export type CommentTargetCellSaveCommand = {
-  Cell?: Util.ItemKey
-}
-
-export const createCommentTargetCell = (): CommentTargetCellSaveCommand => ({
-})
-
-export type CommentTargetRowTypeSaveCommand = {
-  RowType?: Util.ItemKey
-}
-
-export const createCommentTargetRowType = (): CommentTargetRowTypeSaveCommand => ({
-})
-
-export type CommentTargetColumnSaveCommand = {
-  Column?: Util.ItemKey
-}
-
-export const createCommentTargetColumn = (): CommentTargetColumnSaveCommand => ({
 })
 
 export type CommentSearchCondition = {
@@ -466,38 +432,22 @@ export type CommentSearchCondition = {
   Order: { From?: number, To?: number }
   CreatedOn: { From?: string, To?: string }
   UpdatedOn: { From?: string, To?: string }
-  Target_CommentTargetRow?: boolean
-  Target_CommentTargetCell?: boolean
-  Target_CommentTargetRowType?: boolean
-  Target_CommentTargetColumn?: boolean
-  CommentTargetRow: CommentTargetRowSearchCondition
-  CommentTargetCell: CommentTargetCellSearchCondition
-  CommentTargetRowType: CommentTargetRowTypeSearchCondition
-  CommentTargetColumn: CommentTargetColumnSearchCondition
+  TargetRow: Comment_TargetRowSearchCondition
+  TargetCell: Comment_TargetCellSearchCondition
+  TargetRowType: Comment_TargetRowTypeSearchCondition
+  TargetColumn: Comment_TargetColumnSearchCondition
 }
-export type CommentTargetRowSearchCondition = {
-  Row: CommentTargetRow_RowSearchCondition
-}
-export type CommentTargetCellSearchCondition = {
-  Cell: CommentTargetCell_CellSearchCondition
-}
-export type CommentTargetRowTypeSearchCondition = {
-  RowType: CommentTargetRowType_RowTypeSearchCondition
-}
-export type CommentTargetColumnSearchCondition = {
-  Column: CommentTargetColumn_ColumnSearchCondition
-}
-export type CommentTargetRow_RowSearchCondition = {
+export type Comment_TargetRowSearchCondition = {
   ID?: string
   Text?: string
-  RowType: CommentTargetRow_Row_RowTypeSearchCondition
+  RowType: Comment_TargetRow_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
   CreatedOn: { From?: string, To?: string }
   CreateUser?: string
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetRow_Row_RowTypeSearchCondition = {
+export type Comment_TargetRow_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
   CreatedOn: { From?: string, To?: string }
@@ -505,23 +455,23 @@ export type CommentTargetRow_Row_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetCell_CellSearchCondition = {
-  Parent: CommentTargetCell_Cell_ParentSearchCondition
-  ColType: CommentTargetCell_Cell_ColTypeSearchCondition
+export type Comment_TargetCellSearchCondition = {
+  Parent: Comment_TargetCell_ParentSearchCondition
+  ColType: Comment_TargetCell_ColTypeSearchCondition
   Value?: string
   UpdatedOn: { From?: string, To?: string }
 }
-export type CommentTargetCell_Cell_ParentSearchCondition = {
+export type Comment_TargetCell_ParentSearchCondition = {
   ID?: string
   Text?: string
-  RowType: CommentTargetCell_Cell_Parent_RowTypeSearchCondition
+  RowType: Comment_TargetCell_Parent_RowTypeSearchCondition
   Indent: { From?: number, To?: number }
   CreatedOn: { From?: string, To?: string }
   CreateUser?: string
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetCell_Cell_Parent_RowTypeSearchCondition = {
+export type Comment_TargetCell_Parent_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
   CreatedOn: { From?: string, To?: string }
@@ -529,12 +479,12 @@ export type CommentTargetCell_Cell_Parent_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetCell_Cell_ColTypeSearchCondition = {
-  Parent: CommentTargetCell_Cell_ColType_ParentSearchCondition
+export type Comment_TargetCell_ColTypeSearchCondition = {
+  Parent: Comment_TargetCell_ColType_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
 }
-export type CommentTargetCell_Cell_ColType_ParentSearchCondition = {
+export type Comment_TargetCell_ColType_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
   CreatedOn: { From?: string, To?: string }
@@ -542,7 +492,7 @@ export type CommentTargetCell_Cell_ColType_ParentSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetRowType_RowTypeSearchCondition = {
+export type Comment_TargetRowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
   CreatedOn: { From?: string, To?: string }
@@ -550,12 +500,12 @@ export type CommentTargetRowType_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
-export type CommentTargetColumn_ColumnSearchCondition = {
-  Parent: CommentTargetColumn_Column_ParentSearchCondition
+export type Comment_TargetColumnSearchCondition = {
+  Parent: Comment_TargetColumn_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
 }
-export type CommentTargetColumn_Column_ParentSearchCondition = {
+export type Comment_TargetColumn_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
   CreatedOn: { From?: string, To?: string }
@@ -569,63 +519,51 @@ export const createCommentSearchCondition = (): CommentSearchCondition => ({
     Order: {},
     CreatedOn: {},
     UpdatedOn: {},
-    CommentTargetRow: createCommentTargetRowSearchCondition(),
-    CommentTargetCell: createCommentTargetCellSearchCondition(),
-    CommentTargetRowType: createCommentTargetRowTypeSearchCondition(),
-    CommentTargetColumn: createCommentTargetColumnSearchCondition(),
+    TargetRow: createComment_TargetRowSearchCondition(),
+    TargetCell: createComment_TargetCellSearchCondition(),
+    TargetRowType: createComment_TargetRowTypeSearchCondition(),
+    TargetColumn: createComment_TargetColumnSearchCondition(),
 })
-export const createCommentTargetRowSearchCondition = (): CommentTargetRowSearchCondition => ({
-    Row: createCommentTargetRow_RowSearchCondition(),
-})
-export const createCommentTargetCellSearchCondition = (): CommentTargetCellSearchCondition => ({
-    Cell: createCommentTargetCell_CellSearchCondition(),
-})
-export const createCommentTargetRowTypeSearchCondition = (): CommentTargetRowTypeSearchCondition => ({
-    RowType: createCommentTargetRowType_RowTypeSearchCondition(),
-})
-export const createCommentTargetColumnSearchCondition = (): CommentTargetColumnSearchCondition => ({
-    Column: createCommentTargetColumn_ColumnSearchCondition(),
-})
-export const createCommentTargetRow_RowSearchCondition = (): CommentTargetRow_RowSearchCondition => ({
-    RowType: createCommentTargetRow_Row_RowTypeSearchCondition(),
+export const createComment_TargetRowSearchCondition = (): Comment_TargetRowSearchCondition => ({
+    RowType: createComment_TargetRow_RowTypeSearchCondition(),
     Indent: {},
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetRow_Row_RowTypeSearchCondition = (): CommentTargetRow_Row_RowTypeSearchCondition => ({
+export const createComment_TargetRow_RowTypeSearchCondition = (): Comment_TargetRow_RowTypeSearchCondition => ({
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetCell_CellSearchCondition = (): CommentTargetCell_CellSearchCondition => ({
-    Parent: createCommentTargetCell_Cell_ParentSearchCondition(),
-    ColType: createCommentTargetCell_Cell_ColTypeSearchCondition(),
+export const createComment_TargetCellSearchCondition = (): Comment_TargetCellSearchCondition => ({
+    Parent: createComment_TargetCell_ParentSearchCondition(),
+    ColType: createComment_TargetCell_ColTypeSearchCondition(),
     UpdatedOn: {},
 })
-export const createCommentTargetCell_Cell_ParentSearchCondition = (): CommentTargetCell_Cell_ParentSearchCondition => ({
-    RowType: createCommentTargetCell_Cell_Parent_RowTypeSearchCondition(),
+export const createComment_TargetCell_ParentSearchCondition = (): Comment_TargetCell_ParentSearchCondition => ({
+    RowType: createComment_TargetCell_Parent_RowTypeSearchCondition(),
     Indent: {},
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetCell_Cell_Parent_RowTypeSearchCondition = (): CommentTargetCell_Cell_Parent_RowTypeSearchCondition => ({
+export const createComment_TargetCell_Parent_RowTypeSearchCondition = (): Comment_TargetCell_Parent_RowTypeSearchCondition => ({
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetCell_Cell_ColTypeSearchCondition = (): CommentTargetCell_Cell_ColTypeSearchCondition => ({
-    Parent: createCommentTargetCell_Cell_ColType_ParentSearchCondition(),
+export const createComment_TargetCell_ColTypeSearchCondition = (): Comment_TargetCell_ColTypeSearchCondition => ({
+    Parent: createComment_TargetCell_ColType_ParentSearchCondition(),
 })
-export const createCommentTargetCell_Cell_ColType_ParentSearchCondition = (): CommentTargetCell_Cell_ColType_ParentSearchCondition => ({
+export const createComment_TargetCell_ColType_ParentSearchCondition = (): Comment_TargetCell_ColType_ParentSearchCondition => ({
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetRowType_RowTypeSearchCondition = (): CommentTargetRowType_RowTypeSearchCondition => ({
+export const createComment_TargetRowTypeSearchCondition = (): Comment_TargetRowTypeSearchCondition => ({
     CreatedOn: {},
     UpdatedOn: {},
 })
-export const createCommentTargetColumn_ColumnSearchCondition = (): CommentTargetColumn_ColumnSearchCondition => ({
-    Parent: createCommentTargetColumn_Column_ParentSearchCondition(),
+export const createComment_TargetColumnSearchCondition = (): Comment_TargetColumnSearchCondition => ({
+    Parent: createComment_TargetColumn_ParentSearchCondition(),
 })
-export const createCommentTargetColumn_Column_ParentSearchCondition = (): CommentTargetColumn_Column_ParentSearchCondition => ({
+export const createComment_TargetColumn_ParentSearchCondition = (): Comment_TargetColumn_ParentSearchCondition => ({
     CreatedOn: {},
     UpdatedOn: {},
 })
@@ -644,35 +582,10 @@ export type CommentDisplayData = {
     Order?: number
     CreatedOn?: string
     UpdatedOn?: string
-    Target?: 'CommentTargetRow' | 'CommentTargetCell' | 'CommentTargetRowType' | 'CommentTargetColumn'
-  }
-  child_CommentTargetRow?: CommentTargetRowDisplayData
-  child_CommentTargetCell?: CommentTargetCellDisplayData
-  child_CommentTargetRowType?: CommentTargetRowTypeDisplayData
-  child_CommentTargetColumn?: CommentTargetColumnDisplayData
-}
-/** CommentTargetRowの画面表示用データ */
-export type CommentTargetRowDisplayData = {
-  own_members: {
-    Row?: RowRefInfo
-  }
-}
-/** CommentTargetCellの画面表示用データ */
-export type CommentTargetCellDisplayData = {
-  own_members: {
-    Cell?: AttrsRefInfo
-  }
-}
-/** CommentTargetRowTypeの画面表示用データ */
-export type CommentTargetRowTypeDisplayData = {
-  own_members: {
-    RowType?: RowTypeRefInfo
-  }
-}
-/** CommentTargetColumnの画面表示用データ */
-export type CommentTargetColumnDisplayData = {
-  own_members: {
-    Column?: ColumnsRefInfo
+    TargetRow?: RowRefInfo
+    TargetCell?: AttrsRefInfo
+    TargetRowType?: RowTypeRefInfo
+    TargetColumn?: ColumnsRefInfo
   }
 }
 
@@ -691,19 +604,10 @@ export const convertCommentToLocalRepositoryItem = (displayData: CommentDisplayD
       Order: displayData?.own_members?.Order,
       CreatedOn: displayData?.own_members?.CreatedOn,
       UpdatedOn: displayData?.own_members?.UpdatedOn,
-      Target: displayData?.own_members?.Target,
-      CommentTargetRow: {
-        Row: displayData?.child_CommentTargetRow?.own_members?.Row?.__instanceKey,
-      },
-      CommentTargetCell: {
-        Cell: displayData?.child_CommentTargetCell?.own_members?.Cell?.__instanceKey,
-      },
-      CommentTargetRowType: {
-        RowType: displayData?.child_CommentTargetRowType?.own_members?.RowType?.__instanceKey,
-      },
-      CommentTargetColumn: {
-        Column: displayData?.child_CommentTargetColumn?.own_members?.Column?.__instanceKey,
-      },
+      TargetRow: displayData?.own_members?.TargetRow?.__instanceKey,
+      TargetCell: displayData?.own_members?.TargetCell?.__instanceKey,
+      TargetRowType: displayData?.own_members?.TargetRowType?.__instanceKey,
+      TargetColumn: displayData?.own_members?.TargetColumn?.__instanceKey,
     },
   }
 
@@ -720,54 +624,6 @@ export type CommentRefInfo = {
 
   ID?: string,
   Text?: string,
-}
-
-/** CommentTargetRowを参照する他のデータの画面上に表示されるCommentTargetRowのデータ型。 */
-export type CommentTargetRowRefInfo = {
-  /** CommentTargetRowのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のCommentTargetRowをUUID等の不変の値で参照できるようにするために文字列になっている。 */
-  __instanceKey?: Util.ItemKey
-
-  Parent?: {
-    ID?: string,
-    Text?: string,
-  },
-}
-
-/** CommentTargetCellを参照する他のデータの画面上に表示されるCommentTargetCellのデータ型。 */
-export type CommentTargetCellRefInfo = {
-  /** CommentTargetCellのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のCommentTargetCellをUUID等の不変の値で参照できるようにするために文字列になっている。 */
-  __instanceKey?: Util.ItemKey
-
-  Parent?: {
-    ID?: string,
-    Text?: string,
-  },
-}
-
-/** CommentTargetRowTypeを参照する他のデータの画面上に表示されるCommentTargetRowTypeのデータ型。 */
-export type CommentTargetRowTypeRefInfo = {
-  /** CommentTargetRowTypeのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のCommentTargetRowTypeをUUID等の不変の値で参照できるようにするために文字列になっている。 */
-  __instanceKey?: Util.ItemKey
-
-  Parent?: {
-    ID?: string,
-    Text?: string,
-  },
-}
-
-/** CommentTargetColumnを参照する他のデータの画面上に表示されるCommentTargetColumnのデータ型。 */
-export type CommentTargetColumnRefInfo = {
-  /** CommentTargetColumnのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のCommentTargetColumnをUUID等の不変の値で参照できるようにするために文字列になっている。 */
-  __instanceKey?: Util.ItemKey
-
-  Parent?: {
-    ID?: string,
-    Text?: string,
-  },
 }
 
 
