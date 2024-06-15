@@ -9,7 +9,7 @@ const _rowTypeIdSymbol: unique symbol = Symbol()
 const _ColumnIdSymbol: unique symbol = Symbol()
 export type RowObjectId = string & { [_rowObjectIdSymbol]: never }
 export type RowTypeId = string & { [_rowTypeIdSymbol]: never }
-export type ColumnId = string & { [_ColumnIdSymbol]: never }
+export type ColumnId = `["${RowTypeId}", "${string}"]` & { [_ColumnIdSymbol]: never }
 
 export type EditableObject = {
   existsInRemoteRepository: boolean
@@ -33,7 +33,7 @@ export type RowObjectAttr = {
 export type RowType = EditableObject & {
   id: RowTypeId
   name?: string
-  columns: { id: ColumnId, name?: string }[]
+  columns: { id: ColumnId, name?: string, comments: Comment[] }[]
   comments: Comment[]
 }
 
@@ -196,7 +196,8 @@ export const createNewRowType = (name?: string, columnNames?: string[]): RowType
   name,
   columns: columnNames?.map(colName => ({
     id: UUID.generate() as ColumnId,
-    name: colName
+    name: colName,
+    comments: [],
   })) ?? [],
   comments: [],
   existsInRemoteRepository: false,
@@ -307,7 +308,7 @@ export const setAttrCellValue = (
   const columns = [...rowType.columns]
   let newColumnsAreCreated = false
   while (columns.length - 1 < colIndex) {
-    columns.push({ id: UUID.generate() as ColumnId })
+    columns.push({ id: `["${rowTypeId}", "${UUID.generate()}"]` as ColumnId, comments: [] })
     newColumnsAreCreated = true
   }
 

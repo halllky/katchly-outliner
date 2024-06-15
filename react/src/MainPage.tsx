@@ -510,7 +510,7 @@ const CommentList = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType }: {
 
   const onChangeCommentText = useCallback((commentIndex: number, comment: Comment) => {
     editCommentArray(comments => {
-      comments.splice(commentIndex, 1, comment)
+      comments.splice(commentIndex, 1, { ...comment, willBeChanged: true })
       return comments
     })
   }, [editCommentArray])
