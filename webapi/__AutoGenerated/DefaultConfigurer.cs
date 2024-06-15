@@ -1,4 +1,4 @@
-namespace Katchly {
+﻿namespace Katchly {
 
     internal static class DefaultConfigurer {
 

@@ -1,4 +1,4 @@
-namespace Katchly {
+﻿namespace Katchly {
     
     /// <summary>
     /// <see cref="BatchUpdateParameter" /> に静的型がついていないのを補完して使いやすくするためのクラス

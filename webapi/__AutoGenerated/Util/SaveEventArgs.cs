@@ -1,4 +1,4 @@
-namespace Katchly {
+﻿namespace Katchly {
 
     #region 更新前イベント引数
     public interface IBeforeSaveEventArg {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 namespace Katchly {
     public partial class FromTo {
         public virtual object? From { get; set; }

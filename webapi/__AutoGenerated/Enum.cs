@@ -1,4 +1,4 @@
-namespace Katchly {
+﻿namespace Katchly {
     using System.ComponentModel.DataAnnotations;
 
     public enum E_BackgroundTaskState {

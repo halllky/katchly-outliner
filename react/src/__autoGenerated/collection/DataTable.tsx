@@ -83,17 +83,10 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
       propsKeyDown(e)
       if (e.defaultPrevented) return
     }
-
     // 選択に関する操作
     handleSelectionKeyDown(e)
     if (e.defaultPrevented) return
-
-    if (e.key === ' ') {
-      for (const row of getSelectedRows()) row.toggleExpanded()
-      e.preventDefault()
-      return
-    }
-  }, [api, getSelectedRows, handleSelectionKeyDown, propsKeyDown])
+  }, [handleSelectionKeyDown, propsKeyDown])
 
   useImperativeHandle(ref, () => ({
     getSelectedRows: () => getSelectedRows().map(row => ({
@@ -154,7 +147,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
 
         {/* ボディ */}
         <tbody className="bg-color-0">
-          {api.getRowModel().flatRows.filter(row => row.getIsAllParentsExpanded()).map(row => (
+          {api.getRowModel().flatRows.map(row => (
             <tr
               key={row.id}
               className="leading-tight"

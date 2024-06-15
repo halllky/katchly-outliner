@@ -1,4 +1,4 @@
-namespace Katchly {
+﻿namespace Katchly {
     using System.Text.Json;
 
     public class BatchUpdateParameter {
