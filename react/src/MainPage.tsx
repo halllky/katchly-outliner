@@ -262,7 +262,23 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
     remove(deletedRowIndexes)
   }, [update, remove])
 
-  const onKeyDown: React.KeyboardEventHandler = useCallback(e => {
+  const onPageKeyDown: React.KeyboardEventHandler = useCallback(e => {
+    // Ctrl + S による保存
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      onSave({
+        rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
+        rowTypes: Array.from(rowTypeMap.values()),
+      })
+      e.preventDefault()
+    }
+    // Ctrl + B によるサイドメニュー表示切替
+    else if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+      toggleSideMenu()
+      e.preventDefault()
+    }
+  }, [onSave, fields, rowTypeMap, toggleSideMenu])
+
+  const onGridKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // TABキーによるインデントの上げ下げ
     if (e.key === 'Tab') {
       const selectedRows = gridRef.current?.getSelectedRows()
@@ -275,19 +291,6 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
         row.item.willBeChanged = true
         update(rowIndex, row)
       }
-      e.preventDefault()
-    }
-    // Ctrl + S による保存
-    else if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      onSave({
-        rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
-        rowTypes: Array.from(rowTypeMap.values()),
-      })
-      e.preventDefault()
-    }
-    // Ctrl + B によるサイドメニュー表示切替
-    else if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
-      toggleSideMenu()
       e.preventDefault()
     }
     // Enter による行追加
@@ -332,45 +335,47 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
         })
       }
     }
-  }, [update, toggleSideMenu, handleAddRow, handleDeleteRows, onSave, fields, rowTypeMap, editRowObject])
+  }, [update, handleAddRow, handleDeleteRows, fields, rowTypeMap, editRowObject])
 
   return (
-    <PanelGroup direction="horizontal" className={className} style={style}>
-      <Panel className="flex flex-col gap-1">
-        <div className="flex gap-1 items-center">
-          <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
-          <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
-          <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
-          <div className="flex-1"></div>
-          {children}
-          <Input.IconButton icon={ChevronRightIcon} onClick={toggleSideMenu} hideText className="p-1">サイドメニュー表示（Ctrl + B）</Input.IconButton>
-        </div>
+    <div onKeyDown={onPageKeyDown} className={`outline-none ${className ?? ''}`} tabIndex={0}>
+      <PanelGroup direction="horizontal" className="w-full h-full" style={style}>
+        <Panel className="flex flex-col gap-1">
+          <div className="flex gap-1 items-center">
+            <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
+            <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
+            <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
+            <div className="flex-1"></div>
+            {children}
+            <Input.IconButton icon={ChevronRightIcon} onClick={toggleSideMenu} hideText className="p-1">サイドメニュー表示（Ctrl + B）</Input.IconButton>
+          </div>
 
-        <Collection.DataTable
-          ref={gridRef}
-          data={fields}
-          columns={columnDefs}
-          onChangeRow={update}
-          onKeyDown={onKeyDown}
-          onActiveRowChanged={setActiveRow}
-          className="flex-1 h-full"
-        />
+          <Collection.DataTable
+            ref={gridRef}
+            data={fields}
+            columns={columnDefs}
+            onChangeRow={update}
+            onKeyDown={onGridKeyDown}
+            onActiveRowChanged={setActiveRow}
+            className="flex-1 h-full"
+          />
 
-      </Panel>
-      <PanelResizeHandle className={`w-2 ${showSideMenu ? '' : 'hidden'}`} />
+        </Panel>
+        <PanelResizeHandle className={`w-2 ${showSideMenu ? '' : 'hidden'}`} />
 
-      {/* 詳細ビュー */}
-      <Panel defaultSize={25} className={`${showSideMenu ? '' : 'hidden'}`}>
-        <DetailView
-          row={activeRow?.rowIndex === undefined ? undefined : fields[activeRow.rowIndex]}
-          rowIndex={activeRow?.rowIndex}
-          rowTypeMap={rowTypeMap}
-          updateRow={update}
-          changeRowType={changeRowType}
-          dispatchRowType={dispatchRowType}
-        />
-      </Panel>
-    </PanelGroup>
+        {/* 詳細ビュー */}
+        <Panel defaultSize={25} className={`${showSideMenu ? '' : 'hidden'}`}>
+          <DetailView
+            row={activeRow?.rowIndex === undefined ? undefined : fields[activeRow.rowIndex]}
+            rowIndex={activeRow?.rowIndex}
+            rowTypeMap={rowTypeMap}
+            updateRow={update}
+            changeRowType={changeRowType}
+            dispatchRowType={dispatchRowType}
+          />
+        </Panel>
+      </PanelGroup>
+    </div>
   )
 }
 
