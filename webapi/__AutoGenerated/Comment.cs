@@ -84,11 +84,6 @@ namespace Katchly {
             var items = _applicationService.SearchByKeywordCommentTargetColumn(keyword);
             return this.JsonContent(items);
         }
-        [HttpGet("list-by-keyword-x2df2a9996bdcd6812620bdd21d56cfef")]
-        public virtual IActionResult SearchByKeywordx2df2a9996bdcd6812620bdd21d56cfef([FromQuery] string? keyword) {
-            var items = _applicationService.SearchByKeywordCommentTargetComment(keyword);
-            return this.JsonContent(items);
-        }
     }
 
 
@@ -161,7 +156,6 @@ namespace Katchly {
                 .Include(x => x.CommentTargetCell)
                 .Include(x => x.CommentTargetRowType)
                 .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetComment)
                 .Include(x => x.CommentTargetRow)
                 .ThenInclude(x => x.Row)
                 .Include(x => x.CommentTargetCell)
@@ -197,7 +191,6 @@ namespace Katchly {
                 .Include(x => x.CommentTargetCell)
                 .Include(x => x.CommentTargetRowType)
                 .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetComment)
                 .Include(x => x.CommentTargetRow)
                 .ThenInclude(x => x.Row)
                 .Include(x => x.CommentTargetCell)
@@ -329,26 +322,6 @@ namespace Katchly {
                     DbContext.Entry(b).State = EntityState.Deleted;
                 }
             }
-            var arr4_before = new CommentTargetCommentDbEntity?[] {
-                beforeDbEntity.CommentTargetComment,
-            }.OfType<CommentTargetCommentDbEntity>().ToArray();
-            var arr4_after = new CommentTargetCommentDbEntity?[] {
-                afterDbEntity.CommentTargetComment,
-            }.OfType<CommentTargetCommentDbEntity>().ToArray();
-            foreach (var a in arr4_after) {
-                var b = arr4_before.SingleOrDefault(b => b.KeyEquals(a));
-                if (b == null) {
-                    DbContext.Entry(a).State = EntityState.Added;
-                } else {
-                    DbContext.Entry(a).State = EntityState.Modified;
-                }
-            }
-            foreach (var b in arr4_before) {
-                var a = arr4_after.SingleOrDefault(a => a.KeyEquals(b));
-                if (a == null) {
-                    DbContext.Entry(b).State = EntityState.Deleted;
-                }
-            }
             
         
             try {
@@ -407,7 +380,6 @@ namespace Katchly {
                 .Include(x => x.CommentTargetCell)
                 .Include(x => x.CommentTargetRowType)
                 .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetComment)
                 .Include(x => x.CommentTargetRow)
                 .ThenInclude(x => x.Row)
                 .Include(x => x.CommentTargetCell)
@@ -476,7 +448,6 @@ namespace Katchly {
                 .Include(x => x.CommentTargetCell)
                 .Include(x => x.CommentTargetRowType)
                 .Include(x => x.CommentTargetColumn)
-                .Include(x => x.CommentTargetComment)
                 .Include(x => x.CommentTargetRow)
                 .ThenInclude(x => x.Row)
                 .Include(x => x.CommentTargetCell)
@@ -510,6 +481,18 @@ namespace Katchly {
                 var trimmed = filter.Author.Trim();
                 query = query.Where(x => x.Author.Contains(trimmed));
             }
+            if (filter?.Indent?.From != default) {
+                query = query.Where(x => x.Indent >= filter.Indent.From);
+            }
+            if (filter?.Indent?.To != default) {
+                query = query.Where(x => x.Indent <= filter.Indent.To);
+            }
+            if (filter?.Order?.From != default) {
+                query = query.Where(x => x.Order >= filter.Order.From);
+            }
+            if (filter?.Order?.To != default) {
+                query = query.Where(x => x.Order <= filter.Order.To);
+            }
             if (filter?.CreatedOn?.From != default) {
                 query = query.Where(x => x.CreatedOn >= filter.CreatedOn.From);
             }
@@ -527,7 +510,6 @@ namespace Katchly {
                 filter?.Target_CommentTargetCell,
                 filter?.Target_CommentTargetRowType,
                 filter?.Target_CommentTargetColumn,
-                filter?.Target_CommentTargetComment,
             };
             if (!checkedTarget.All(check => check == true)
              && !checkedTarget.All(check => check == false || check == null)) {
@@ -537,7 +519,6 @@ namespace Katchly {
                 if (filter?.Target_CommentTargetCell == true) keyList.Add(E_Target.CommentTargetCell);
                 if (filter?.Target_CommentTargetRowType == true) keyList.Add(E_Target.CommentTargetRowType);
                 if (filter?.Target_CommentTargetColumn == true) keyList.Add(E_Target.CommentTargetColumn);
-                if (filter?.Target_CommentTargetComment == true) keyList.Add(E_Target.CommentTargetComment);
             
                 query = query.Where(x => x.Target != null && keyList.Contains(x.Target.Value));
             }
@@ -651,26 +632,6 @@ namespace Katchly {
         
             return results;
         }
-        /// <summary>
-        /// CommentTargetCommentをキーワードで検索します。
-        /// </summary>
-        public virtual IEnumerable<CommentTargetCommentRefInfo> SearchByKeywordCommentTargetComment(string? keyword) {
-            var query = (IQueryable<CommentTargetCommentDbEntity>)DbContext.CommentTargetCommentDbSet;
-        
-            if (!string.IsNullOrWhiteSpace(keyword)) {
-                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
-                query = query.Where(item => EF.Functions.Like(item.Parent.ID, like)
-                                         || EF.Functions.Like(item.CommentId, like));
-            }
-        
-            var results = query
-                .OrderBy(m => m.Parent.ID)
-                .Take(101)
-                .AsEnumerable()
-                .Select(entity => CommentTargetCommentRefInfo.FromDbEntity(entity));
-        
-            return results;
-        }
     }
 
 
@@ -682,6 +643,8 @@ namespace Katchly {
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
+        public int? Indent { get; set; }
+        public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public E_Target? Target { get; set; }
@@ -689,7 +652,6 @@ namespace Katchly {
         public CommentTargetCellSaveCommand? CommentTargetCell { get; set; }
         public CommentTargetRowTypeSaveCommand? CommentTargetRowType { get; set; }
         public CommentTargetColumnSaveCommand? CommentTargetColumn { get; set; }
-        public CommentTargetCommentSaveCommand? CommentTargetComment { get; set; }
     
         /// <summary>
         /// Commentのオブジェクトをデータベースに保存する形に変換します。
@@ -699,6 +661,8 @@ namespace Katchly {
                 ID = this.ID,
                 Text = this.Text,
                 Author = this.Author,
+                Indent = this.Indent,
+                Order = this.Order,
                 CreatedOn = this.CreatedOn,
                 UpdatedOn = this.UpdatedOn,
                 Target = this.Target,
@@ -720,10 +684,6 @@ namespace Katchly {
                     Column_Columns_ID = this.CommentTargetColumn?.Column?.Parent?.ID,
                     Column_ColumnId = this.CommentTargetColumn?.Column?.ColumnId,
                     CommentTargetColumn_ID = this.ID,
-                },
-                CommentTargetComment = new Katchly.CommentTargetCommentDbEntity {
-                    CommentTargetComment_ID = this.ID,
-                    CommentId = this.CommentTargetComment?.CommentId,
                 },
             };
         }
@@ -735,6 +695,8 @@ namespace Katchly {
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
+        public int? Indent { get; set; }
+        public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public E_Target? Target { get; set; }
@@ -742,7 +704,6 @@ namespace Katchly {
         public CommentTargetCellSaveCommand? CommentTargetCell { get; set; }
         public CommentTargetRowTypeSaveCommand? CommentTargetRowType { get; set; }
         public CommentTargetColumnSaveCommand? CommentTargetColumn { get; set; }
-        public CommentTargetCommentSaveCommand? CommentTargetComment { get; set; }
     
         /// <summary>
         /// Commentのオブジェクトをデータベースに保存する形に変換します。
@@ -752,6 +713,8 @@ namespace Katchly {
                 ID = this.ID,
                 Text = this.Text,
                 Author = this.Author,
+                Indent = this.Indent,
+                Order = this.Order,
                 CreatedOn = this.CreatedOn,
                 UpdatedOn = this.UpdatedOn,
                 Target = this.Target,
@@ -774,10 +737,6 @@ namespace Katchly {
                     Column_ColumnId = this.CommentTargetColumn?.Column?.ColumnId,
                     CommentTargetColumn_ID = this.ID,
                 },
-                CommentTargetComment = new Katchly.CommentTargetCommentDbEntity {
-                    CommentTargetComment_ID = this.ID,
-                    CommentId = this.CommentTargetComment?.CommentId,
-                },
             };
         }
         /// <summary>
@@ -788,6 +747,8 @@ namespace Katchly {
                 ID = entity.ID,
                 Text = entity.Text,
                 Author = entity.Author,
+                Indent = entity.Indent,
+                Order = entity.Order,
                 CreatedOn = entity.CreatedOn,
                 UpdatedOn = entity.UpdatedOn,
                 Target = entity.Target,
@@ -822,9 +783,6 @@ namespace Katchly {
                         ColumnId = entity.CommentTargetColumn?.Column?.ColumnId,
                     },
                 },
-                CommentTargetComment = new CommentTargetCommentSaveCommand() {
-                    CommentId = entity.CommentTargetComment?.CommentId,
-                },
             };
             return instance;
         }
@@ -857,29 +815,22 @@ namespace Katchly {
         public ColumnsKeys? Column { get; set; }
     
     }
-    /// <summary>
-    /// CommentTargetCommentのデータ1件の詳細を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetCommentSaveCommand {
-        public string? CommentId { get; set; }
-    
-    }
     public class CommentSearchCondition {
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
+        public FromTo<int?> Indent { get; set; } = new();
+        public FromTo<int?> Order { get; set; } = new();
         public FromTo<DateTime?> CreatedOn { get; set; } = new();
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
         public bool? Target_CommentTargetRow { get; set; }
         public bool? Target_CommentTargetCell { get; set; }
         public bool? Target_CommentTargetRowType { get; set; }
         public bool? Target_CommentTargetColumn { get; set; }
-        public bool? Target_CommentTargetComment { get; set; }
         public CommentTargetRowSearchCondition CommentTargetRow { get; set; } = new();
         public CommentTargetCellSearchCondition CommentTargetCell { get; set; } = new();
         public CommentTargetRowTypeSearchCondition CommentTargetRowType { get; set; } = new();
         public CommentTargetColumnSearchCondition CommentTargetColumn { get; set; } = new();
-        public CommentTargetCommentSearchCondition CommentTargetComment { get; set; } = new();
     }
     public class CommentTargetRowSearchCondition {
         public CommentTargetRow_RowSearchCondition Row { get; set; } = new();
@@ -892,9 +843,6 @@ namespace Katchly {
     }
     public class CommentTargetColumnSearchCondition {
         public CommentTargetColumn_ColumnSearchCondition Column { get; set; } = new();
-    }
-    public class CommentTargetCommentSearchCondition {
-        public string? CommentId { get; set; }
     }
     public class CommentTargetRow_RowSearchCondition {
         public string? ID { get; set; }
@@ -992,12 +940,6 @@ namespace Katchly {
         [Key]
         public CommentKeys? Parent { get; set; }
     }
-    public class CommentTargetCommentKeys {
-        [Key]
-        public CommentKeys? Parent { get; set; }
-        [Key]
-        public string? CommentId { get; set; }
-    }
     /// <summary>
     /// Commentのデータベースに保存されるデータの形を表すクラスです。
     /// </summary>
@@ -1005,6 +947,8 @@ namespace Katchly {
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
+        public int? Indent { get; set; }
+        public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public E_Target? Target { get; set; }
@@ -1013,7 +957,6 @@ namespace Katchly {
         public virtual CommentTargetCellDbEntity? CommentTargetCell { get; set; }
         public virtual CommentTargetRowTypeDbEntity? CommentTargetRowType { get; set; }
         public virtual CommentTargetColumnDbEntity? CommentTargetColumn { get; set; }
-        public virtual CommentTargetCommentDbEntity? CommentTargetComment { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
         public bool KeyEquals(CommentDbEntity entity) {
@@ -1089,22 +1032,6 @@ namespace Katchly {
         }
     }
     /// <summary>
-    /// CommentTargetCommentのデータベースに保存されるデータの形を表すクラスです。
-    /// </summary>
-    public partial class CommentTargetCommentDbEntity {
-        public string? CommentTargetComment_ID { get; set; }
-        public string? CommentId { get; set; }
-    
-        public virtual CommentDbEntity? Parent { get; set; }
-    
-        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
-        public bool KeyEquals(CommentTargetCommentDbEntity entity) {
-            if (entity.CommentTargetComment_ID != this.CommentTargetComment_ID) return false;
-            if (entity.CommentId != this.CommentId) return false;
-            return true;
-        }
-    }
-    /// <summary>
     /// Commentの画面表示用データ
     /// </summary>
     public partial class CommentDisplayData {
@@ -1117,7 +1044,6 @@ namespace Katchly {
         public CommentTargetCellDisplayData? child_CommentTargetCell { get; set; }
         public CommentTargetRowTypeDisplayData? child_CommentTargetRowType { get; set; }
         public CommentTargetColumnDisplayData? child_CommentTargetColumn { get; set; }
-        public CommentTargetCommentDisplayData? child_CommentTargetComment { get; set; }
     
         public static CommentDisplayData FromDbEntity(CommentDbEntity dbEntity) {
             var displayData = new CommentDisplayData {
@@ -1129,6 +1055,8 @@ namespace Katchly {
                     ID = dbEntity?.ID,
                     Text = dbEntity?.Text,
                     Author = dbEntity?.Author,
+                    Indent = dbEntity?.Indent,
+                    Order = dbEntity?.Order,
                     CreatedOn = dbEntity?.CreatedOn,
                     UpdatedOn = dbEntity?.UpdatedOn,
                     Target = dbEntity?.Target,
@@ -1180,11 +1108,6 @@ namespace Katchly {
                         },
                     },
                 },
-                child_CommentTargetComment = new CommentTargetCommentDisplayData {
-                    own_members = new() {
-                        CommentId = dbEntity?.CommentTargetComment?.CommentId,
-                    },
-                },
             };
             return displayData;
         }
@@ -1193,6 +1116,8 @@ namespace Katchly {
         public string? ID { get; set; }
         public string? Text { get; set; }
         public string? Author { get; set; }
+        public int? Indent { get; set; }
+        public int? Order { get; set; }
         public DateTime? CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public E_Target? Target { get; set; }
@@ -1233,15 +1158,6 @@ namespace Katchly {
     public class CommentTargetColumnDisplayDataOwnMembers {
         public ColumnsRefInfo? Column { get; set; }
     }
-    /// <summary>
-    /// CommentTargetCommentの画面表示用データ
-    /// </summary>
-    public partial class CommentTargetCommentDisplayData {
-        public CommentTargetCommentDisplayDataOwnMembers own_members { get; set; } = new();
-    }
-    public class CommentTargetCommentDisplayDataOwnMembers {
-        public string? CommentId { get; set; }
-    }
     
     // ----------------------- CommentRefInfo -----------------------
     /// <summary>
@@ -1256,7 +1172,6 @@ namespace Katchly {
     
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentRefInfo_CommentTargetComment? CommentTargetComment { get; set; }
     
         public static CommentRefInfo FromDbEntity(CommentDbEntity dbEntity) {
             var instance = new CommentRefInfo {
@@ -1268,9 +1183,6 @@ namespace Katchly {
             };
             return instance;
         }
-    }
-    public partial class CommentRefInfo_CommentTargetComment {
-        public string? CommentId { get; set; }
     }
     
     // ----------------------- CommentTargetRowRefInfo -----------------------
@@ -1299,10 +1211,6 @@ namespace Katchly {
     public partial class CommentTargetRowRefInfo_Parent {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetRowRefInfo_Parent_CommentTargetComment? CommentTargetComment { get; set; }
-    }
-    public partial class CommentTargetRowRefInfo_Parent_CommentTargetComment {
-        public string? CommentId { get; set; }
     }
     
     // ----------------------- CommentTargetCellRefInfo -----------------------
@@ -1331,10 +1239,6 @@ namespace Katchly {
     public partial class CommentTargetCellRefInfo_Parent {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetCellRefInfo_Parent_CommentTargetComment? CommentTargetComment { get; set; }
-    }
-    public partial class CommentTargetCellRefInfo_Parent_CommentTargetComment {
-        public string? CommentId { get; set; }
     }
     
     // ----------------------- CommentTargetRowTypeRefInfo -----------------------
@@ -1363,10 +1267,6 @@ namespace Katchly {
     public partial class CommentTargetRowTypeRefInfo_Parent {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetRowTypeRefInfo_Parent_CommentTargetComment? CommentTargetComment { get; set; }
-    }
-    public partial class CommentTargetRowTypeRefInfo_Parent_CommentTargetComment {
-        public string? CommentId { get; set; }
     }
     
     // ----------------------- CommentTargetColumnRefInfo -----------------------
@@ -1395,40 +1295,6 @@ namespace Katchly {
     public partial class CommentTargetColumnRefInfo_Parent {
         public string? ID { get; set; }
         public string? Text { get; set; }
-        public CommentTargetColumnRefInfo_Parent_CommentTargetComment? CommentTargetComment { get; set; }
-    }
-    public partial class CommentTargetColumnRefInfo_Parent_CommentTargetComment {
-        public string? CommentId { get; set; }
-    }
-    
-    // ----------------------- CommentTargetCommentRefInfo -----------------------
-    /// <summary>
-    /// CommentTargetCommentを参照する他のデータの画面上に表示されるCommentTargetCommentのデータ型。
-    /// </summary>
-    public partial class CommentTargetCommentRefInfo {
-        /// <summary>
-        /// CommentTargetCommentのキー。保存するときはこの値が使用される。
-        /// 新規作成されてからDBに登録されるまでの間のCommentTargetCommentをUUID等の不変の値で参照できるようにするために文字列になっている。
-        /// </summary>
-        public string? __instanceKey { get; set; }
-    
-        public CommentTargetCommentRefInfo_Parent? Parent { get; set; }
-        public string? CommentId { get; set; }
-    
-        public static CommentTargetCommentRefInfo FromDbEntity(CommentTargetCommentDbEntity dbEntity) {
-            var instance = new CommentTargetCommentRefInfo {
-                __instanceKey = new object?[] {
-                    dbEntity.CommentTargetComment_ID,
-                    dbEntity.CommentId,
-                }.ToJson(),
-                CommentId = dbEntity.CommentId,
-            };
-            return instance;
-        }
-    }
-    public partial class CommentTargetCommentRefInfo_Parent {
-        public string? ID { get; set; }
-        public string? Text { get; set; }
     }
 #endregion データ構造クラス
 }
@@ -1443,7 +1309,6 @@ namespace Katchly {
         public virtual DbSet<CommentTargetCellDbEntity> CommentTargetCellDbSet { get; set; }
         public virtual DbSet<CommentTargetRowTypeDbEntity> CommentTargetRowTypeDbSet { get; set; }
         public virtual DbSet<CommentTargetColumnDbEntity> CommentTargetColumnDbSet { get; set; }
-        public virtual DbSet<CommentTargetCommentDbEntity> CommentTargetCommentDbSet { get; set; }
 
         private void OnModelCreating_Comment(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Katchly.CommentDbEntity>(entity => {
@@ -1457,6 +1322,10 @@ namespace Katchly {
                 entity.Property(e => e.Text)
                     .IsRequired(false);
                 entity.Property(e => e.Author)
+                    .IsRequired(false);
+                entity.Property(e => e.Indent)
+                    .IsRequired(false);
+                entity.Property(e => e.Order)
                     .IsRequired(false);
                 entity.Property(e => e.CreatedOn)
                     .IsRequired(false);
@@ -1487,12 +1356,6 @@ namespace Katchly {
                     .WithOne(e => e.Parent)
                     .HasForeignKey<CommentTargetColumnDbEntity>(e => new {
                         e.CommentTargetColumn_ID,
-                    })
-                    .OnDelete(DeleteBehavior.Cascade);
-                entity.HasOne(e => e.CommentTargetComment)
-                    .WithOne(e => e.Parent)
-                    .HasForeignKey<CommentTargetCommentDbEntity>(e => new {
-                        e.CommentTargetComment_ID,
                     })
                     .OnDelete(DeleteBehavior.Cascade);
             });
@@ -1550,20 +1413,6 @@ namespace Katchly {
                 entity.Property(e => e.Column_ColumnId)
                     .IsRequired(false);
                 entity.Property(e => e.CommentTargetColumn_ID)
-                    .IsRequired(true);
-            
-                
-            });
-            modelBuilder.Entity<Katchly.CommentTargetCommentDbEntity>(entity => {
-            
-                entity.HasKey(e => new {
-                    e.CommentTargetComment_ID,
-                    e.CommentId,
-                });
-            
-                entity.Property(e => e.CommentTargetComment_ID)
-                    .IsRequired(true);
-                entity.Property(e => e.CommentId)
                     .IsRequired(true);
             
                 

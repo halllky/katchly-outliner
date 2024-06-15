@@ -154,6 +154,66 @@ const Page = () => {
     },
     {
       id: 'col3',
+      header: 'Indent',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.Indent
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => {
+        const value = row.own_members?.Indent
+        const formatted = value?.toString()
+        return formatted
+      },
+      editSetting: {
+        type: 'text',
+        getTextValue: row => {
+          const value = row.own_members?.Indent
+          const formatted = value?.toString()
+          return formatted
+        },
+        setTextValue: (row, value) => {
+          const { num: formatted } = Util.tryParseAsNumberOrEmpty(value)
+          row.own_members.Indent = formatted
+        },
+      },
+    },
+    {
+      id: 'col4',
+      header: 'Order',
+      cell: cellProps => {
+        const value = cellProps.row.original.own_members?.Order
+        return (
+          <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+            {value}
+            &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+          </span>
+        )
+      },
+      accessorFn: row => {
+        const value = row.own_members?.Order
+        const formatted = value?.toString()
+        return formatted
+      },
+      editSetting: {
+        type: 'text',
+        getTextValue: row => {
+          const value = row.own_members?.Order
+          const formatted = value?.toString()
+          return formatted
+        },
+        setTextValue: (row, value) => {
+          const { num: formatted } = Util.tryParseAsNumberOrEmpty(value)
+          row.own_members.Order = formatted
+        },
+      },
+    },
+    {
+      id: 'col5',
       header: 'CreatedOn',
       cell: cellProps => {
         const value = cellProps.row.original.own_members?.CreatedOn
@@ -175,7 +235,7 @@ const Page = () => {
       },
     },
     {
-      id: 'col4',
+      id: 'col6',
       header: 'UpdatedOn',
       cell: cellProps => {
         const value = cellProps.row.original.own_members?.UpdatedOn
@@ -197,7 +257,7 @@ const Page = () => {
       },
     },
     {
-      id: 'col5',
+      id: 'col7',
       header: 'Target',
       cell: cellProps => {
         const value = cellProps.row.original.own_members?.Target
@@ -216,13 +276,13 @@ const Page = () => {
           row.own_members.Target = value
         },
         comboProps: {
-          options: ['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const, 'CommentTargetComment' as const],
+          options: ['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const],
           emitValueSelector: opt => opt,
           matchingKeySelectorFromEmitValue: value => value,
           matchingKeySelectorFromOption: opt => opt,
           textSelector: opt => opt,
         },
-      } as Layout.ColumnEditSetting<GridRow, 'CommentTargetRow' | 'CommentTargetCell' | 'CommentTargetRowType' | 'CommentTargetColumn' | 'CommentTargetComment'>) as Layout.ColumnEditSetting<GridRow, unknown>,
+      } as Layout.ColumnEditSetting<GridRow, 'CommentTargetRow' | 'CommentTargetCell' | 'CommentTargetRowType' | 'CommentTargetColumn'>) as Layout.ColumnEditSetting<GridRow, unknown>,
     },
   ], [get, update])
 
@@ -251,6 +311,16 @@ const Page = () => {
             <VForm.Item label="Author">
               <Input.Word {...registerExCondition(`Author`)} />
             </VForm.Item>
+            <VForm.Item label="Indent">
+              <Input.Num {...registerExCondition(`Indent.From`)} />
+              <span className="select-none">～</span>
+              <Input.Num {...registerExCondition(`Indent.To`)} />
+            </VForm.Item>
+            <VForm.Item label="Order">
+              <Input.Num {...registerExCondition(`Order.From`)} />
+              <span className="select-none">～</span>
+              <Input.Num {...registerExCondition(`Order.To`)} />
+            </VForm.Item>
             <VForm.Item label="CreatedOn">
               <Input.Date {...registerExCondition(`CreatedOn.From`)} />
               <span className="select-none">～</span>
@@ -277,10 +347,6 @@ const Page = () => {
               <label className="inline-flex items-center">
                 <Input.CheckBox {...registerExCondition(`Target_CommentTargetColumn`)} />
                 CommentTargetColumn
-              </label>
-              <label className="inline-flex items-center">
-                <Input.CheckBox {...registerExCondition(`Target_CommentTargetComment`)} />
-                CommentTargetComment
               </label>
             </VForm.Item>
           </VForm.Container>

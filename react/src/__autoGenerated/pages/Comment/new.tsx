@@ -114,6 +114,12 @@ const CommentView = ({ }: {
         <VForm.Item label="Author">
           <Input.Word {...registerEx(`own_members.Author`)} />
         </VForm.Item>
+        <VForm.Item label="Indent">
+          <Input.Num {...registerEx(`own_members.Indent`)} />
+        </VForm.Item>
+        <VForm.Item label="Order">
+          <Input.Num {...registerEx(`own_members.Order`)} />
+        </VForm.Item>
         <VForm.Item label="CreatedOn">
           <Input.Date {...registerEx(`own_members.CreatedOn`)} />
         </VForm.Item>
@@ -125,7 +131,7 @@ const CommentView = ({ }: {
             Target
             <Input.Selection
               {...registerEx(`own_members.Target`)}
-              options={['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const, 'CommentTargetComment' as const]}
+              options={['CommentTargetRow' as const, 'CommentTargetCell' as const, 'CommentTargetRowType' as const, 'CommentTargetColumn' as const]}
               textSelector={item => item}
             />
           </>}
@@ -134,7 +140,6 @@ const CommentView = ({ }: {
           <CommentTargetCellView />
           <CommentTargetRowTypeView />
           <CommentTargetColumnView />
-          <CommentTargetCommentView />
         </VForm.Container>
       </VForm.Container>
     </>
@@ -218,28 +223,6 @@ const CommentTargetColumnView = ({ }: {
   )
 
   return watch(`own_members.Target`) === 'CommentTargetColumn'
-    ? (
-      <>
-        {body}
-      </>
-    ) : (
-      <div className="hidden">
-        {body}
-      </div>
-    )
-}
-const CommentTargetCommentView = ({ }: {
-}) => {
-  const { register, registerEx, watch, getValues, setValue } = Util.useFormContextEx<AggregateType.CommentDisplayData>()
-  const item = getValues(`child_CommentTargetComment`)
-
-  const body = (
-    <>
-      <input type="hidden" {...register(`child_CommentTargetComment.own_members.CommentId`)} />
-    </>
-  )
-
-  return watch(`own_members.Target`) === 'CommentTargetComment'
     ? (
       <>
         {body}

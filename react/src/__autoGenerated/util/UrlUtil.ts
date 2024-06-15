@@ -150,21 +150,6 @@ export const getCommentTargetColumnSingleViewUrl = (key: ItemKey | undefined, mo
   }
 }
 
-export const getCommentTargetCommentSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
-  if (!key) {
-    return ''
-  }
-  if (mode === 'new') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/new/${window.encodeURI(`${key}`)}`
-  }
-  const [CommentTargetComment_ID, CommentId] = JSON.parse(key) as [string | undefined, string | undefined]
-  if (mode === 'view') {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/detail/${window.encodeURI(`${CommentTargetComment_ID}`)}/${window.encodeURI(`${CommentId}`)}`
-  } else {
-    return `/xcc9c15b1503ef15d999d64ce6d5fe189/edit/${window.encodeURI(`${CommentTargetComment_ID}`)}/${window.encodeURI(`${CommentId}`)}`
-  }
-}
-
 export const getLogSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''

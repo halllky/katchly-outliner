@@ -38,6 +38,8 @@
     <ID is="uuid"/>
     <Text is="sentence" />
     <Author is="word" />
+    <Indent is="int" />
+    <Order is="int" />
     <CreatedOn is="datetime" />
     <UpdatedOn is="datetime" />
 
@@ -55,12 +57,6 @@
       <CommentTargetColumn is="variation-key:4">
         <Column is="ref-to:RowType/Columns" />
       </CommentTargetColumn>
-
-      <CommentTargetComment is="variation-key:5">
-        <!-- 自分自身へのRefが未実装のため -->
-        <!-- <Comment is="ref-to:Comment" /> -->
-        <CommentId is="uuid" />
-      </CommentTargetComment>
     </Target>
   </Comment>
 

@@ -16,7 +16,5 @@ namespace Katchly {
         CommentTargetRowType = 3,
         [Display(Name = "CommentTargetColumn")]
         CommentTargetColumn = 4,
-        [Display(Name = "CommentTargetComment")]
-        CommentTargetComment = 5,
     }
 }

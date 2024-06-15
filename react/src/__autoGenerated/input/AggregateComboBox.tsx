@@ -233,29 +233,6 @@ export const ComboBoxCommentTargetColumn = defineCustomComponent<Types.CommentTa
     />
   )
 })
-export const ComboBoxCommentTargetComment = defineCustomComponent<Types.CommentTargetCommentRefInfo>((props, ref) => {
-  const [queryKey, setQueryKey] = useState<string>(`combo-x2df2a9996bdcd6812620bdd21d56cfef::`)
-  const { get } = Util.useHttpRequest()
-  const query = useCallback(async (keyword: string | undefined): Promise<Types.CommentTargetCommentRefInfo[]> => {
-    setQueryKey(`combo-x2df2a9996bdcd6812620bdd21d56cfef::${keyword ?? ''}`)
-    const response = await get<Types.CommentTargetCommentRefInfo []>(`/api/Comment/list-by-keyword-x2df2a9996bdcd6812620bdd21d56cfef`, { keyword })
-    if (!response.ok) return []
-    return response.data
-  }, [get])
-
-  return (
-    <AsyncComboBox
-      {...props}
-      ref={ref}
-      queryKey={queryKey}
-      query={query}
-      emitValueSelector={item => item}
-      matchingKeySelectorFromEmitValue={item => item.__instanceKey}
-      matchingKeySelectorFromOption={item => item.__instanceKey}
-      textSelector={item => `${item.Parent?.ID ?? ''}${item.CommentId ?? ''}`}
-    />
-  )
-})
 export const ComboBoxLog = defineCustomComponent<Types.LogRefInfo>((props, ref) => {
   const [queryKey, setQueryKey] = useState<string>(`combo-x2be65a1401b75f2cdd8deaec5a04a976::`)
   const { get } = Util.useHttpRequest()

@@ -114,18 +114,15 @@ const RowObjectConverter = {
       prev[columnIdJson[1]] = {
         value: curr.own_members.Value ?? '',
         updatedOn: curr.own_members.UpdatedOn ?? '',
-        threads: [],
+        comments: [],
       }
       return prev
     }, {} as RowObject['attrs']) ?? {},
-    threads: (() => {
-      return Array.from({ length: 3 }, (k, i) => i).map(_ => {
-        const thread = createNewComment('1さんaaaaaaaaaaa')
-        thread.text = 'これは1さんの発言です。'
-        const res = createNewComment('2さん')
-        res.text = `これは2さんの発言 ${res.id} ｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗｗ`
-        thread.responses = [...thread.responses, res]
-        return thread
+    comments: (() => {
+      return Array.from({ length: 7 }, (k, i) => i).map(_ => {
+        const comment = createNewComment('1さんaaaaaaaaaaa')
+        comment.text = `これは1さんの発言です。 ${comment.id} ${comment.id} ${comment.id}`
+        return comment
       })
     })(), // TODO
     createdOn: displayData.own_members.CreatedOn ?? '',
@@ -155,7 +152,7 @@ const RowTypeConverter = {
       id: col.own_members.ColumnId as ColumnId,
       name: col.own_members.ColumnName,
     })) ?? [],
-    threads: [], // TODO
+    comments: [], // TODO
     existsInRemoteRepository: true,
     willBeChanged: false,
     willBeDeleted: false,

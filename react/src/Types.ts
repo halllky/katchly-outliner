@@ -23,18 +23,18 @@ export type RowObject = EditableObject & {
   attrs: { [key: ColumnId]: RowObjectAttr }
   indent: number
   createdOn: string
-  threads: Comment[]
+  comments: Comment[]
 }
 export type RowObjectAttr = {
   value: string
   updatedOn: string
-  threads: Comment[]
+  comments: Comment[]
 }
 export type RowType = EditableObject & {
   id: RowTypeId
   name?: string
   columns: { id: ColumnId, name?: string }[]
-  threads: Comment[]
+  comments: Comment[]
 }
 
 export type GridRow = GridRowOfRowObject | GridRowOfRowType
@@ -198,7 +198,7 @@ export const createNewRowType = (name?: string, columnNames?: string[]): RowType
     id: UUID.generate() as ColumnId,
     name: colName
   })) ?? [],
-  threads: [],
+  comments: [],
   existsInRemoteRepository: false,
   willBeChanged: true,
   willBeDeleted: false,
@@ -233,7 +233,7 @@ export const insertNewRow = (aboveRow: GridRow | undefined): { newRow: GridRowOf
       existsInRemoteRepository: false,
       willBeChanged: true,
       willBeDeleted: false,
-      threads: [],
+      comments: [],
     },
   }
 
@@ -321,7 +321,7 @@ export const setAttrCellValue = (
       gridRow.item.attrs[columnId] = {
         value,
         updatedOn: currentValue?.updatedOn ?? '',
-        threads: [],
+        comments: [],
       }
     }
 
@@ -344,9 +344,9 @@ export type Comment = EditableObject & {
   id: CommentId
   text: string
   author: string
+  indent: number
   createdOn: string
   updatedOn: string
-  responses: Comment[]
 }
 
 export const createNewComment = (author: string): Comment => {
@@ -355,28 +355,11 @@ export const createNewComment = (author: string): Comment => {
     id: UUID.generate() as CommentId,
     text: '',
     author,
+    indent: 0,
     createdOn: now,
     updatedOn: now,
     existsInRemoteRepository: false,
     willBeChanged: true,
     willBeDeleted: false,
-    responses: [],
   }
-}
-
-export const countComment = (row: GridRow, rowTypeMap: Map<RowTypeId, RowType>): number => {
-  let threads: Comment[]
-  if (row.type === 'row') {
-    threads = row.item.threads
-  } else {
-    const rowType = rowTypeMap.get(row.rowTypeId)
-    if (!rowType) return 0
-    threads = rowType.threads
-  }
-
-  const tree = Util.toTree(threads, {
-    getId: comment => comment.id,
-    getChildren: comment => comment.responses,
-  })
-  return Util.flatten(tree).length
 }

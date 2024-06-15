@@ -1,6 +1,6 @@
 import React from 'react'
 import * as RT from '@tanstack/react-table'
-import { AsyncComboProps, CustomComponentProps, SyncComboProps } from '..'
+import { AsyncComboProps, SyncComboProps } from '..'
 
 export type DataTableProps<T> = {
   data?: T[]
@@ -8,6 +8,8 @@ export type DataTableProps<T> = {
   onKeyDown?: React.KeyboardEventHandler
   onActiveRowChanged?: (activeRow: { getRow: () => T, rowIndex: number } | undefined) => void
   columns?: ColumnDefEx<T>[]
+  hideHeader?: boolean
+  tableWidth?: 'fit' | 'dyanmic'
   className?: string
 }
 export type ColumnDefEx<TRow> = RT.ColumnDef<TRow> & {
@@ -19,11 +21,17 @@ export type ColumnDefEx<TRow> = RT.ColumnDef<TRow> & {
 export type ColumnEditSetting<TRow, TOption = unknown> = {
   readOnly?: ((row: TRow) => boolean)
 } & (TextColumndEditSetting<TRow>
+  | TextareaColumndEditSetting<TRow>
   | SyncComboColumnEditSetting<TRow, TOption>
   | AsyncComboColumnEditSetting<TRow, TOption>)
 
 type TextColumndEditSetting<TRow> = {
   type: 'text'
+  getTextValue: (row: TRow) => string | undefined
+  setTextValue: (row: TRow, value: string | undefined) => void
+}
+type TextareaColumndEditSetting<TRow> = {
+  type: 'multiline-text'
   getTextValue: (row: TRow) => string | undefined
   setTextValue: (row: TRow, value: string | undefined) => void
 }

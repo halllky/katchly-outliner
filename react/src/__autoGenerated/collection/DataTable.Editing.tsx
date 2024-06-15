@@ -44,6 +44,20 @@ export const CellEditor = Util.forwardRefEx(<T,>({
     if (caretCell) {
       const columnDef = api.getColumn(caretCell.colId)?.columnDef as ColumnDefEx<T> | undefined
       setCaretCellEditingInfo(columnDef?.editSetting)
+
+      // エディタを編集対象セルの位置に移動させる
+      if (caretTdRef.current && containerRef.current) {
+        containerRef.current.style.left = `${caretTdRef.current.offsetLeft}px`
+        containerRef.current.style.top = `${caretTdRef.current.offsetTop}px`
+        containerRef.current.style.minWidth = `${caretTdRef.current.clientWidth}px`
+        containerRef.current.style.minHeight = `${caretTdRef.current.clientHeight}px`
+      }
+      // エディタにスクロール
+      containerRef.current?.scrollIntoView({
+        behavior: 'instant',
+        block: 'nearest',
+        inline: 'nearest',
+      })
     } else {
       setCaretCellEditingInfo(undefined)
     }
@@ -71,6 +85,9 @@ export const CellEditor = Util.forwardRefEx(<T,>({
     if (columnDef.editSetting.type === 'text') {
       const cellValue = columnDef.editSetting.getTextValue(cell.row.original)
       setUnComittedText(cellValue)
+    } else if (columnDef.editSetting.type === 'multiline-text') {
+      const cellValue = columnDef.editSetting.getTextValue(cell.row.original)
+      setUnComittedText(cellValue)
     } else if (columnDef.editSetting.type === 'combo') {
       const selectedValue = columnDef.editSetting.getValueFromRow(cell.row.original)
       setComboSelectedItem(selectedValue)
@@ -78,20 +95,6 @@ export const CellEditor = Util.forwardRefEx(<T,>({
       const selectedValue = columnDef.editSetting.getValueFromRow(cell.row.original)
       setComboSelectedItem(selectedValue)
     }
-
-    // エディタを編集対象セルの位置に移動させる
-    if (caretTdRef.current && containerRef.current) {
-      containerRef.current.style.left = `${caretTdRef.current.offsetLeft}px`
-      containerRef.current.style.top = `${caretTdRef.current.offsetTop}px`
-      containerRef.current.style.minWidth = `${caretTdRef.current.clientWidth}px`
-      containerRef.current.style.minHeight = `${caretTdRef.current.clientHeight}px`
-    }
-    // エディタにスクロール
-    containerRef.current?.scrollIntoView({
-      behavior: 'instant',
-      block: 'nearest',
-      inline: 'nearest',
-    })
   }, [setEditingCellInfo, onChangeEditing, onChangeRow, caretTdRef])
 
   /** 編集確定 */
@@ -101,6 +104,8 @@ export const CellEditor = Util.forwardRefEx(<T,>({
 
     // set value
     if (caretCellEditingInfo.type === 'text') {
+      caretCellEditingInfo.setTextValue(editingCellInfo.row, (value ?? editorRef.current?.getValue()) as string | undefined)
+    } else if (caretCellEditingInfo.type === 'multiline-text') {
       caretCellEditingInfo.setTextValue(editingCellInfo.row, (value ?? editorRef.current?.getValue()) as string | undefined)
     } else if (caretCellEditingInfo.type === 'combo') {
       caretCellEditingInfo.setValueToRow(editingCellInfo.row, (value ?? editorRef.current?.getValue()) as unknown | undefined)
@@ -188,6 +193,15 @@ export const CellEditor = Util.forwardRefEx(<T,>({
     >
       {(caretCellEditingInfo === undefined || caretCellEditingInfo?.type === 'text') && (
         <Input.Word
+          ref={editorRef as React.RefObject<Input.CustomComponentRef<string>>}
+          value={uncomittedText}
+          onChange={setUnComittedText}
+          onKeyDown={handleKeyDown}
+          className="flex-1"
+        />
+      )}
+      {caretCellEditingInfo?.type === 'multiline-text' && (
+        <Input.Description
           ref={editorRef as React.RefObject<Input.CustomComponentRef<string>>}
           value={uncomittedText}
           onChange={setUnComittedText}
