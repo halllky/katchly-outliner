@@ -53,10 +53,12 @@ export const Page = () => {
     }
   }, [loadAll, setNowLoading, setData])
 
+  const [, dispatchToast] = Util.useToastContext()
   const handleSave = useCallback(async (data: { rows: RowObject[], rowTypes: RowType[] }) => {
     await saveAll(data)
     setData(await loadAll())
-  }, [saveAll, loadAll, setNowLoading])
+    dispatchToast(msg => msg.info('保存しました。'))
+  }, [saveAll, loadAll, setNowLoading, dispatchToast])
 
   useEffect(() => {
     handleLoad()
