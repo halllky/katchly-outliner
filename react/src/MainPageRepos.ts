@@ -155,7 +155,7 @@ const RowObjectConverter = {
       Indent: rowObject.indent,
       RowType: `["${rowObject.type}"]` as Util.ItemKey,
       Attrs: Object.entries(rowObject.attrs).map<AggregateType.AttrsSaveCommand>(([colId, attr]) => ({
-        ColType: `["${rowObject.type}", "${colId}"]` as Util.ItemKey,
+        ColType: colId as Util.ItemKey,
         Value: attr?.value,
         UpdatedOn: attr?.updatedOn,
       })),
@@ -173,7 +173,7 @@ const RowObjectConverter = {
       text: displayData.own_members.Text!,
       type: displayData.own_members.RowType!.ID as RowTypeId,
       attrs: displayData.child_Attrs?.reduce((result, attr) => {
-        const [, columnId] = JSON.parse(attr.own_members.ColType?.__instanceKey ?? '[,]') as [RowTypeId, ColumnId]
+        const columnId = attr.own_members.ColType?.__instanceKey as string as ColumnId
         result[columnId] = {
           value: attr.own_members.Value ?? '',
           updatedOn: attr.own_members.UpdatedOn ?? '',
@@ -198,7 +198,7 @@ const RowTypeConverter = {
       ID: rowType.id,
       RowTypeName: rowType.name,
       Columns: rowType.columns.map(col => ({
-        ColumnId: col.id,
+        ColumnId: (JSON.parse(col.id) as [RowTypeId, string])[1],
         ColumnName: col.name,
       })),
     }
@@ -207,7 +207,7 @@ const RowTypeConverter = {
     id: displayData.own_members.ID as RowTypeId,
     name: displayData.own_members.RowTypeName,
     columns: displayData.child_Columns?.map<RowType['columns']['0']>(col => ({
-      id: col.own_members.ColumnId as ColumnId,
+      id: col.localRepositoryItemKey as string as ColumnId,
       name: col.own_members.ColumnName,
       comments: CommentConverter.fromServerApiType(loadedComments.toCol.get(col.own_members.ColumnId as ColumnId)),
     })) ?? [],
