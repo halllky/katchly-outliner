@@ -35,7 +35,7 @@ export const Page = () => {
   const [nowLoading, setNowLoading] = useState(true)
   const [{ rows, rowTypes }, setData] = useState<{ rows: RowObject[], rowTypes: RowType[] }>(() => ({ rows: [], rowTypes: [] }))
   const debugStyle = useMemo((): React.CSSProperties => ({
-    fontFamily: '"BIZ UDGothic"',
+    fontFamily: '"Cascadia Mono", "BIZ UDGothic"',
   }), [])
 
   // データの読み込みと保存
