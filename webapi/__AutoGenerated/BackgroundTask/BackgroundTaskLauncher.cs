@@ -13,7 +13,7 @@ namespace Katchly {
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
             var serviceCollection = new ServiceCollection();
-            Katchly.DefaultConfigurer.InitAsBatchProces(serviceCollection);
+            Katchly.DefaultConfigurer.InitAsBatchProcess(serviceCollection);
             var services = serviceCollection.BuildServiceProvider();
 
             var logger = services.GetRequiredService<ILogger>();

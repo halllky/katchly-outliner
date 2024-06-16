@@ -46,7 +46,7 @@
         /// <summary>
         /// バッチプロセス起動時初期設定
         /// </summary>
-        internal static void InitAsBatchProces(this IServiceCollection services) {
+        internal static void InitAsBatchProcess(this IServiceCollection services) {
             ConfigureServices(services);
 
         }
