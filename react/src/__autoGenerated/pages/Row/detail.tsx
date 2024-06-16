@@ -226,25 +226,53 @@ const AttrsView = ({ }: {
           )
         },
         accessorFn: row => row.own_members?.ColType,
-        editSetting: ({
-          type: 'async-combo',
-          getValueFromRow: row => row.own_members?.ColType,
-          setValueToRow: (row, value) => {
-            row.own_members.ColType = value
-          },
-          comboProps: {
-            queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
-            query: async keyword => {
-              const response = await get<AggregateType.ColumnsRefInfo []>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
-              if (!response.ok) return []
-              return response.data
+        editSetting: (() => {
+          const asyncComboSetting: Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, AggregateType.ColumnsRefInfo> = {
+            type: 'async-combo',
+            getValueFromRow: row => row.own_members?.ColType,
+            setValueToRow: (row, value) => {
+              row.own_members.ColType = value
             },
-            emitValueSelector: item => item,
-            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-            matchingKeySelectorFromOption: item => item.__instanceKey,
-            textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
-          },
-        } as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, AggregateType.ColumnsRefInfo>) as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, unknown>,
+            onClipboardCopy: row => {
+              const formatted = row.own_members?.ColType ? JSON.stringify(row.own_members?.ColType) : ''
+              return formatted
+            },
+            onClipboardPaste: (row, value) => {
+              if (row.own_members === undefined) return
+              let formatted: AggregateType.ColumnsRefInfo | undefined
+              if (value) {
+                try {
+                  const obj: AggregateType.ColumnsRefInfo = JSON.parse(value)
+                  // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
+                  if (obj.__instanceKey === undefined) throw new Error
+                  const arrInstanceKey: [string, string] = JSON.parse(obj.__instanceKey)
+                  if (!Array.isArray(arrInstanceKey)) throw new Error
+                  if (typeof arrInstanceKey[0] !== 'string') throw new Error
+                  if (typeof arrInstanceKey[1] !== 'string') throw new Error
+                  formatted = obj
+                } catch {
+                  formatted = undefined
+                }
+              } else {
+                formatted = undefined
+              }
+              row.own_members.ColType = formatted
+            },
+            comboProps: {
+              queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
+              query: async keyword => {
+                const response = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
+                if (!response.ok) return []
+                return response.data
+              },
+              emitValueSelector: item => item,
+              matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+              matchingKeySelectorFromOption: item => item.__instanceKey,
+              textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
+            },
+          }
+          return asyncComboSetting as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, unknown>
+        })(),
       },
       {
         id: 'col2',

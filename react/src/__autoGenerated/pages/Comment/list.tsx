@@ -269,25 +269,52 @@ const Page = () => {
         )
       },
       accessorFn: row => row.own_members?.TargetRow,
-      editSetting: ({
-        type: 'async-combo',
-        getValueFromRow: row => row.own_members?.TargetRow,
-        setValueToRow: (row, value) => {
-          row.own_members.TargetRow = value
-        },
-        comboProps: {
-          queryKey: `combo-xc431ca892f0ec48c9bbc3311bb00c38c::`,
-          query: async keyword => {
-            const response = await get<AggregateType.RowRefInfo []>(`/api/Row/list-by-keyword`, { keyword })
-            if (!response.ok) return []
-            return response.data
+      editSetting: (() => {
+        const asyncComboSetting: Layout.ColumnEditSetting<GridRow, AggregateType.RowRefInfo> = {
+          type: 'async-combo',
+          getValueFromRow: row => row.own_members?.TargetRow,
+          setValueToRow: (row, value) => {
+            row.own_members.TargetRow = value
           },
-          emitValueSelector: item => item,
-          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-          matchingKeySelectorFromOption: item => item.__instanceKey,
-          textSelector: item => `${item.Text ?? ''}`,
-        },
-      } as Layout.ColumnEditSetting<GridRow, AggregateType.RowRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+          onClipboardCopy: row => {
+            const formatted = row.own_members?.TargetRow ? JSON.stringify(row.own_members?.TargetRow) : ''
+            return formatted
+          },
+          onClipboardPaste: (row, value) => {
+            if (row.own_members === undefined) return
+            let formatted: AggregateType.RowRefInfo | undefined
+            if (value) {
+              try {
+                const obj: AggregateType.RowRefInfo = JSON.parse(value)
+                // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
+                if (obj.__instanceKey === undefined) throw new Error
+                const arrInstanceKey: [string] = JSON.parse(obj.__instanceKey)
+                if (!Array.isArray(arrInstanceKey)) throw new Error
+                if (typeof arrInstanceKey[0] !== 'string') throw new Error
+                formatted = obj
+              } catch {
+                formatted = undefined
+              }
+            } else {
+              formatted = undefined
+            }
+            row.own_members.TargetRow = formatted
+          },
+          comboProps: {
+            queryKey: `combo-xc431ca892f0ec48c9bbc3311bb00c38c::`,
+            query: async keyword => {
+              const response = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, { keyword })
+              if (!response.ok) return []
+              return response.data
+            },
+            emitValueSelector: item => item,
+            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+            matchingKeySelectorFromOption: item => item.__instanceKey,
+            textSelector: item => `${item.Text ?? ''}`,
+          },
+        }
+        return asyncComboSetting as Layout.ColumnEditSetting<GridRow, unknown>
+      })(),
     },
     {
       id: 'col8',
@@ -303,25 +330,54 @@ const Page = () => {
         )
       },
       accessorFn: row => row.own_members?.TargetCell,
-      editSetting: ({
-        type: 'async-combo',
-        getValueFromRow: row => row.own_members?.TargetCell,
-        setValueToRow: (row, value) => {
-          row.own_members.TargetCell = value
-        },
-        comboProps: {
-          queryKey: `combo-x218859120e2951a46aa6ad9fb9e627cc::`,
-          query: async keyword => {
-            const response = await get<AggregateType.AttrsRefInfo []>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, { keyword })
-            if (!response.ok) return []
-            return response.data
+      editSetting: (() => {
+        const asyncComboSetting: Layout.ColumnEditSetting<GridRow, AggregateType.AttrsRefInfo> = {
+          type: 'async-combo',
+          getValueFromRow: row => row.own_members?.TargetCell,
+          setValueToRow: (row, value) => {
+            row.own_members.TargetCell = value
           },
-          emitValueSelector: item => item,
-          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-          matchingKeySelectorFromOption: item => item.__instanceKey,
-          textSelector: item => `${item.Value ?? ''}`,
-        },
-      } as Layout.ColumnEditSetting<GridRow, AggregateType.AttrsRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+          onClipboardCopy: row => {
+            const formatted = row.own_members?.TargetCell ? JSON.stringify(row.own_members?.TargetCell) : ''
+            return formatted
+          },
+          onClipboardPaste: (row, value) => {
+            if (row.own_members === undefined) return
+            let formatted: AggregateType.AttrsRefInfo | undefined
+            if (value) {
+              try {
+                const obj: AggregateType.AttrsRefInfo = JSON.parse(value)
+                // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
+                if (obj.__instanceKey === undefined) throw new Error
+                const arrInstanceKey: [string, string, string] = JSON.parse(obj.__instanceKey)
+                if (!Array.isArray(arrInstanceKey)) throw new Error
+                if (typeof arrInstanceKey[0] !== 'string') throw new Error
+                if (typeof arrInstanceKey[1] !== 'string') throw new Error
+                if (typeof arrInstanceKey[2] !== 'string') throw new Error
+                formatted = obj
+              } catch {
+                formatted = undefined
+              }
+            } else {
+              formatted = undefined
+            }
+            row.own_members.TargetCell = formatted
+          },
+          comboProps: {
+            queryKey: `combo-x218859120e2951a46aa6ad9fb9e627cc::`,
+            query: async keyword => {
+              const response = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, { keyword })
+              if (!response.ok) return []
+              return response.data
+            },
+            emitValueSelector: item => item,
+            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+            matchingKeySelectorFromOption: item => item.__instanceKey,
+            textSelector: item => `${item.Value ?? ''}`,
+          },
+        }
+        return asyncComboSetting as Layout.ColumnEditSetting<GridRow, unknown>
+      })(),
     },
     {
       id: 'col9',
@@ -337,25 +393,52 @@ const Page = () => {
         )
       },
       accessorFn: row => row.own_members?.TargetRowType,
-      editSetting: ({
-        type: 'async-combo',
-        getValueFromRow: row => row.own_members?.TargetRowType,
-        setValueToRow: (row, value) => {
-          row.own_members.TargetRowType = value
-        },
-        comboProps: {
-          queryKey: `combo-x482f568abd9568fda9b360b0bf991835::`,
-          query: async keyword => {
-            const response = await get<AggregateType.RowTypeRefInfo []>(`/api/RowType/list-by-keyword`, { keyword })
-            if (!response.ok) return []
-            return response.data
+      editSetting: (() => {
+        const asyncComboSetting: Layout.ColumnEditSetting<GridRow, AggregateType.RowTypeRefInfo> = {
+          type: 'async-combo',
+          getValueFromRow: row => row.own_members?.TargetRowType,
+          setValueToRow: (row, value) => {
+            row.own_members.TargetRowType = value
           },
-          emitValueSelector: item => item,
-          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-          matchingKeySelectorFromOption: item => item.__instanceKey,
-          textSelector: item => `${item.ID ?? ''}`,
-        },
-      } as Layout.ColumnEditSetting<GridRow, AggregateType.RowTypeRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+          onClipboardCopy: row => {
+            const formatted = row.own_members?.TargetRowType ? JSON.stringify(row.own_members?.TargetRowType) : ''
+            return formatted
+          },
+          onClipboardPaste: (row, value) => {
+            if (row.own_members === undefined) return
+            let formatted: AggregateType.RowTypeRefInfo | undefined
+            if (value) {
+              try {
+                const obj: AggregateType.RowTypeRefInfo = JSON.parse(value)
+                // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
+                if (obj.__instanceKey === undefined) throw new Error
+                const arrInstanceKey: [string] = JSON.parse(obj.__instanceKey)
+                if (!Array.isArray(arrInstanceKey)) throw new Error
+                if (typeof arrInstanceKey[0] !== 'string') throw new Error
+                formatted = obj
+              } catch {
+                formatted = undefined
+              }
+            } else {
+              formatted = undefined
+            }
+            row.own_members.TargetRowType = formatted
+          },
+          comboProps: {
+            queryKey: `combo-x482f568abd9568fda9b360b0bf991835::`,
+            query: async keyword => {
+              const response = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, { keyword })
+              if (!response.ok) return []
+              return response.data
+            },
+            emitValueSelector: item => item,
+            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+            matchingKeySelectorFromOption: item => item.__instanceKey,
+            textSelector: item => `${item.ID ?? ''}`,
+          },
+        }
+        return asyncComboSetting as Layout.ColumnEditSetting<GridRow, unknown>
+      })(),
     },
     {
       id: 'col10',
@@ -371,25 +454,53 @@ const Page = () => {
         )
       },
       accessorFn: row => row.own_members?.TargetColumn,
-      editSetting: ({
-        type: 'async-combo',
-        getValueFromRow: row => row.own_members?.TargetColumn,
-        setValueToRow: (row, value) => {
-          row.own_members.TargetColumn = value
-        },
-        comboProps: {
-          queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
-          query: async keyword => {
-            const response = await get<AggregateType.ColumnsRefInfo []>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
-            if (!response.ok) return []
-            return response.data
+      editSetting: (() => {
+        const asyncComboSetting: Layout.ColumnEditSetting<GridRow, AggregateType.ColumnsRefInfo> = {
+          type: 'async-combo',
+          getValueFromRow: row => row.own_members?.TargetColumn,
+          setValueToRow: (row, value) => {
+            row.own_members.TargetColumn = value
           },
-          emitValueSelector: item => item,
-          matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-          matchingKeySelectorFromOption: item => item.__instanceKey,
-          textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
-        },
-      } as Layout.ColumnEditSetting<GridRow, AggregateType.ColumnsRefInfo>) as Layout.ColumnEditSetting<GridRow, unknown>,
+          onClipboardCopy: row => {
+            const formatted = row.own_members?.TargetColumn ? JSON.stringify(row.own_members?.TargetColumn) : ''
+            return formatted
+          },
+          onClipboardPaste: (row, value) => {
+            if (row.own_members === undefined) return
+            let formatted: AggregateType.ColumnsRefInfo | undefined
+            if (value) {
+              try {
+                const obj: AggregateType.ColumnsRefInfo = JSON.parse(value)
+                // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
+                if (obj.__instanceKey === undefined) throw new Error
+                const arrInstanceKey: [string, string] = JSON.parse(obj.__instanceKey)
+                if (!Array.isArray(arrInstanceKey)) throw new Error
+                if (typeof arrInstanceKey[0] !== 'string') throw new Error
+                if (typeof arrInstanceKey[1] !== 'string') throw new Error
+                formatted = obj
+              } catch {
+                formatted = undefined
+              }
+            } else {
+              formatted = undefined
+            }
+            row.own_members.TargetColumn = formatted
+          },
+          comboProps: {
+            queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
+            query: async keyword => {
+              const response = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
+              if (!response.ok) return []
+              return response.data
+            },
+            emitValueSelector: item => item,
+            matchingKeySelectorFromEmitValue: item => item.__instanceKey,
+            matchingKeySelectorFromOption: item => item.__instanceKey,
+            textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
+          },
+        }
+        return asyncComboSetting as Layout.ColumnEditSetting<GridRow, unknown>
+      })(),
     },
   ], [get, update])
 

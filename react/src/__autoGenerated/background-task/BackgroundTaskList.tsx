@@ -140,20 +140,43 @@ const COLUMN_DEFS: Layout.ColumnDefEx<GridRow>[] = [
       )
     },
     accessorFn: row => row.own_members?.State,
-    editSetting: ({
-      type: 'combo',
-      getValueFromRow: row => row.own_members?.State,
-      setValueToRow: (row, value) => {
-        row.own_members.State = value
-      },
-      comboProps: {
-        options: ['WaitToStart' as const, 'Running' as const, 'Success' as const, 'Fault' as const],
-        emitValueSelector: opt => opt,
-        matchingKeySelectorFromEmitValue: value => value,
-        matchingKeySelectorFromOption: opt => opt,
-        textSelector: opt => opt,
-      },
-    } as Layout.ColumnEditSetting<GridRow, 'WaitToStart' | 'Running' | 'Success' | 'Fault'>) as Layout.ColumnEditSetting<GridRow, unknown>,
+    editSetting: (() => {
+      const comboSetting: Layout.ColumnEditSetting<GridRow, 'WaitToStart' | 'Running' | 'Success' | 'Fault'> = {
+        type: 'combo',
+        getValueFromRow: row => row.own_members?.State,
+        setValueToRow: (row, value) => {
+          row.own_members.State = value
+        },
+        onClipboardCopy: row => {
+          const formatted = row.own_members?.State ?? ''
+          return formatted
+        },
+        onClipboardPaste: (row, value) => {
+          if (row.own_members === undefined) return
+          let formatted: 'WaitToStart' | 'Running' | 'Success' | 'Fault' | undefined
+          if (value === 'WaitToStart') {
+            formatted = 'WaitToStart'
+          } else if (value === 'Running') {
+            formatted = 'Running'
+          } else if (value === 'Success') {
+            formatted = 'Success'
+          } else if (value === 'Fault') {
+            formatted = 'Fault'
+          } else {
+            formatted = undefined
+          }
+          row.own_members.State = formatted
+        },
+        comboProps: {
+          options: ['WaitToStart' as const, 'Running' as const, 'Success' as const, 'Fault' as const],
+          emitValueSelector: opt => opt,
+          matchingKeySelectorFromEmitValue: value => value,
+          matchingKeySelectorFromOption: opt => opt,
+          textSelector: opt => opt,
+        },
+      }
+      return comboSetting as Layout.ColumnEditSetting<GridRow, unknown>
+    })(),
   },
   {
     id: 'col6',
