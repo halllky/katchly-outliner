@@ -39,7 +39,7 @@ export const Page = () => {
   }), [])
 
   // データの読み込みと保存
-  const { loadAll, saveAll } = useKatchlyRepository()
+  const { loadAll, saveAll, nowSaving } = useKatchlyRepository()
   const handleLoad = useCallback(async () => {
     setNowLoading(true)
     try {
@@ -82,6 +82,7 @@ export const Page = () => {
       rowTypeData={rowTypes}
       rowData={rows}
       onSave={handleSave}
+      nowSaving={nowSaving}
       className="p-1 flex-1 overflow-hidden"
       style={debugStyle}
     >
@@ -96,10 +97,11 @@ export const Page = () => {
   </>
 }
 
-const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children }: {
+const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style, children }: {
   rowData: RowObject[]
   rowTypeData: RowType[]
   onSave: (data: { rows: RowObject[], rowTypes: RowType[] }) => void
+  nowSaving: boolean
   className?: string
   style?: React.CSSProperties
   children?: React.ReactNode
@@ -221,11 +223,13 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
 
   // 保存
   const handleSave = useCallback(() => {
-    onSave({
-      rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
-      rowTypes: Array.from(rowTypeMap.values()),
-    })
-  }, [onSave, rowTypeMap, fields])
+    if (!nowSaving) {
+      onSave({
+        rows: fields.filter(x => x.type === 'row').map(x => (x as GridRowOfRowObject).item),
+        rowTypes: Array.from(rowTypeMap.values()),
+      })
+    }
+  }, [nowSaving, onSave, rowTypeMap, fields])
 
   // -------------------------------------
   // 新規行型作成
@@ -357,7 +361,11 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, className, style, children 
       <PanelGroup direction="horizontal" className="w-full h-full" style={style}>
         <Panel className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
-            <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
+            {nowSaving ? (
+              <Input.IconButton onClick={handleSave} className="p-1" outline>保存中...</Input.IconButton>
+            ) : (
+              <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
+            )}
             <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
             <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
             <Input.IconButton icon={CubeIcon} onClick={openNewRowTypeDialog} hideText className="p-1">種類新規作成</Input.IconButton>
