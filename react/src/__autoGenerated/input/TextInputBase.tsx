@@ -103,7 +103,9 @@ export const TextInputBase = defineCustomComponent<string, {
 
     // コンボボックスではテキストにフォーカスが当たったままドロップダウンが展開されることがあるため
     // blur先がdivの外に移った時に強制的にドロップダウンを閉じる
-    if (divRef.current && e.relatedTarget && !divRef.current.contains(e.relatedTarget)) {
+    if (e.target === divRef.current
+      && e.relatedTarget
+      && !divRef.current.contains(e.relatedTarget)) {
       setOpen(false)
     }
 
@@ -138,8 +140,8 @@ export const TextInputBase = defineCustomComponent<string, {
     <div
       ref={divRef}
       className={readOnly
-        ? `inline-flex relative ${className} border border-transparent`
-        : `inline-flex relative ${className} border border-color-5 text-color-12 ${bgColor}`}
+        ? `inline-flex relative min-w-0 ${className} border border-transparent`
+        : `inline-flex relative min-w-0 ${className} border border-color-5 text-color-12 ${bgColor}`}
     >
       <input
         {...rest}
