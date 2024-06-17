@@ -649,7 +649,7 @@ const CommentList = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType }: {
   )
 }
 
-const CommnetView = React.memo(({ comment }: {
+const CommnetView = ({ comment }: {
   comment: Comment
 }) => {
   const editState = Util.getLocalRepositoryState(comment)
@@ -670,4 +670,4 @@ const CommnetView = React.memo(({ comment }: {
       </div>
     </div>
   )
-})
+}
