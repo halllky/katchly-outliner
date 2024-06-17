@@ -82,7 +82,7 @@ export const Page = () => {
       rowTypeData={rowTypes}
       rowData={rows}
       onSave={handleSave}
-      className="p-1 flex-1"
+      className="p-1 flex-1 overflow-hidden"
       style={debugStyle}
     >
       <Input.IconButton hideText onClick={handleLoad} icon={ArrowPathIcon} className="p-1">再読み込み</Input.IconButton>
