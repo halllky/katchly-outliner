@@ -88,7 +88,10 @@ export const useKatchlyRepository = () => {
       await post(`/api/RowOrder/insert-all-row-order`, { RowObjectIdList })
 
     } finally {
-      setNowSaving(false)
+      // 保存中の旨のメッセージが一瞬で消えると本当に保存できているか不安なので少し待つ
+      setTimeout(() => {
+        setNowSaving(false)
+      }, 500)
     }
   }, [nowSaving, get, post, httpDelete, userName])
 

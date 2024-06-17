@@ -53,12 +53,10 @@ export const Page = () => {
     }
   }, [loadAll, setNowLoading, setData])
 
-  const [, dispatchToast] = Util.useToastContext()
   const handleSave = useCallback(async (data: { rows: RowObject[], rowTypes: RowType[] }) => {
     await saveAll(data)
     setData(await loadAll())
-    dispatchToast(msg => msg.info('保存しました。'))
-  }, [saveAll, loadAll, setNowLoading, dispatchToast])
+  }, [saveAll, loadAll, setNowLoading])
 
   useEffect(() => {
     handleLoad()
@@ -361,14 +359,14 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       <PanelGroup direction="horizontal" className="w-full h-full" style={style}>
         <Panel className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
+            <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
+            <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
+            <Input.IconButton icon={CubeIcon} onClick={openNewRowTypeDialog} hideText className="p-1">種類新規作成</Input.IconButton>
             {nowSaving ? (
               <Input.IconButton onClick={handleSave} className="p-1" outline>保存中...</Input.IconButton>
             ) : (
               <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
             )}
-            <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
-            <Input.IconButton icon={TrashIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
-            <Input.IconButton icon={CubeIcon} onClick={openNewRowTypeDialog} hideText className="p-1">種類新規作成</Input.IconButton>
             <div className="flex-1"></div>
             {children}
             <Input.IconButton icon={ChevronRightIcon} onClick={toggleSideMenu} hideText className="p-1">サイドメニュー表示（Ctrl + B）</Input.IconButton>
