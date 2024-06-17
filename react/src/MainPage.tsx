@@ -511,7 +511,7 @@ const CommentList = ({ row, rowIndex, onChange, rowTypeMap, dispatchRowType }: {
       if (!rowType) return
       const comments = [...rowType.comments]
       updateFunction(comments)
-      if (rowType) dispatchRowType(state => state.set({ ...rowType, comments }))
+      dispatchRowType(state => state.set({ ...rowType, comments }))
     }
   }, [row, rowIndex, rowTypeMap, onChange, dispatchRowType])
 
