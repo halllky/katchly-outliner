@@ -85,7 +85,7 @@ export const Page = () => {
       className="p-1 flex-1 overflow-hidden"
       style={debugStyle}
     >
-      <Input.IconButton hideText onClick={handleLoad} icon={ArrowPathIcon} className="p-1">再読み込み</Input.IconButton>
+      <Input.IconButton hideText icon={ArrowPathIcon} onClick={handleLoad} className="p-1">再読み込み</Input.IconButton>
       <Input.IconButton hideText icon={Cog6ToothIcon} onClick={openDialog} className="p-1">設定</Input.IconButton>
     </AfterLoaded>
 
