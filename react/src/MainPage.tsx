@@ -146,7 +146,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
           <div className={`flex ${bgColor}`}>
             <RowStateBar state={getRowEditState(cellProps.row.original, rowTypeMap)} />
             <Indent row={cellProps.row.original} indentSize={indentSize} />
-            <span className="inline-block flex-1 px-1 overflow-hidden whitespace-nowrap">
+            <span className="inline-block flex-1 px-1 overflow-hidden whitespace-normal">
               {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
             </span>
             {comments.length > 0 && (
@@ -158,7 +158,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       },
       accessorFn: data => getLabelCellValue(data, rowTypeMap),
       editSetting: {
-        type: 'text',
+        type: 'multiline-text',
         getTextValue: data => getLabelCellValue(data, rowTypeMap),
         setTextValue: (row, value) => {
           if (row.type === 'row') {
@@ -180,14 +180,14 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       cell: cellProps => {
         const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
         return (
-          <span className={`block w-full px-1 overflow-hidden whitespace-nowrap ${bgColor}`}>
+          <span className={`block w-full px-1 overflow-hidden whitespace-normal ${bgColor}`}>
             {getAttrCellValue(cellProps.row.original, rowTypeMap, i)}&nbsp;
           </span>
         )
       },
       accessorFn: data => getAttrCellValue(data, rowTypeMap, i),
       editSetting: {
-        type: 'text',
+        type: 'multiline-text',
         getTextValue: data => getAttrCellValue(data, rowTypeMap, i),
         setTextValue: (row, value) => {
           if (row.type === 'row') {
