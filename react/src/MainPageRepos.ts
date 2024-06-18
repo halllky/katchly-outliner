@@ -264,7 +264,22 @@ const CommentConverter = {
         result.push([Util.getLocalRepositoryState(comment), apiType])
       }
     }
-    return result
+
+    // RowObjectの状態と合わせてコメントの登録更新削除の別を決定する
+    const result2: [Util.LocalRepositoryState, AggregateType.CommentSaveCommand][] = []
+    const rowState = Util.getLocalRepositoryState(rowObject)
+    for (const [commentState, apiType] of result) {
+      if (rowState === '-') {
+        if (commentState === '+') {
+          continue // 削除される行の新規追加コメントは登録対象外
+        } else {
+          result2.push(['-', apiType]) // Rowが削除されるならコメントも一緒に削除される
+        }
+      } else {
+        result2.push([commentState, apiType])
+      }
+    }
+    return result2
   },
   toServerApiTypeFromRowType: (rowType: RowType): [Util.LocalRepositoryState, AggregateType.CommentSaveCommand][] => {
     const result: [Util.LocalRepositoryState, AggregateType.CommentSaveCommand][] = []
@@ -284,7 +299,22 @@ const CommentConverter = {
         result.push([Util.getLocalRepositoryState(comment), apiType])
       }
     }
-    return result
+
+    // RowObjectの状態と合わせてコメントの登録更新削除の別を決定する
+    const result2: [Util.LocalRepositoryState, AggregateType.CommentSaveCommand][] = []
+    const rowTypeState = Util.getLocalRepositoryState(rowType)
+    for (const [commentState, apiType] of result) {
+      if (rowTypeState === '-') {
+        if (commentState === '+') {
+          continue // 削除される行の新規追加コメントは登録対象外
+        } else {
+          result2.push(['-', apiType]) // Rowが削除されるならコメントも一緒に削除される
+        }
+      } else {
+        result2.push([commentState, apiType])
+      }
+    }
+    return result2
   },
   fromServerApiType: (arr: AggregateType.CommentDisplayData[] | undefined): Comment[] => {
     if (!arr) return []
