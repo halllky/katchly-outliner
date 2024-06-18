@@ -681,10 +681,10 @@ const CommnetView = ({ comment }: {
   const editState = Util.getLocalRepositoryState(comment)
 
   return (
-    <div key={comment.id} className="flex border-b border-color-3">
+    <div key={comment.id} className="flex">
       <RowStateBar state={editState} />
       <div style={{ flexBasis: comment.indent * 28 }}></div>
-      <div className="flex-1 flex flex-col border-b border-color-3">
+      <div className="flex-1 flex flex-col">
         <div className="flex flex-wrap text-xs text-color-5">
           {comment.author}
           <div className="flex-1"></div>
