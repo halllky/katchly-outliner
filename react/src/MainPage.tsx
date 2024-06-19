@@ -244,6 +244,8 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
 
   // -------------------------------------
   // イベント
+  Util.usePageOutPrompt()
+
   const handleAddRow = useCallback((nextRow?: boolean) => {
     const selectedRows = gridRef.current?.getSelectedRows()
     if (!selectedRows || selectedRows.length === 0) {
