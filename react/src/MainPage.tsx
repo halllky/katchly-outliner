@@ -146,7 +146,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
           <div className={`flex ${bgColor}`}>
             <RowStateBar state={getRowEditState(cellProps.row.original, rowTypeMap)} />
             <Indent row={cellProps.row.original} indentSize={indentSize} />
-            <span className="inline-block flex-1 px-1 overflow-hidden whitespace-normal">
+            <span className="inline-block flex-1 px-1 overflow-hidden whitespace-nowrap text-ellipsis">
               {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
             </span>
             {comments.length > 0 && (
