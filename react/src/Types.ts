@@ -41,11 +41,18 @@ export type GridRow = GridRowOfRowObject | GridRowOfRowType
 export type GridRowOfRowObject = {
   type: 'row'
   item: RowObject
+  indentInfo: RowIndentInfo
 }
 export type GridRowOfRowType = {
   type: 'rowType'
   rowTypeId: RowTypeId
+  indentInfo: RowIndentInfo
 }
+
+export type RowIndentInfo = {
+  /** インデントのその位置に縦のグレーの線が引かれるかどうか */
+  hasVerticalLine: boolean
+}[]
 
 // ---------------------------------------------------
 
@@ -73,6 +80,85 @@ export const useRowTypeMap = () => {
 export type RowTypeMapDispatcher = ReturnType<typeof useRowTypeMap>['1']
 
 // ---------------------------------------------------
+// レイアウトの再計算
+
+export const updateIndentInfo = (allRows: GridRow[]): GridRow[] => {
+  // 同じ行型ごとにグルーピング
+  type RowGroupInfo = { start: number, end: number, mostShallowIndent: number, rows: GridRow[] }
+  const groups: RowGroupInfo[] = []
+  let currentGroup: RowGroupInfo = { start: -1, end: -1, rows: [], mostShallowIndent: Infinity }
+  let loopVar = 0
+  while (true) {
+    if (loopVar >= allRows.length) {
+      break
+    }
+    const currentRow = allRows[loopVar]
+    if (currentRow.type === 'rowType') {
+      currentGroup = { start: loopVar, end: Infinity, mostShallowIndent: Infinity, rows: [currentRow] }
+    }
+    if (currentRow.type === 'row') {
+      currentGroup.rows.push(currentRow)
+    }
+
+    loopVar++
+
+    if (allRows[loopVar]?.type !== 'row') {
+      currentGroup.end = loopVar - 1
+      currentGroup.mostShallowIndent = Math.min(...currentGroup.rows.filter(r => r.type === 'row').map(r => (r as GridRowOfRowObject).item.indent))
+      groups.push(currentGroup)
+    }
+  }
+
+  // グループごとの最も浅いインデントの情報からグループ間の親子関係を計算する
+  const parentMap = new Map<RowGroupInfo, { parent: RowGroupInfo | undefined }>()
+  const groups2 = groups as RowGroupInfo[]
+  groups2.sort((a, b) => b.start - a.start) // 下から順に走査する必要があるのでstart降順ソート
+
+  for (const group of groups2) {
+    const parent = groups2.find(g =>
+      g.start < group.start
+      && g.mostShallowIndent < group.mostShallowIndent)
+    parentMap.set(group, { parent })
+  }
+
+  // コンポーネントレンダリング用のインデント情報を組み立てて返す
+  const groups3 = Array.from(parentMap).sort((a, b) => a[0].start - b[0].start)
+  const result: GridRow[] = []
+  console.table(groups3)
+  for (const [group, { parent }] of groups3) {
+    // 祖先のグループ達の最も浅いインデントを配列化
+    const ancestorsMostShallowIndent: number[] = []
+    let p = parent
+    while (true) {
+      if (p === undefined) break
+      ancestorsMostShallowIndent.push(p.mostShallowIndent)
+      p = parentMap.get(p)?.parent
+    }
+
+    for (const row of group.rows) {
+      const indentInfo: RowIndentInfo = []
+      const itemIndent = row.type === 'row'
+        ? row.item.indent
+        : group.mostShallowIndent
+      let i = 0
+      while (i < itemIndent) {
+        indentInfo.push({ hasVerticalLine: false })
+
+        i++
+
+        if (ancestorsMostShallowIndent.includes(i)) {
+          indentInfo.push({ hasVerticalLine: true }) // 最も浅いインデントが0のグループは縦の線を入れないのでこの処理はi++の後
+        }
+        if (i === group.mostShallowIndent && row.type === 'row') {
+          indentInfo.push({ hasVerticalLine: true }) // 自身のグループの分
+        }
+      }
+      result.push({ ...row, indentInfo })
+    }
+  }
+  return result
+}
+
 /** Rowを行順に並べ、RowTypeが変わったタイミングでその行の型を表す行を挿入する */
 export const toGridRows = (rowData: RowObject[]): GridRow[] => {
   const gridRows: GridRow[] = []
@@ -85,18 +171,19 @@ export const toGridRows = (rowData: RowObject[]): GridRow[] => {
       gridRows.push({
         type: 'rowType',
         rowTypeId: currentRow.type,
+        indentInfo: [],
       })
     }
 
     gridRows.push({
       type: 'row',
       item: currentRow,
+      indentInfo: [],
     })
   }
   return gridRows
 }
 
-// -----------------------------------------
 /** 行範囲編集 */
 export const useEditRowObject = (
   fields: UseFieldArrayReturnType['fields'],
@@ -131,10 +218,10 @@ export const useEditRowObject = (
       if (i >= 1) {
         const aboveRow = recalculateRange[i - 1]
         if (aboveRow.item.type !== currentRow.item.type) {
-          withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
+          withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type, indentInfo: [] })
         }
       } else if (udpateFirstRowType) {
-        withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
+        withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type, indentInfo: [] })
       }
 
       withRowType.push(currentRow)
@@ -236,6 +323,7 @@ export const insertNewRow = (aboveRow: GridRow | undefined): { newRow: GridRowOf
       willBeDeleted: false,
       comments: [],
     },
+    indentInfo: aboveRow?.indentInfo ? [...aboveRow.indentInfo] : [],
   }
 
   return { newRow, newRowType }
