@@ -302,16 +302,20 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
   const onGridKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // TABキーによるインデントの上げ下げ
     if (e.key === 'Tab') {
-      const selectedRows = gridRef.current?.getSelectedRows()
-      if (selectedRows === undefined) return
-      for (const { row, rowIndex } of selectedRows) {
-        if (row.type === 'rowType') continue
-        row.item.indent = e.shiftKey
-          ? Math.max(0, row.item.indent - 1)
-          : (row.item.indent + 1)
-        row.item.willBeChanged = true
-        update(rowIndex, row)
-      }
+      const selectedRowIndexes = gridRef.current?.getSelectedRows().map(({ rowIndex }) => rowIndex)
+      if (selectedRowIndexes === undefined) return
+      editRowObject([Math.min(...selectedRowIndexes), Math.max(...selectedRowIndexes)], rows => {
+        return rows.map(row => ({
+          ...row,
+          item: {
+            ...row.item,
+            indent: e.shiftKey
+              ? Math.max(0, row.item.indent - 1)
+              : (row.item.indent + 1),
+            willBeChanged: true,
+          },
+        }))
+      })
       e.preventDefault()
     }
     // Enter による行追加
