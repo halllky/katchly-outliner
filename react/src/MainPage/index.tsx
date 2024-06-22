@@ -110,8 +110,13 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
   const gridRef = useRef<Collection.DataTableRef<GridRow>>(null)
   const [activeRow, setActiveRow] = useState<{ rowIndex: number }>()
 
-  // サイドメニュー
   const { data: appSettings, save: saveAppSettings } = useAppSettings()
+  const { detailViewPosition, windowTitle } = appSettings
+  useEffect(() => {
+    document.title = windowTitle ?? ''
+  }, [windowTitle])
+
+  // サイドメニュー
   const toggleSideMenu = useCallback(() => {
     let detailViewPosition: typeof appSettings['detailViewPosition']
     if (appSettings.detailViewPosition === 'bottom') {
@@ -373,7 +378,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
   return <>
     <div onKeyDown={onPageKeyDown} className={`outline-none ${className ?? ''}`} tabIndex={0}>
       <PanelGroup
-        direction={appSettings.detailViewPosition === 'bottom' ? 'vertical' : 'horizontal'}
+        direction={detailViewPosition === 'bottom' ? 'vertical' : 'horizontal'}
         className="w-full h-full"
         style={style}
       >
@@ -402,10 +407,10 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
           />
 
         </Panel>
-        <PanelResizeHandle className={getDetailViewResizeHandleClass(appSettings.detailViewPosition)} />
+        <PanelResizeHandle className={getDetailViewResizeHandleClass(detailViewPosition)} />
 
         {/* 詳細ビュー */}
-        <Panel defaultSize={25} className={`${appSettings.detailViewPosition ? '' : 'hidden'}`}>
+        <Panel defaultSize={25} className={`${detailViewPosition ? '' : 'hidden'}`}>
           <DetailView
             row={activeRow?.rowIndex === undefined ? undefined : fields[activeRow.rowIndex]}
             rowIndex={activeRow?.rowIndex}
