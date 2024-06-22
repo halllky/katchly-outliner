@@ -122,7 +122,7 @@ export const updateIndentInfo = (allRows: GridRow[]): void => {
       }
     }
 
-    // コンポーネントレンダリング用のインデント情報を組み立てる
+    // スタックに積まれた祖先の情報をもとにインデントの情報の配列を組み立てて引数のオブジェクトのプロパティに設定
     const ancestorsMostShallowIndent = new Set(ancestorsStack.map(g => g.mostShallowIndent))
     for (const row of group.rows) {
       const indentInfo: RowIndentInfo = []
@@ -133,15 +133,20 @@ export const updateIndentInfo = (allRows: GridRow[]): void => {
       while (i < itemIndent) {
         indentInfo.push({ hasVerticalLine: false })
         i++
+        // 最も浅いインデントが0のグループは縦の線を入れないのでこの処理はi++の後
         if (ancestorsMostShallowIndent.has(i)) {
-          indentInfo.push({ hasVerticalLine: true }) // 最も浅いインデントが0のグループは縦の線を入れないのでこの処理はi++の後
+          indentInfo.push({ hasVerticalLine: true })
         }
-        if (i === group.mostShallowIndent && row.type === 'row') {
-          indentInfo.push({ hasVerticalLine: true }) // 自身のグループの分
+        // 自身のグループの分
+        if (i === group.mostShallowIndent
+          && row.type === 'row' // 行型の行は灰色の線の左上の角のところに表示させたいので
+        ) {
+          indentInfo.push({ hasVerticalLine: true })
         }
       }
       row.indentInfo = indentInfo
     }
+
     // 次のループ用
     ancestorsStack.push(group)
   }
