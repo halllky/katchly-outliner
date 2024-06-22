@@ -113,7 +113,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
       const cell = row.getAllCells().find(cell => cell.column.id === caretCell.colId)
       if (cell) cellEditorRef.current.startEditing(cell)
     },
-  }), [getSelectedRows, cellEditorRef, api, caretCell])
+  }), [getSelectedRows, divRef, cellEditorRef, api, caretCell])
 
   return (
     <div

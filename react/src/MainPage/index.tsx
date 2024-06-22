@@ -14,13 +14,16 @@ import { DetailView, DetailViewRef } from './DetailView'
 export default function () {
 
   const divRef = useRef<HTMLDivElement>(null)
+  const appStyle = useMemo((): React.CSSProperties => ({
+    fontFamily: '"Cascadia Mono", "BIZ UDGothic"',
+  }), [])
 
   return (
     <Util.ImeContextProvider elementRef={divRef.current}>
       <Util.ToastContextProvider>
         <Util.MsgContextProvider>
           <AppSettingContext>
-            <div className="relative h-full w-full flex flex-col" ref={divRef}>
+            <div className="relative h-full w-full flex flex-col" ref={divRef} style={appStyle}>
               <Util.InlineMessageList />
               <Page />
             </div>
@@ -36,9 +39,6 @@ export const Page = () => {
 
   const [nowLoading, setNowLoading] = useState(true)
   const [{ rows, rowTypes }, setData] = useState<{ rows: RowObject[], rowTypes: RowType[] }>(() => ({ rows: [], rowTypes: [] }))
-  const debugStyle = useMemo((): React.CSSProperties => ({
-    fontFamily: '"Cascadia Mono", "BIZ UDGothic"',
-  }), [])
 
   // データの読み込みと保存
   const { loadAll, saveAll, nowSaving } = useKatchlyRepository()
@@ -84,7 +84,6 @@ export const Page = () => {
       onSave={handleSave}
       nowSaving={nowSaving}
       className="p-1 flex-1 overflow-hidden"
-      style={debugStyle}
     >
       <Input.IconButton hideText icon={ArrowPathIcon} onClick={handleLoad} className="p-1">再読み込み</Input.IconButton>
       <Input.IconButton hideText icon={Cog6ToothIcon} onClick={openDialog} className="p-1">設定</Input.IconButton>

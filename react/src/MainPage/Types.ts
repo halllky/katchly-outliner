@@ -33,7 +33,12 @@ export type RowObjectAttr = {
 export type RowType = EditableObject & {
   id: RowTypeId
   name?: string
-  columns: { id: ColumnId, name?: string, comments: Comment[] }[]
+  columns: RowTypeColumn[]
+  comments: Comment[]
+}
+export type RowTypeColumn = {
+  id: ColumnId
+  name?: string
   comments: Comment[]
 }
 
