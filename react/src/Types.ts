@@ -82,7 +82,7 @@ export type RowTypeMapDispatcher = ReturnType<typeof useRowTypeMap>['1']
 // ---------------------------------------------------
 // レイアウトの再計算
 
-export const updateIndentInfo = (allRows: GridRow[]): GridRow[] => {
+export const updateIndentInfo = (allRows: GridRow[]): void => {
   // 同じ行型ごとにグルーピング
   type RowGroupInfo = { start: number, end: number, mostShallowIndent: number, rows: GridRow[] }
   const groups: RowGroupInfo[] = []
@@ -109,32 +109,21 @@ export const updateIndentInfo = (allRows: GridRow[]): GridRow[] => {
     }
   }
 
-  // グループごとの最も浅いインデントの情報からグループ間の親子関係を計算する
-  const parentMap = new Map<RowGroupInfo, { parent: RowGroupInfo | undefined }>()
-  const groups2 = groups as RowGroupInfo[]
-  groups2.sort((a, b) => b.start - a.start) // 下から順に走査する必要があるのでstart降順ソート
-
-  for (const group of groups2) {
-    const parent = groups2.find(g =>
-      g.start < group.start
-      && g.mostShallowIndent < group.mostShallowIndent)
-    parentMap.set(group, { parent })
-  }
-
-  // コンポーネントレンダリング用のインデント情報を組み立てて返す
-  const groups3 = Array.from(parentMap).sort((a, b) => a[0].start - b[0].start)
-  const result: GridRow[] = []
-  console.table(groups3)
-  for (const [group, { parent }] of groups3) {
-    // 祖先のグループ達の最も浅いインデントを配列化
-    const ancestorsMostShallowIndent: number[] = []
-    let p = parent
-    while (true) {
-      if (p === undefined) break
-      ancestorsMostShallowIndent.push(p.mostShallowIndent)
-      p = parentMap.get(p)?.parent
+  // コンポーネントレンダリング用のインデント情報を組み立てる
+  const ancestorsStack: RowGroupInfo[] = []
+  for (const group of groups) {
+    // スタックに積まれているグループのうちこのグループの祖先ではないものをスタックから除く
+    while (ancestorsStack.length > 0) {
+      const peek = ancestorsStack[ancestorsStack.length - 1]
+      if (peek.mostShallowIndent < group.mostShallowIndent) {
+        break // スタックの最後の要素はこのグループの親である
+      } else {
+        ancestorsStack.splice(ancestorsStack.length - 1, 1)
+      }
     }
 
+    // コンポーネントレンダリング用のインデント情報を組み立てる
+    const ancestorsMostShallowIndent = new Set(ancestorsStack.map(g => g.mostShallowIndent))
     for (const row of group.rows) {
       const indentInfo: RowIndentInfo = []
       const itemIndent = row.type === 'row'
@@ -143,20 +132,19 @@ export const updateIndentInfo = (allRows: GridRow[]): GridRow[] => {
       let i = 0
       while (i < itemIndent) {
         indentInfo.push({ hasVerticalLine: false })
-
         i++
-
-        if (ancestorsMostShallowIndent.includes(i)) {
+        if (ancestorsMostShallowIndent.has(i)) {
           indentInfo.push({ hasVerticalLine: true }) // 最も浅いインデントが0のグループは縦の線を入れないのでこの処理はi++の後
         }
         if (i === group.mostShallowIndent && row.type === 'row') {
           indentInfo.push({ hasVerticalLine: true }) // 自身のグループの分
         }
       }
-      result.push({ ...row, indentInfo })
+      row.indentInfo = indentInfo
     }
+    // 次のループ用
+    ancestorsStack.push(group)
   }
-  return result
 }
 
 /** Rowを行順に並べ、RowTypeが変わったタイミングでその行の型を表す行を挿入する */

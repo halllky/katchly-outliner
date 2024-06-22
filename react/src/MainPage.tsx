@@ -362,6 +362,8 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
     }
   }, [update, handleAddRow, handleDeleteRows, fields, rowTypeMap, editRowObject])
 
+  updateIndentInfo(fields) // TODO
+
   return <>
     <div onKeyDown={onPageKeyDown} className={`outline-none ${className ?? ''}`} tabIndex={0}>
       <PanelGroup direction="horizontal" className="w-full h-full" style={style}>
@@ -382,7 +384,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
 
           <Collection.DataTable
             ref={gridRef}
-            data={updateIndentInfo(fields)}
+            data={fields}
             columns={columnDefs}
             onChangeRow={update}
             onKeyDown={onGridKeyDown}
