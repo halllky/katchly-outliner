@@ -9,7 +9,7 @@ import { GridRow, GridRowOfRowObject, PageFormState, ROWTYPE_STYLE, RowObject, R
 import { useKatchlyRepository } from './MainPageRepos'
 import { AppSetting, AppSettingContext, AppSttingsDialog, useAppSettings } from './AppSettings'
 import { RowStateBar } from './RowStateBar'
-import DetailView from './DetailView'
+import { DetailView, DetailViewRef } from './DetailView'
 
 export default function () {
 
@@ -109,6 +109,11 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
 
   const gridRef = useRef<Collection.DataTableRef<GridRow>>(null)
   const [activeRow, setActiveRow] = useState<{ rowIndex: number }>()
+
+  // 画面初期表示時にグリッドにフォーカス
+  useEffect(() => {
+    gridRef.current?.focus()
+  }, [gridRef])
 
   const { data: appSettings, save: saveAppSettings } = useAppSettings()
   const { detailViewPosition, windowTitle } = appSettings
@@ -298,6 +303,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
     remove(deletedRowIndexes)
   }, [update, remove])
 
+  const detailViewRef = useRef<DetailViewRef>(null)
   const onPageKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // Ctrl + S による保存
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -312,7 +318,16 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       toggleSideMenu()
       e.preventDefault()
     }
-  }, [onSave, fields, rowTypeMap, toggleSideMenu])
+    // Ctrl + K による詳細欄フォーカス
+    else if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      detailViewRef.current?.focus()
+      e.preventDefault()
+    }
+  }, [onSave, fields, rowTypeMap, toggleSideMenu, detailViewRef])
+
+  const onEscapeInDetailView = useCallback(() => {
+    gridRef.current?.focus()
+  }, [gridRef])
 
   const onGridKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // TABキーによるインデントの上げ下げ
@@ -412,12 +427,14 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
         {/* 詳細ビュー */}
         <Panel defaultSize={25} className={`${detailViewPosition ? '' : 'hidden'}`}>
           <DetailView
+            ref={detailViewRef}
             row={activeRow?.rowIndex === undefined ? undefined : fields[activeRow.rowIndex]}
             rowIndex={activeRow?.rowIndex}
             rowTypeMap={rowTypeMap}
             updateRow={update}
             changeRowType={changeRowType}
             dispatchRowType={dispatchRowType}
+            onEscape={onEscapeInDetailView}
           />
         </Panel>
       </PanelGroup>
