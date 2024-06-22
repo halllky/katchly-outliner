@@ -137,21 +137,23 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       header: '　',
       size: 640,
       cell: cellProps => {
-        const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
+        const bgColor = cellProps.row.original.type === 'rowType' ? `border-l border-color-4 ${ROWTYPE_STYLE}` : ''
         const comments = cellProps.row.original.type === 'row'
           ? cellProps.row.original.item.comments
           : (rowTypeMap.get(cellProps.row.original.rowTypeId)?.comments ?? [])
 
         return (
-          <div className={`flex ${bgColor}`}>
+          <div className="flex">
             <RowStateBar state={getRowEditState(cellProps.row.original, rowTypeMap)} />
             <Indent row={cellProps.row.original} indentSize={indentSize} />
-            <span className="inline-block flex-1 px-1 overflow-hidden whitespace-nowrap text-ellipsis">
-              {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
-            </span>
-            {comments.length > 0 && (
-              <ChatBubbleLeftEllipsisIcon className="text-color-5 w-4 h-4" />
-            )}
+            <div className={`flex-1 flex overflow-hidden ${bgColor}`}>
+              <span className="inline-block flex-1 px-1 overflow-hidden whitespace-nowrap text-ellipsis">
+                {getLabelCellValue(cellProps.row.original, rowTypeMap)}&nbsp;
+              </span>
+              {comments.length > 0 && (
+                <ChatBubbleLeftEllipsisIcon className="text-color-5 w-4 h-4" />
+              )}
+            </div>
           </div>
         )
 
@@ -300,16 +302,18 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
   const onGridKeyDown: React.KeyboardEventHandler = useCallback(e => {
     // TABキーによるインデントの上げ下げ
     if (e.key === 'Tab') {
-      const selectedRows = gridRef.current?.getSelectedRows()
-      if (selectedRows === undefined) return
-      for (const { row, rowIndex } of selectedRows) {
-        if (row.type === 'rowType') continue
-        row.item.indent = e.shiftKey
-          ? Math.max(0, row.item.indent - 1)
-          : (row.item.indent + 1)
-        row.item.willBeChanged = true
-        update(rowIndex, row)
-      }
+      const selectedRowIndexes = gridRef.current?.getSelectedRows().map(({ rowIndex }) => rowIndex)
+      if (selectedRowIndexes === undefined) return
+      editRowObject([Math.min(...selectedRowIndexes), Math.max(...selectedRowIndexes)], rows => rows.map(row => ({
+        ...row,
+        item: {
+          ...row.item,
+          indent: e.shiftKey
+            ? Math.max(0, row.item.indent - 1)
+            : (row.item.indent + 1),
+          willBeChanged: true,
+        },
+      })))
       e.preventDefault()
     }
     // Enter による行追加
@@ -472,7 +476,7 @@ const Indent = ({ row, indentSize }: {
   const style: React.CSSProperties = {
     flexBasis: row.type === 'row'
       ? row.item.indent * indentSize
-      : undefined,
+      : row.indent * indentSize,
   }
   return (
     <div style={style}></div>

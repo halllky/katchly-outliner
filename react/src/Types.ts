@@ -45,11 +45,12 @@ export type GridRowOfRowObject = {
 export type GridRowOfRowType = {
   type: 'rowType'
   rowTypeId: RowTypeId
+  indent: number
 }
 
 // ---------------------------------------------------
 
-export const ROWTYPE_STYLE = 'text-neutral-500 bg-neutral-500/10'
+export const ROWTYPE_STYLE = 'text-color-6 bg-color-2'
 
 export type PageFormState = {
   gridRows: GridRow[]
@@ -76,22 +77,25 @@ export type RowTypeMapDispatcher = ReturnType<typeof useRowTypeMap>['1']
 /** Rowを行順に並べ、RowTypeが変わったタイミングでその行の型を表す行を挿入する */
 export const toGridRows = (rowData: RowObject[]): GridRow[] => {
   const gridRows: GridRow[] = []
-  for (let i = 0; i < rowData.length; i++) {
+  let mostShallowIndent = Infinity
+  for (let i = rowData.length - 1; i >= 0; i--) {
     const currentRow = rowData[i]
-    const previousRow = i === 0 ? undefined : rowData[i - 1]
-
-    // 行の型が変わったタイミングでRowTypeを表す行を挿入する
-    if (previousRow === undefined || currentRow.type !== previousRow.type) {
-      gridRows.push({
-        type: 'rowType',
-        rowTypeId: currentRow.type,
-      })
-    }
-
-    gridRows.push({
+    gridRows.unshift({
       type: 'row',
       item: currentRow,
     })
+    if (currentRow.indent < mostShallowIndent) {
+      mostShallowIndent = currentRow.indent
+    }
+    // 行の型が変わるタイミングまたは表の先頭でRowTypeを表す行を挿入する
+    if (rowData[i - 1]?.type !== currentRow.type) {
+      gridRows.unshift({
+        type: 'rowType',
+        rowTypeId: currentRow.type,
+        indent: mostShallowIndent,
+      })
+      mostShallowIndent = Infinity
+    }
   }
   return gridRows
 }
@@ -124,23 +128,23 @@ export const useEditRowObject = (
 
     // 行型を再計算
     const withRowType: GridRow[] = []
-    for (let i = 0; i < recalculateRange.length; i++) {
+    let mostShallowIndent = Infinity
+    for (let i = recalculateRange.length - 1; i >= 0; i--) {
       const currentRow = recalculateRange[i]
-
-      // 行型が変化したタイミングで行型を表すデータを挿入する
-      if (i >= 1) {
-        const aboveRow = recalculateRange[i - 1]
-        if (aboveRow.item.type !== currentRow.item.type) {
-          withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
-        }
-      } else if (udpateFirstRowType) {
-        withRowType.push({ type: 'rowType', rowTypeId: currentRow.item.type })
+      withRowType.unshift(currentRow)
+      if (currentRow.item.indent < mostShallowIndent) {
+        mostShallowIndent = currentRow.item.indent
       }
 
-      withRowType.push(currentRow)
+      // 行型が変化したタイミングで行型を表すデータを挿入する
+      if (i >= 1 && recalculateRange[i - 1].item.type !== currentRow.item.type
+        || i === 0 && udpateFirstRowType) {
+        withRowType.unshift({ type: 'rowType', rowTypeId: currentRow.item.type, indent: mostShallowIndent })
+        mostShallowIndent = Infinity
+      }
     }
 
-    // fieldsを更新
+    // 編集範囲内のfieldsを更新
     const updateRangeStartIndex = above ?? 0
     const updateRangeEndIndex = below ?? fields.length - 1
     const itemCountBeforeUpdate = updateRangeEndIndex - updateRangeStartIndex + 1
@@ -163,6 +167,15 @@ export const useEditRowObject = (
         update(updateRangeStartIndex + i, { ...withRowType[i] })
       }
     }
+
+    // 編集範囲外であっても上方の行型の行のインデントは影響を受けることがある
+    const updatedFileds = [
+      ...fields.slice(0, updateRangeStartIndex),
+      ...withRowType,
+      ...fields.slice(updateRangeEndIndex + 1),
+    ]
+    const group = getGroupAt(updateRangeStartIndex, updatedFileds)
+    update(group.start, { ...group.rowType, indent: Math.min(...group.rows.map(r => r.item.indent)) })
   }, [fields, insert, update, remove])
 }
 
@@ -181,6 +194,45 @@ export const getBelowRowObjectIndex = (currentIndex: number, all: GridRow[]): nu
     if (all[currentIndex]?.type === 'row') return currentIndex
   }
   return undefined
+}
+
+type SameRowTypeGroup = {
+  rowType: GridRowOfRowType
+  rows: GridRowOfRowObject[]
+  start: number
+  end: number
+}
+/**
+ * 同じ行型の塊のうち最後に現れるグループを返します。
+ * @param rowIndex この位置にあるグループを返します。
+ * @param allRows 行型が適切な位置に挿入されている前提の配列
+ */
+const getGroupAt = (rowIndex: number, allRows: GridRow[]): SameRowTypeGroup => {
+  // 上方向に走査して行型の行を探す
+  let rowType: GridRowOfRowType | undefined = undefined
+  let start = rowIndex
+  while (start >= 0) {
+    const row = allRows[start]
+    if (row.type === 'rowType') {
+      rowType = row
+      break
+    }
+    start--
+  }
+  if (rowType === undefined) throw new Error('引数に渡された配列は行型が適切な位置に挿入されていない')
+  // 下方向に走査して同じ行型の終わりまで行を集める
+  const rows: GridRowOfRowObject[] = []
+  let end = start + 1
+  while (end < allRows.length) {
+    const row = allRows[end]
+    if (row.type === 'row') {
+      rows.push(row)
+    } else {
+      break
+    }
+    end++
+  }
+  return { rowType, rows, start, end }
 }
 
 export const moveArrayItem = <T>(arr: T[], { from, to }: { from: number, to: number }): T[] => {
