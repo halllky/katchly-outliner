@@ -4,6 +4,7 @@ import * as Util from './util'
 // ------------------ NIJO::BackgroundTaskEntity ------------------
 
 // ------------------ Row ------------------
+/** Rowの登録・更新・削除用のデータ型 */
 export type RowSaveCommand = {
   ID?: string
   Text?: string
@@ -16,20 +17,24 @@ export type RowSaveCommand = {
   UpdateUser?: string
 }
 
+/** 画面上でRowのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createRow = (): RowSaveCommand => ({
   ID: UUID.generate(),
   Attrs: [],
 })
 
+/** Attrsの登録・更新・削除用のデータ型 */
 export type AttrsSaveCommand = {
   ColType?: Util.ItemKey
   Value?: string
   UpdatedOn?: string
 }
 
+/** 画面上でAttrsのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createAttrs = (): AttrsSaveCommand => ({
 })
 
+/** Rowの一覧検索条件 */
 export type RowSearchCondition = {
   ID?: string
   Text?: string
@@ -40,11 +45,13 @@ export type RowSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Attrsの一覧検索条件 */
 export type AttrsSearchCondition = {
   ColType: Attrs_ColTypeSearchCondition
   Value?: string
   UpdatedOn: { From?: string, To?: string }
 }
+/** RowTypeの一覧検索条件 */
 export type Row_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -53,11 +60,13 @@ export type Row_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Columnsの一覧検索条件 */
 export type Attrs_ColTypeSearchCondition = {
   Parent: Attrs_ColType_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Attrs_ColType_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -195,18 +204,22 @@ export type AttrsRefInfo = {
 
 
 // ------------------ RowOrder ------------------
+/** RowOrderの登録・更新・削除用のデータ型 */
 export type RowOrderSaveCommand = {
   Row?: Util.ItemKey
   Order?: number
 }
 
+/** 画面上でRowOrderのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createRowOrder = (): RowOrderSaveCommand => ({
 })
 
+/** RowOrderの一覧検索条件 */
 export type RowOrderSearchCondition = {
   Row: RowOrder_RowSearchCondition
   Order: { From?: number, To?: number }
 }
+/** Rowの一覧検索条件 */
 export type RowOrder_RowSearchCondition = {
   ID?: string
   Text?: string
@@ -217,6 +230,7 @@ export type RowOrder_RowSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** RowTypeの一覧検索条件 */
 export type RowOrder_Row_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -285,6 +299,7 @@ export type RowOrderRefInfo = {
 
 
 // ------------------ RowType ------------------
+/** RowTypeの登録・更新・削除用のデータ型 */
 export type RowTypeSaveCommand = {
   ID?: string
   RowTypeName?: string
@@ -295,20 +310,24 @@ export type RowTypeSaveCommand = {
   UpdateUser?: string
 }
 
+/** 画面上でRowTypeのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createRowType = (): RowTypeSaveCommand => ({
   ID: UUID.generate(),
   Columns: [],
 })
 
+/** Columnsの登録・更新・削除用のデータ型 */
 export type ColumnsSaveCommand = {
   ColumnId?: string
   ColumnName?: string
 }
 
+/** 画面上でColumnsのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createColumns = (): ColumnsSaveCommand => ({
   ColumnId: UUID.generate(),
 })
 
+/** RowTypeの一覧検索条件 */
 export type RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -317,6 +336,7 @@ export type RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Columnsの一覧検索条件 */
 export type ColumnsSearchCondition = {
   ColumnId?: string
   ColumnName?: string
@@ -406,6 +426,7 @@ export type ColumnsRefInfo = {
 
 
 // ------------------ Comment ------------------
+/** Commentの登録・更新・削除用のデータ型 */
 export type CommentSaveCommand = {
   ID?: string
   Text?: string
@@ -420,10 +441,12 @@ export type CommentSaveCommand = {
   TargetColumn?: Util.ItemKey
 }
 
+/** 画面上でCommentのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createComment = (): CommentSaveCommand => ({
   ID: UUID.generate(),
 })
 
+/** Commentの一覧検索条件 */
 export type CommentSearchCondition = {
   ID?: string
   Text?: string
@@ -437,6 +460,7 @@ export type CommentSearchCondition = {
   TargetRowType: Comment_TargetRowTypeSearchCondition
   TargetColumn: Comment_TargetColumnSearchCondition
 }
+/** Rowの一覧検索条件 */
 export type Comment_TargetRowSearchCondition = {
   ID?: string
   Text?: string
@@ -447,6 +471,7 @@ export type Comment_TargetRowSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Comment_TargetRow_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -455,12 +480,14 @@ export type Comment_TargetRow_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Attrsの一覧検索条件 */
 export type Comment_TargetCellSearchCondition = {
   Parent: Comment_TargetCell_ParentSearchCondition
   ColType: Comment_TargetCell_ColTypeSearchCondition
   Value?: string
   UpdatedOn: { From?: string, To?: string }
 }
+/** Rowの一覧検索条件 */
 export type Comment_TargetCell_ParentSearchCondition = {
   ID?: string
   Text?: string
@@ -471,6 +498,7 @@ export type Comment_TargetCell_ParentSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Comment_TargetCell_Parent_RowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -479,11 +507,13 @@ export type Comment_TargetCell_Parent_RowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Columnsの一覧検索条件 */
 export type Comment_TargetCell_ColTypeSearchCondition = {
   Parent: Comment_TargetCell_ColType_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Comment_TargetCell_ColType_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -492,6 +522,7 @@ export type Comment_TargetCell_ColType_ParentSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Comment_TargetRowTypeSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -500,11 +531,13 @@ export type Comment_TargetRowTypeSearchCondition = {
   UpdatedOn: { From?: string, To?: string }
   UpdateUser?: string
 }
+/** Columnsの一覧検索条件 */
 export type Comment_TargetColumnSearchCondition = {
   Parent: Comment_TargetColumn_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
 }
+/** RowTypeの一覧検索条件 */
 export type Comment_TargetColumn_ParentSearchCondition = {
   ID?: string
   RowTypeName?: string
@@ -628,6 +661,7 @@ export type CommentRefInfo = {
 
 
 // ------------------ Log ------------------
+/** Logの登録・更新・削除用のデータ型 */
 export type LogSaveCommand = {
   ID?: string
   LogTime?: string
@@ -637,10 +671,12 @@ export type LogSaveCommand = {
   Content?: string
 }
 
+/** 画面上でLogのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createLog = (): LogSaveCommand => ({
   ID: UUID.generate(),
 })
 
+/** Logの一覧検索条件 */
 export type LogSearchCondition = {
   ID?: string
   LogTime: { From?: string, To?: string }

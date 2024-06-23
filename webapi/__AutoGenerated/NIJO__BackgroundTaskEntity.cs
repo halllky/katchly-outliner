@@ -10,6 +10,9 @@
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Katchly;
 
+    /// <summary>
+    /// NIJO::BackgroundTaskEntityに関する Web API 操作を提供する ASP.NET Core のコントローラー
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public partial class NIJOBackgroundTaskEntityController : ControllerBase {
