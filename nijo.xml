@@ -8,6 +8,11 @@
       <ColType is="ref-to:RowType/Columns key" />
       <Value is="sentence" />
       <UpdatedOn is="datetime" />
+      <RowAttrsRefs is="array">
+        <!-- 自己参照できないので仕方なくwordで定義 -->
+        <!-- <RefToRow is="ref-to:Row" /> -->
+        <RefToRow is="word" />
+      </RowAttrsRefs>
     </Attrs>
     <Indent is="int" />
     <CreatedOn is="datetime" />

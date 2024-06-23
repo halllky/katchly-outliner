@@ -39,8 +39,10 @@ export type RowType = EditableObject & {
 export type RowTypeColumn = {
   id: ColumnId
   name?: string
+  valueIs: RowTypeColumnValueType
   comments: Comment[]
 }
+export type RowTypeColumnValueType = 'text' | 'ref-to-row:single' | 'ref-to-row:multiple'
 
 export type GridRow = GridRowOfRowObject | GridRowOfRowType
 export type GridRowOfRowObject = {
@@ -254,6 +256,7 @@ export const createNewRowType = (name?: string, columnNames?: string[]): RowType
   columns: columnNames?.map(colName => ({
     id: UUID.generate() as ColumnId,
     name: colName,
+    valueIs: 'text',
     comments: [],
   })) ?? [],
   comments: [],
@@ -365,7 +368,7 @@ export const setAttrCellValue = (
   const columns = [...rowType.columns]
   let newColumnsAreCreated = false
   while (columns.length - 1 < colIndex) {
-    columns.push({ id: `["${rowTypeId}", "${UUID.generate()}"]` as ColumnId, comments: [] })
+    columns.push({ id: `["${rowTypeId}", "${UUID.generate()}"]` as ColumnId, valueIs: 'text', comments: [] })
     newColumnsAreCreated = true
   }
 

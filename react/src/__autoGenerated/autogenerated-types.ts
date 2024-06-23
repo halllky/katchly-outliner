@@ -26,10 +26,21 @@ export type AttrsSaveCommand = {
   ColType?: Util.ItemKey
   Value?: string
   UpdatedOn?: string
+  RowAttrsRefs?: RowAttrsRefsSaveCommand[]
 }
 
 /** 画面上でAttrsのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
 export const createAttrs = (): AttrsSaveCommand => ({
+  RowAttrsRefs: [],
+})
+
+/** RowAttrsRefsの登録・更新・削除用のデータ型 */
+export type RowAttrsRefsSaveCommand = {
+  RefToRow?: string
+}
+
+/** 画面上でRowAttrsRefsのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
+export const createRowAttrsRefs = (): RowAttrsRefsSaveCommand => ({
 })
 
 /** Rowの一覧検索条件 */
@@ -48,6 +59,10 @@ export type AttrsSearchCondition = {
   ColType: Attrs_ColTypeSearchCondition
   Value?: string
   UpdatedOn: { From?: string, To?: string }
+}
+/** RowAttrsRefsの一覧検索条件 */
+export type RowAttrsRefsSearchCondition = {
+  RefToRow?: string
 }
 /** RowTypeの一覧検索条件 */
 export type Row_RowTypeSearchCondition = {
@@ -83,6 +98,8 @@ export const createRowSearchCondition = (): RowSearchCondition => ({
 export const createAttrsSearchCondition = (): AttrsSearchCondition => ({
     ColType: createAttrs_ColTypeSearchCondition(),
     UpdatedOn: {},
+})
+export const createRowAttrsRefsSearchCondition = (): RowAttrsRefsSearchCondition => ({
 })
 export const createRow_RowTypeSearchCondition = (): Row_RowTypeSearchCondition => ({
     CreatedOn: {},
@@ -126,6 +143,17 @@ export type AttrsDisplayData = {
     Value?: string
     UpdatedOn?: string
   }
+  child_RowAttrsRefs?: RowAttrsRefsDisplayData[]
+}
+/** RowAttrsRefsの画面表示用データ */
+export type RowAttrsRefsDisplayData = {
+  localRepositoryItemKey: Util.ItemKey
+  existsInRemoteRepository: boolean
+  willBeChanged: boolean
+  willBeDeleted: boolean
+  own_members: {
+    RefToRow?: string
+  }
 }
 
 /** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
@@ -148,6 +176,9 @@ export const convertRowToLocalRepositoryItem = (displayData: RowDisplayData) => 
         ColType: xAttrs?.own_members?.ColType?.__instanceKey,
         Value: xAttrs?.own_members?.Value,
         UpdatedOn: xAttrs?.own_members?.UpdatedOn,
+        RowAttrsRefs: xAttrs.child_RowAttrsRefs?.map(xRowAttrsRefs => ({
+          RefToRow: xRowAttrsRefs?.own_members?.RefToRow,
+        })),
       })),
     },
   }
@@ -198,6 +229,27 @@ export type AttrsRefInfo = {
     ColumnId?: string,
   },
   Value?: string,
+}
+
+/** RowAttrsRefsを参照する他のデータの画面上に表示されるRowAttrsRefsのデータ型。 */
+export type RowAttrsRefsRefInfo = {
+  /** RowAttrsRefsのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のRowAttrsRefsをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+  __instanceKey?: Util.ItemKey
+
+  Parent?: {
+    Parent?: {
+      ID?: string,
+      Text?: string,
+    },
+    ColType?: {
+      Parent?: {
+        ID?: string,
+      },
+      ColumnId?: string,
+    },
+    Value?: string,
+  },
 }
 
 

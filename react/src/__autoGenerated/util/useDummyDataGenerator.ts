@@ -90,239 +90,251 @@ export const useDummyDataGenerator = () => {
     data29717186.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     data29717186.Attrs[0].UpdatedOn = '2005-11-17'
     
+    data29717186.Attrs[0].RowAttrsRefs = [AggregateType.createRowAttrsRefs()]
+    data29717186.Attrs[0].RowAttrsRefs[0].RefToRow = 'DDDDDDDDDD'
+    
     const response98854376 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data29717186)
     if (!response98854376.ok) return false
     
-    const data11895772 = AggregateType.createRow()
+    const data27345148 = AggregateType.createRow()
     
-    data11895772.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response90709794 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data11895772.RowType = response90709794.ok ? response90709794.data[1].__instanceKey : undefined
+    data27345148.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response79476558 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data27345148.RowType = response79476558.ok ? response79476558.data[1].__instanceKey : undefined
     
-    data11895772.Indent = 794764
-    data11895772.CreatedOn = '2002-10-08'
-    data11895772.CreateUser = 'LLLLLLLLLL'
-    data11895772.UpdatedOn = '2001-03-16'
-    data11895772.UpdateUser = 'FFFFFFFFFF'
+    data27345148.Indent = 337160
+    data27345148.CreatedOn = '2003-10-03'
+    data27345148.CreateUser = 'DDDDDDDDDD'
+    data27345148.UpdatedOn = '2001-10-25'
+    data27345148.UpdateUser = 'KKKKKKKKKK'
     
-    data11895772.Attrs = [AggregateType.createAttrs()]
-    const response41007327 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data11895772.Attrs[0].ColType = response41007327.ok ? response41007327.data[1].__instanceKey : undefined
-    data11895772.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data11895772.Attrs[0].UpdatedOn = '2005-11-26'
+    data27345148.Attrs = [AggregateType.createAttrs()]
+    const response71872682 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data27345148.Attrs[0].ColType = response71872682.ok ? response71872682.data[1].__instanceKey : undefined
+    data27345148.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data27345148.Attrs[0].UpdatedOn = '2005-02-02'
     
-    const response27345148 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data11895772)
-    if (!response27345148.ok) return false
+    data27345148.Attrs[0].RowAttrsRefs = [AggregateType.createRowAttrsRefs()]
+    data27345148.Attrs[0].RowAttrsRefs[0].RefToRow = 'MMMMMMMMMM'
     
-    const data61983027 = AggregateType.createRow()
+    const response90709794 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data27345148)
+    if (!response90709794.ok) return false
     
-    data61983027.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response19491343 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data61983027.RowType = response19491343.ok ? response19491343.data[2].__instanceKey : undefined
+    const data19491343 = AggregateType.createRow()
     
-    data61983027.Indent = 878190
-    data61983027.CreatedOn = '2006-10-12'
-    data61983027.CreateUser = 'TTTTTTTTTT'
-    data61983027.UpdatedOn = '2007-01-18'
-    data61983027.UpdateUser = 'RRRRRRRRRR'
+    data19491343.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response82542317 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data19491343.RowType = response82542317.ok ? response82542317.data[2].__instanceKey : undefined
     
-    data61983027.Attrs = [AggregateType.createAttrs()]
-    const response62486612 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data61983027.Attrs[0].ColType = response62486612.ok ? response62486612.data[2].__instanceKey : undefined
-    data61983027.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data61983027.Attrs[0].UpdatedOn = '2001-10-17'
+    data19491343.Indent = 735396
+    data19491343.CreatedOn = '2007-01-18'
+    data19491343.CreateUser = 'RRRRRRRRRR'
+    data19491343.UpdatedOn = '2005-02-17'
+    data19491343.UpdateUser = 'FFFFFFFFFF'
     
-    const response48796804 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data61983027)
-    if (!response48796804.ok) return false
+    data19491343.Attrs = [AggregateType.createAttrs()]
+    const response89536243 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data19491343.Attrs[0].ColType = response89536243.ok ? response89536243.data[2].__instanceKey : undefined
+    data19491343.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data19491343.Attrs[0].UpdatedOn = '2007-05-13'
     
-    const data89536243 = AggregateType.createRow()
+    data19491343.Attrs[0].RowAttrsRefs = [AggregateType.createRowAttrsRefs()]
+    data19491343.Attrs[0].RowAttrsRefs[0].RefToRow = 'CCCCCCCCCC'
     
-    data89536243.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    const response08657988 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data89536243.RowType = response08657988.ok ? response08657988.data[3].__instanceKey : undefined
+    const response87819147 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data19491343)
+    if (!response87819147.ok) return false
     
-    data89536243.Indent = 838578
-    data89536243.CreatedOn = '2001-05-25'
-    data89536243.CreateUser = 'QQQQQQQQQQ'
-    data89536243.UpdatedOn = '2006-10-16'
-    data89536243.UpdateUser = 'FFFFFFFFFF'
+    const data83857909 = AggregateType.createRow()
     
-    data89536243.Attrs = [AggregateType.createAttrs()]
-    const response99997268 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data89536243.Attrs[0].ColType = response99997268.ok ? response99997268.data[3].__instanceKey : undefined
-    data89536243.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data89536243.Attrs[0].UpdatedOn = '2003-12-15'
+    data83857909.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    const response64411528 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data83857909.RowType = response64411528.ok ? response64411528.data[3].__instanceKey : undefined
     
-    const response89643979 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data89536243)
-    if (!response89643979.ok) return false
+    data83857909.Indent = 826813
+    data83857909.CreatedOn = '2001-10-19'
+    data83857909.CreateUser = 'ZZZZZZZZZZ'
+    data83857909.UpdatedOn = '2003-12-15'
+    data83857909.UpdateUser = 'QQQQQQQQQQ'
     
-    const data65220523 = AggregateType.createRowOrder()
-    const response80946257 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data65220523.Row = response80946257.ok ? response80946257.data[0].__instanceKey : undefined
-    data65220523.Order = 100935.72
+    data83857909.Attrs = [AggregateType.createAttrs()]
+    const response71972597 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data83857909.Attrs[0].ColType = response71972597.ok ? response71972597.data[3].__instanceKey : undefined
+    data83857909.Attrs[0].Value = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data83857909.Attrs[0].UpdatedOn = '2006-08-25'
     
+    data83857909.Attrs[0].RowAttrsRefs = [AggregateType.createRowAttrsRefs()]
+    data83857909.Attrs[0].RowAttrsRefs[0].RefToRow = 'CCCCCCCCCC'
     
-    const response71972597 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data65220523)
-    if (!response71972597.ok) return false
+    const response17014283 = await post<AggregateType.RowSaveCommand>(`/api/Row/create`, data83857909)
+    if (!response17014283.ok) return false
     
-    const data71845068 = AggregateType.createRowOrder()
-    const response90517638 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data71845068.Row = response90517638.ok ? response90517638.data[1].__instanceKey : undefined
-    data71845068.Order = 189123.47
-    
-    
-    const response12552724 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data71845068)
-    if (!response12552724.ok) return false
-    
-    const data54079523 = AggregateType.createRowOrder()
-    const response67103666 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data54079523.Row = response67103666.ok ? response67103666.data[2].__instanceKey : undefined
-    data54079523.Order = 468397.82
+    const data72909404 = AggregateType.createRowOrder()
+    const response12552724 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data72909404.Row = response12552724.ok ? response12552724.data[0].__instanceKey : undefined
+    data72909404.Order = 905175.18
     
     
-    const response32550069 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data54079523)
-    if (!response32550069.ok) return false
+    const response71845068 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data72909404)
+    if (!response71845068.ok) return false
     
-    const data80920380 = AggregateType.createRowOrder()
-    const response76450597 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data80920380.Row = response76450597.ok ? response76450597.data[3].__instanceKey : undefined
-    data80920380.Order = 937539.29
-    
-    
-    const response79363033 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data80920380)
-    if (!response79363033.ok) return false
-    
-    const data52278529 = AggregateType.createComment()
-    
-    data52278529.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data52278529.Author = 'IIIIIIIIII'
-    data52278529.Indent = 286722
-    data52278529.Order = 820609
-    data52278529.CreatedOn = '2001-10-29'
-    data52278529.UpdatedOn = '2001-07-14'
-    const response06851884 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data52278529.TargetRow = response06851884.ok ? response06851884.data[0].__instanceKey : undefined
-    const response62462275 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
-    data52278529.TargetCell = response62462275.ok ? response62462275.data[0].__instanceKey : undefined
-    const response69304503 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data52278529.TargetRowType = response69304503.ok ? response69304503.data[0].__instanceKey : undefined
-    const response63039437 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data52278529.TargetColumn = response63039437.ok ? response63039437.data[0].__instanceKey : undefined
+    const data47680986 = AggregateType.createRowOrder()
+    const response32550069 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data47680986.Row = response32550069.ok ? response32550069.data[1].__instanceKey : undefined
+    data47680986.Order = 671035.46
     
     
-    const response66339282 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data52278529)
-    if (!response66339282.ok) return false
+    const response54079523 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data47680986)
+    if (!response54079523.ok) return false
     
-    const data92763736 = AggregateType.createComment()
-    
-    data92763736.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data92763736.Author = 'YYYYYYYYYY'
-    data92763736.Indent = 66521
-    data92763736.Order = 900103
-    data92763736.CreatedOn = '2005-07-28'
-    data92763736.UpdatedOn = '2000-10-08'
-    const response14909743 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data92763736.TargetRow = response14909743.ok ? response14909743.data[1].__instanceKey : undefined
-    const response10697249 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
-    data92763736.TargetCell = response10697249.ok ? response10697249.data[1].__instanceKey : undefined
-    const response60987023 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data92763736.TargetRowType = response60987023.ok ? response60987023.data[1].__instanceKey : undefined
-    const response95304280 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data92763736.TargetColumn = response95304280.ok ? response95304280.data[1].__instanceKey : undefined
+    const data83349689 = AggregateType.createRowOrder()
+    const response79363033 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data83349689.Row = response79363033.ok ? response79363033.data[2].__instanceKey : undefined
+    data83349689.Order = 764505.92
     
     
-    const response22134203 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data92763736)
-    if (!response22134203.ok) return false
+    const response80920380 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data83349689)
+    if (!response80920380.ok) return false
     
-    const data49062520 = AggregateType.createComment()
-    
-    data49062520.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data49062520.Author = 'RRRRRRRRRR'
-    data49062520.Indent = 569861
-    data49062520.Order = 225402
-    data49062520.CreatedOn = '2005-01-28'
-    data49062520.UpdatedOn = '2000-01-16'
-    const response36093901 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data49062520.TargetRow = response36093901.ok ? response36093901.data[2].__instanceKey : undefined
-    const response85048494 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
-    data49062520.TargetCell = response85048494.ok ? response85048494.data[2].__instanceKey : undefined
-    const response06230841 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data49062520.TargetRowType = response06230841.ok ? response06230841.data[2].__instanceKey : undefined
-    const response28164725 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data49062520.TargetColumn = response28164725.ok ? response28164725.data[2].__instanceKey : undefined
+    const data29499679 = AggregateType.createRowOrder()
+    const response66339282 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data29499679.Row = response66339282.ok ? response66339282.data[3].__instanceKey : undefined
+    data29499679.Order = 332588.28
     
     
-    const response14805626 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data49062520)
-    if (!response14805626.ok) return false
+    const response52278529 = await post<AggregateType.RowOrderSaveCommand>(`/api/RowOrder/create`, data29499679)
+    if (!response52278529.ok) return false
     
-    const data70497588 = AggregateType.createComment()
+    const data82061006 = AggregateType.createComment()
     
-    data70497588.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    data70497588.Author = 'ZZZZZZZZZZ'
-    data70497588.Indent = 387136
-    data70497588.Order = 522739
-    data70497588.CreatedOn = '2002-04-20'
-    data70497588.UpdatedOn = '2004-02-28'
-    const response53157908 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
-    data70497588.TargetRow = response53157908.ok ? response53157908.data[3].__instanceKey : undefined
-    const response05700839 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
-    data70497588.TargetCell = response05700839.ok ? response05700839.data[3].__instanceKey : undefined
-    const response28055362 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
-    data70497588.TargetRowType = response28055362.ok ? response28055362.data[3].__instanceKey : undefined
-    const response49607875 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
-    data70497588.TargetColumn = response49607875.ok ? response49607875.data[3].__instanceKey : undefined
-    
-    
-    const response95858033 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data70497588)
-    if (!response95858033.ok) return false
-    
-    const data84641548 = AggregateType.createLog()
-    
-    data84641548.LogTime = '2000-11-08'
-    data84641548.UpdatedObject = 'TTTTTTTTTT'
-    data84641548.UpdateType = 'KKKKKKKKKK'
-    data84641548.RowIdOrRowTypeId = 'YYYYYYYYYY'
-    data84641548.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data82061006.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data82061006.Author = 'EEEEEEEEEE'
+    data82061006.Indent = 68518
+    data82061006.Order = 624622
+    data82061006.CreatedOn = '2005-09-10'
+    data82061006.UpdatedOn = '2005-03-06'
+    const response92763736 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data82061006.TargetRow = response92763736.ok ? response92763736.data[0].__instanceKey : undefined
+    const response22134203 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
+    data82061006.TargetCell = response22134203.ok ? response22134203.data[0].__instanceKey : undefined
+    const response92870762 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data82061006.TargetRowType = response92870762.ok ? response92870762.data[0].__instanceKey : undefined
+    const response06652159 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data82061006.TargetColumn = response06652159.ok ? response06652159.data[0].__instanceKey : undefined
     
     
-    const response61315786 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data84641548)
-    if (!response61315786.ok) return false
+    const response22251792 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data82061006)
+    if (!response22251792.ok) return false
     
-    const data13069833 = AggregateType.createLog()
+    const data90010429 = AggregateType.createComment()
     
-    data13069833.LogTime = '2005-01-20'
-    data13069833.UpdatedObject = 'VVVVVVVVVV'
-    data13069833.UpdateType = 'RRRRRRRRRR'
-    data13069833.RowIdOrRowTypeId = 'OOOOOOOOOO'
-    data13069833.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
-    
-    
-    const response69965229 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data13069833)
-    if (!response69965229.ok) return false
-    
-    const data17276762 = AggregateType.createLog()
-    
-    data17276762.LogTime = '2005-01-01'
-    data17276762.UpdatedObject = 'GGGGGGGGGG'
-    data17276762.UpdateType = 'ZZZZZZZZZZ'
-    data17276762.RowIdOrRowTypeId = 'OOOOOOOOOO'
-    data17276762.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data90010429.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data90010429.Author = 'CCCCCCCCCC'
+    data90010429.Indent = 149097
+    data90010429.Order = 106972
+    data90010429.CreatedOn = '2005-01-03'
+    data90010429.UpdatedOn = '2007-10-30'
+    const response49062520 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data90010429.TargetRow = response49062520.ok ? response49062520.data[1].__instanceKey : undefined
+    const response14805626 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
+    data90010429.TargetCell = response14805626.ok ? response14805626.data[1].__instanceKey : undefined
+    const response67761153 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data90010429.TargetRowType = response67761153.ok ? response67761153.data[1].__instanceKey : undefined
+    const response56986173 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data90010429.TargetColumn = response56986173.ok ? response56986173.data[1].__instanceKey : undefined
     
     
-    const response18453276 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data17276762)
-    if (!response18453276.ok) return false
+    const response67850546 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data90010429)
+    if (!response67850546.ok) return false
     
-    const data06343665 = AggregateType.createLog()
+    const data22540313 = AggregateType.createComment()
     
-    data06343665.LogTime = '2006-12-02'
-    data06343665.UpdatedObject = 'OOOOOOOOOO'
-    data06343665.UpdateType = 'QQQQQQQQQQ'
-    data06343665.RowIdOrRowTypeId = 'NNNNNNNNNN'
-    data06343665.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data22540313.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data22540313.Author = 'AAAAAAAAAA'
+    data22540313.Indent = 360938
+    data22540313.Order = 850484
+    data22540313.CreatedOn = '2000-07-05'
+    data22540313.UpdatedOn = '2002-04-24'
+    const response70497588 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data22540313.TargetRow = response70497588.ok ? response70497588.data[2].__instanceKey : undefined
+    const response95858033 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
+    data22540313.TargetCell = response95858033.ok ? response95858033.data[2].__instanceKey : undefined
+    const response98881239 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data22540313.TargetRowType = response98881239.ok ? response98881239.data[2].__instanceKey : undefined
+    const response38713694 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data22540313.TargetColumn = response38713694.ok ? response38713694.data[2].__instanceKey : undefined
     
     
-    const response26368373 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data06343665)
-    if (!response26368373.ok) return false
+    const response61818213 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data22540313)
+    if (!response61818213.ok) return false
+    
+    const data52274014 = AggregateType.createComment()
+    
+    data52274014.Text = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    data52274014.Author = 'NNNNNNNNNN'
+    data52274014.Indent = 531578
+    data52274014.Order = 57008
+    data52274014.CreatedOn = '2002-04-21'
+    data52274014.UpdatedOn = '2004-01-28'
+    const response84641548 = await get<AggregateType.RowRefInfo[]>(`/api/Row/list-by-keyword`, {})
+    data52274014.TargetRow = response84641548.ok ? response84641548.data[3].__instanceKey : undefined
+    const response61315786 = await get<AggregateType.AttrsRefInfo[]>(`/api/Row/list-by-keyword-x218859120e2951a46aa6ad9fb9e627cc`, {})
+    data52274014.TargetCell = response61315786.ok ? response61315786.data[3].__instanceKey : undefined
+    const response10415865 = await get<AggregateType.RowTypeRefInfo[]>(`/api/RowType/list-by-keyword`, {})
+    data52274014.TargetRowType = response10415865.ok ? response10415865.data[3].__instanceKey : undefined
+    const response74232903 = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, {})
+    data52274014.TargetColumn = response74232903.ok ? response74232903.data[3].__instanceKey : undefined
+    
+    
+    const response28032532 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data52274014)
+    if (!response28032532.ok) return false
+    
+    const data40187614 = AggregateType.createLog()
+    
+    data40187614.LogTime = '2001-01-27'
+    data40187614.UpdatedObject = 'SSSSSSSSSS'
+    data40187614.UpdateType = 'QQQQQQQQQQ'
+    data40187614.RowIdOrRowTypeId = 'VVVVVVVVVV'
+    data40187614.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    
+    const response93339259 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data40187614)
+    if (!response93339259.ok) return false
+    
+    const data68512655 = AggregateType.createLog()
+    
+    data68512655.LogTime = '2001-06-02'
+    data68512655.UpdatedObject = 'EEEEEEEEEE'
+    data68512655.UpdateType = 'PPPPPPPPPP'
+    data68512655.RowIdOrRowTypeId = 'GGGGGGGGGG'
+    data68512655.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    
+    const response56974247 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data68512655)
+    if (!response56974247.ok) return false
+    
+    const data99711478 = AggregateType.createLog()
+    
+    data99711478.LogTime = '2000-07-09'
+    data99711478.UpdatedObject = 'GGGGGGGGGG'
+    data99711478.UpdateType = 'VVVVVVVVVV'
+    data99711478.RowIdOrRowTypeId = 'OOOOOOOOOO'
+    data99711478.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    
+    const response56868945 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data99711478)
+    if (!response56868945.ok) return false
+    
+    const data64599010 = AggregateType.createLog()
+    
+    data64599010.LogTime = '2007-12-20'
+    data64599010.UpdatedObject = 'CCCCCCCCCC'
+    data64599010.UpdateType = 'NNNNNNNNNN'
+    data64599010.RowIdOrRowTypeId = 'EEEEEEEEEE'
+    data64599010.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
+    
+    
+    const response51636614 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data64599010)
+    if (!response51636614.ok) return false
     
 
     return true

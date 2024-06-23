@@ -17,6 +17,7 @@
 
             option.Converters.Add(new CustomJsonConverters.RowKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.AttrsKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.RowAttrsRefsKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowOrderKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
@@ -224,6 +225,59 @@ namespace Katchly.CustomJsonConverters {
                     value.Parent?.ID,
                     value.ColType?.Parent?.ID,
                     value.ColType?.ColumnId,
+                ];
+                var jsonArray = objArray.ToJson();
+                writer.WriteStringValue(jsonArray);
+            }
+        }
+    }
+
+    /// <summary>
+    /// <see cref="RowAttrsRefsKeys"/> 型のプロパティの値が
+    /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
+    /// </summary>
+    public class RowAttrsRefsKeysJsonValueConverter : JsonConverter<RowAttrsRefsKeys?> {
+        public override RowAttrsRefsKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+            var jsonArray = reader.GetString();
+            if (jsonArray == null) return null;
+            var objArray = Util.ParseJsonAsObjectArray(jsonArray);
+    
+            var RowAttrsRefs_Attrs_IDValue = objArray.ElementAtOrDefault(0);
+            if (RowAttrsRefs_Attrs_IDValue != null && RowAttrsRefs_Attrs_IDValue is not string)
+                throw new InvalidOperationException($"RowAttrsRefsKeysの値の変換に失敗しました。RowAttrsRefs_Attrs_IDの位置の値がstring型ではありません: {RowAttrsRefs_Attrs_IDValue}");
+    
+            var RowAttrsRefs_ColType_Columns_IDValue = objArray.ElementAtOrDefault(1);
+            if (RowAttrsRefs_ColType_Columns_IDValue != null && RowAttrsRefs_ColType_Columns_IDValue is not string)
+                throw new InvalidOperationException($"RowAttrsRefsKeysの値の変換に失敗しました。RowAttrsRefs_ColType_Columns_IDの位置の値がstring型ではありません: {RowAttrsRefs_ColType_Columns_IDValue}");
+    
+            var RowAttrsRefs_ColType_ColumnIdValue = objArray.ElementAtOrDefault(2);
+            if (RowAttrsRefs_ColType_ColumnIdValue != null && RowAttrsRefs_ColType_ColumnIdValue is not string)
+                throw new InvalidOperationException($"RowAttrsRefsKeysの値の変換に失敗しました。RowAttrsRefs_ColType_ColumnIdの位置の値がstring型ではありません: {RowAttrsRefs_ColType_ColumnIdValue}");
+    
+            return new RowAttrsRefsKeys {
+                Parent = new() {
+                    Parent = new() {
+                        ID = (string?)RowAttrsRefs_Attrs_IDValue,
+                    },
+                    ColType = new() {
+                        Parent = new() {
+                            ID = (string?)RowAttrsRefs_ColType_Columns_IDValue,
+                        },
+                        ColumnId = (string?)RowAttrsRefs_ColType_ColumnIdValue,
+                    },
+                },
+            };
+        }
+    
+        public override void Write(Utf8JsonWriter writer, RowAttrsRefsKeys? value, JsonSerializerOptions options) {
+            if (value == null) {
+                writer.WriteNullValue();
+    
+            } else {
+                object?[] objArray = [
+                    value.Parent?.Parent?.ID,
+                    value.Parent?.ColType?.Parent?.ID,
+                    value.Parent?.ColType?.ColumnId,
                 ];
                 var jsonArray = objArray.ToJson();
                 writer.WriteStringValue(jsonArray);

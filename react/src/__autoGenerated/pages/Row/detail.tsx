@@ -201,84 +201,55 @@ const Row_RowOrderView = ({ }: {
 }
 const AttrsView = ({ }: {
 }) => {
+  const { register, registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowDisplayData>()
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `child_Attrs`,
+  })
+
+  return (
+    <VForm.Container labelSide={(
+      <div className="flex gap-2 justify-start">
+        <h1 className="text-base font-semibold select-none py-1">
+          Attrs
+        </h1>
+        <div className="flex-1"></div>
+      </div>
+    )}>
+      {fields.map((item, index_0) => (
+        <VForm.Container key={index_0}>
+          <input type="hidden" {...register(`child_Attrs.${index_0}.own_members.ColType`)} />
+          <VForm.Item label="Value">
+            <Input.Description {...registerEx(`child_Attrs.${index_0}.own_members.Value`)} readOnly />
+          </VForm.Item>
+          <VForm.Item label="UpdatedOn">
+            <Input.Date {...registerEx(`child_Attrs.${index_0}.own_members.UpdatedOn`)} readOnly />
+          </VForm.Item>
+          <RowAttrsRefsView index_0={index_0} />
+        </VForm.Container>
+      ))}
+    </VForm.Container>
+  )
+}
+const RowAttrsRefsView = ({index_0 }: {
+  index_0: number
+}) => {
   const { get } = Util.useHttpRequest()
   const { register, registerEx, watch, control } = Util.useFormContextEx<AggregateType.RowDisplayData>()
   const { fields, append, remove, update } = useFieldArray({
     control,
-    name: `child_Attrs`,
+    name: `child_Attrs.${index_0}.child_RowAttrsRefs`,
   })
-  const dtRef = useRef<Layout.DataTableRef<AggregateType.AttrsDisplayData>>(null)
+  const dtRef = useRef<Layout.DataTableRef<AggregateType.RowAttrsRefsDisplayData>>(null)
 
 
-  const options = useMemo<Layout.DataTableProps<AggregateType.AttrsDisplayData>>(() => ({
+  const options = useMemo<Layout.DataTableProps<AggregateType.RowAttrsRefsDisplayData>>(() => ({
     columns: [
       {
         id: 'col1',
-        header: 'ColType',
+        header: 'RefToRow',
         cell: cellProps => {
-          const value = cellProps.row.original.own_members?.ColType
-          const formatted = `${value?.Parent?.ID ?? ''}${value?.ColumnId ?? ''}`
-          return (
-            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-              {formatted}
-              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-            </span>
-          )
-        },
-        accessorFn: row => row.own_members?.ColType,
-        editSetting: (() => {
-          const asyncComboSetting: Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, AggregateType.ColumnsRefInfo> = {
-            type: 'async-combo',
-            getValueFromRow: row => row.own_members?.ColType,
-            setValueToRow: (row, value) => {
-              row.own_members.ColType = value
-            },
-            onClipboardCopy: row => {
-              const formatted = row.own_members?.ColType ? JSON.stringify(row.own_members?.ColType) : ''
-              return formatted
-            },
-            onClipboardPaste: (row, value) => {
-              if (row.own_members === undefined) return
-              let formatted: AggregateType.ColumnsRefInfo | undefined
-              if (value) {
-                try {
-                  const obj: AggregateType.ColumnsRefInfo = JSON.parse(value)
-                  // 登録にはインスタンスキーが使われるのでキーの型だけは細かくチェックする
-                  if (obj.__instanceKey === undefined) throw new Error
-                  const arrInstanceKey: [string, string] = JSON.parse(obj.__instanceKey)
-                  if (!Array.isArray(arrInstanceKey)) throw new Error
-                  if (typeof arrInstanceKey[0] !== 'string') throw new Error
-                  if (typeof arrInstanceKey[1] !== 'string') throw new Error
-                  formatted = obj
-                } catch {
-                  formatted = undefined
-                }
-              } else {
-                formatted = undefined
-              }
-              row.own_members.ColType = formatted
-            },
-            comboProps: {
-              queryKey: `combo-x4411d631bacb9f19ceba5b9461ffdee8::`,
-              query: async keyword => {
-                const response = await get<AggregateType.ColumnsRefInfo[]>(`/api/RowType/list-by-keyword-x4411d631bacb9f19ceba5b9461ffdee8`, { keyword })
-                if (!response.ok) return []
-                return response.data
-              },
-              emitValueSelector: item => item,
-              matchingKeySelectorFromEmitValue: item => item.__instanceKey,
-              matchingKeySelectorFromOption: item => item.__instanceKey,
-              textSelector: item => `${item.Parent?.ID ?? ''}${item.ColumnId ?? ''}`,
-            },
-          }
-          return asyncComboSetting as Layout.ColumnEditSetting<AggregateType.AttrsDisplayData, unknown>
-        })(),
-      },
-      {
-        id: 'col2',
-        header: 'Value',
-        cell: cellProps => {
-          const value = cellProps.row.original.own_members?.Value
+          const value = cellProps.row.original.own_members?.RefToRow
           return (
             <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
               {value}
@@ -286,43 +257,21 @@ const AttrsView = ({ }: {
             </span>
           )
         },
-        accessorFn: row => row.own_members?.Value,
+        accessorFn: row => row.own_members?.RefToRow,
         editSetting: {
           type: 'text',
-          getTextValue: row => row.own_members?.Value,
+          getTextValue: row => row.own_members?.RefToRow,
           setTextValue: (row, value) => {
-            row.own_members.Value = value
-          },
-        },
-      },
-      {
-        id: 'col3',
-        header: 'UpdatedOn',
-        cell: cellProps => {
-          const value = cellProps.row.original.own_members?.UpdatedOn
-          return (
-            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
-              {value}
-              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
-            </span>
-          )
-        },
-        accessorFn: row => row.own_members?.UpdatedOn,
-        editSetting: {
-          type: 'text',
-          getTextValue: row => row.own_members?.UpdatedOn,
-          setTextValue: (row, value) => {
-            const { result: formatted } = Util.tryParseAsDateTimeOrEmpty(value)
-            row.own_members.UpdatedOn = formatted
+            row.own_members.RefToRow = value
           },
         },
       },
     ],
-  }), [get, update])
+  }), [get, index_0, update])
 
   return (
     <VForm.Item wide
-      label="Attrs"
+      label="RowAttrsRefs"
       >
       <Layout.DataTable
         ref={dtRef}

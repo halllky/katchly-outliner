@@ -30,6 +30,21 @@ export const getAttrsSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'v
   }
 }
 
+export const getRowAttrsRefsSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+  if (!key) {
+    return ''
+  }
+  if (mode === 'new') {
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/new/${window.encodeURI(`${key}`)}`
+  }
+  const [RowAttrsRefs_Attrs_ID, RowAttrsRefs_ColType_Columns_ID, RowAttrsRefs_ColType_ColumnId] = JSON.parse(key) as [string | undefined, string | undefined, string | undefined]
+  if (mode === 'view') {
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/detail/${window.encodeURI(`${RowAttrsRefs_Attrs_ID}`)}/${window.encodeURI(`${RowAttrsRefs_ColType_Columns_ID}`)}/${window.encodeURI(`${RowAttrsRefs_ColType_ColumnId}`)}`
+  } else {
+    return `/xc431ca892f0ec48c9bbc3311bb00c38c/edit/${window.encodeURI(`${RowAttrsRefs_Attrs_ID}`)}/${window.encodeURI(`${RowAttrsRefs_ColType_Columns_ID}`)}/${window.encodeURI(`${RowAttrsRefs_ColType_ColumnId}`)}`
+  }
+}
+
 export const getRowOrderSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''
