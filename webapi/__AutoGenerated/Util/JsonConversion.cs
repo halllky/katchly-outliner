@@ -70,6 +70,19 @@
             var json = obj as string ?? ToJson(obj);
             return ParseJson(json, type);
         }
+        /// <summary>
+        /// JSONから復元されたオブジェクトを事後的に特定の型として扱いたいときに用いる
+        /// </summary>
+        public static bool TryParseAsObjectType<T>(object? obj, out T parsed) where T : new() {
+            try {
+                var json = obj as string ?? ToJson(obj);
+                parsed = ParseJson<T>(json);
+                return true;
+            } catch {
+                parsed = new();
+                return false;
+            }
+        }
     }
 }
 
