@@ -728,6 +728,8 @@
         public Attrs_ColType_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     /// <summary>
     /// RowTypeの一覧検索条件

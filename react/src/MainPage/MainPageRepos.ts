@@ -209,6 +209,7 @@ const RowTypeConverter = {
     columns: displayData.child_Columns?.map<RowType['columns']['0']>(col => ({
       id: col.localRepositoryItemKey as string as ColumnId,
       name: col.own_members.ColumnName,
+      valueIs: col.own_members.ValueType ?? 'Text',
       comments: CommentConverter.fromServerApiType(loadedComments.toCol.get(col.own_members.ColumnId as ColumnId)),
     })) ?? [],
     comments: CommentConverter.fromServerApiType(loadedComments.toRowType.get(displayData.own_members.ID as RowTypeId)),

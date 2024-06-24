@@ -42,7 +42,7 @@ export type RowTypeColumn = {
   valueIs: RowTypeColumnValueType
   comments: Comment[]
 }
-export type RowTypeColumnValueType = 'text' | 'ref-to-row:single' | 'ref-to-row:multiple'
+export type RowTypeColumnValueType = 'Text' | 'RefSingle' | 'RefMultiple'
 
 export type GridRow = GridRowOfRowObject | GridRowOfRowType
 export type GridRowOfRowObject = {
@@ -256,7 +256,7 @@ export const createNewRowType = (name?: string, columnNames?: string[]): RowType
   columns: columnNames?.map(colName => ({
     id: UUID.generate() as ColumnId,
     name: colName,
-    valueIs: 'text',
+    valueIs: 'Text',
     comments: [],
   })) ?? [],
   comments: [],
@@ -368,7 +368,7 @@ export const setAttrCellValue = (
   const columns = [...rowType.columns]
   let newColumnsAreCreated = false
   while (columns.length - 1 < colIndex) {
-    columns.push({ id: `["${rowTypeId}", "${UUID.generate()}"]` as ColumnId, valueIs: 'text', comments: [] })
+    columns.push({ id: `["${rowTypeId}", "${UUID.generate()}"]` as ColumnId, valueIs: 'Text', comments: [] })
     newColumnsAreCreated = true
   }
 

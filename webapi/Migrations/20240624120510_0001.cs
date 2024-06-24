@@ -10,6 +10,18 @@ namespace FlexTree.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "CanReferOnly",
+                table: "ColumnsDbSet",
+                type: "TEXT",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "ValueType",
+                table: "ColumnsDbSet",
+                type: "INTEGER",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "RowAttrsRefsDbSet",
                 columns: table => new
@@ -36,6 +48,14 @@ namespace FlexTree.Migrations
         {
             migrationBuilder.DropTable(
                 name: "RowAttrsRefsDbSet");
+
+            migrationBuilder.DropColumn(
+                name: "CanReferOnly",
+                table: "ColumnsDbSet");
+
+            migrationBuilder.DropColumn(
+                name: "ValueType",
+                table: "ColumnsDbSet");
         }
     }
 }

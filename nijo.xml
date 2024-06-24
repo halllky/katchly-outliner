@@ -32,12 +32,22 @@
     <Columns is="array">
       <ColumnId is="uuid" />
       <ColumnName is="word" />
+      <ValueType is="ColumnValueType" />
+      <!-- 自己参照できないので仕方なくwordで定義 -->
+      <!-- <CanReferOnly is="ref-to:RowType" /> -->
+      <CanReferOnly is="word" />
     </Columns>
     <CreatedOn is="datetime" />
     <CreateUser is="word" />
     <UpdatedOn is="datetime" />
     <UpdateUser is="word" />
   </RowType>
+
+  <ColumnValueType is="enum">
+    <Text />
+    <RefSingle />
+    <RefMultiple />
+  </ColumnValueType>
 
   <Comment is="write-model">
     <ID is="uuid"/>

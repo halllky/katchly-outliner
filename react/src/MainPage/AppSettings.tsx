@@ -247,7 +247,7 @@ const useRowTypeEditor = () => {
     if (rowTypeRow.type !== 'rowTypeDef') return
     insert(end, {
       type: 'columnDef',
-      item: { id: `["${rowTypeRow.item.id}", "${UUID.generate()}"]` as ColumnId, comments: [] },
+      item: { id: `["${rowTypeRow.item.id}", "${UUID.generate()}"]` as ColumnId, valueIs: 'Text', comments: [] },
       existsInRemoteRepository: false,
       willBeChanged: true,
       willBeDeleted: false,

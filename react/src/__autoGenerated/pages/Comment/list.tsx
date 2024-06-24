@@ -700,8 +700,20 @@ const Page = () => {
               <VForm.Item label="ColumnName">
                 <Input.Word {...registerExCondition(`TargetCell.ColType.ColumnName`)} />
               </VForm.Item>
+              <VForm.Item label="ValueType">
+                <Input.Selection {...registerExCondition(`TargetCell.ColType.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
+              </VForm.Item>
+              <VForm.Item label="CanReferOnly">
+                <Input.Word {...registerExCondition(`TargetCell.ColType.CanReferOnly`)} />
+              </VForm.Item>
               <VForm.Item label="ColumnName">
                 <Input.Word {...registerExCondition(`TargetColumn.ColumnName`)} />
+              </VForm.Item>
+              <VForm.Item label="ValueType">
+                <Input.Selection {...registerExCondition(`TargetColumn.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
+              </VForm.Item>
+              <VForm.Item label="CanReferOnly">
+                <Input.Word {...registerExCondition(`TargetColumn.CanReferOnly`)} />
               </VForm.Item>
             </VForm.Container>
             <VForm.Container label="Attrs">

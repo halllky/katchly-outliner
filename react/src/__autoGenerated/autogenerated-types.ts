@@ -78,6 +78,8 @@ export type Attrs_ColTypeSearchCondition = {
   Parent: Attrs_ColType_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
+  ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+  CanReferOnly?: string
 }
 /** RowTypeの一覧検索条件 */
 export type Attrs_ColType_ParentSearchCondition = {
@@ -370,6 +372,8 @@ export const createRowType = (): RowTypeSaveCommand => ({
 export type ColumnsSaveCommand = {
   ColumnId?: string
   ColumnName?: string
+  ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+  CanReferOnly?: string
 }
 
 /** 画面上でColumnsのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
@@ -390,6 +394,8 @@ export type RowTypeSearchCondition = {
 export type ColumnsSearchCondition = {
   ColumnId?: string
   ColumnName?: string
+  ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+  CanReferOnly?: string
 }
 
 export const createRowTypeSearchCondition = (): RowTypeSearchCondition => ({
@@ -424,6 +430,8 @@ export type ColumnsDisplayData = {
   own_members: {
     ColumnId?: string
     ColumnName?: string
+    ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+    CanReferOnly?: string
   }
 }
 
@@ -444,6 +452,8 @@ export const convertRowTypeToLocalRepositoryItem = (displayData: RowTypeDisplayD
       Columns: displayData.child_Columns?.map(xColumns => ({
         ColumnId: xColumns?.own_members?.ColumnId,
         ColumnName: xColumns?.own_members?.ColumnName,
+        ValueType: xColumns?.own_members?.ValueType,
+        CanReferOnly: xColumns?.own_members?.CanReferOnly,
       })),
     },
   }
@@ -562,6 +572,8 @@ export type Comment_TargetCell_ColTypeSearchCondition = {
   Parent: Comment_TargetCell_ColType_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
+  ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+  CanReferOnly?: string
 }
 /** RowTypeの一覧検索条件 */
 export type Comment_TargetCell_ColType_ParentSearchCondition = {
@@ -586,6 +598,8 @@ export type Comment_TargetColumnSearchCondition = {
   Parent: Comment_TargetColumn_ParentSearchCondition
   ColumnId?: string
   ColumnName?: string
+  ValueType?: 'Text' | 'RefSingle' | 'RefMultiple'
+  CanReferOnly?: string
 }
 /** RowTypeの一覧検索条件 */
 export type Comment_TargetColumn_ParentSearchCondition = {

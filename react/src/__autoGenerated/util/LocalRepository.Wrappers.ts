@@ -540,6 +540,10 @@ export const useCommentRepository = (editRange?
         //   && item.TargetCell?.ColType?.ColumnId !== editRange.filter.TargetCell.ColType.ColumnId) return
         // if (editRange.filter.TargetCell?.ColType?.ColumnName !== undefined
         //   && item.TargetCell?.ColType?.ColumnName !== editRange.filter.TargetCell.ColType.ColumnName) return
+        // if (editRange.filter.TargetCell?.ColType?.ValueType !== undefined
+        //   && item.TargetCell?.ColType?.ValueType !== editRange.filter.TargetCell.ColType.ValueType) return
+        // if (editRange.filter.TargetCell?.ColType?.CanReferOnly !== undefined
+        //   && item.TargetCell?.ColType?.CanReferOnly !== editRange.filter.TargetCell.ColType.CanReferOnly) return
         // if (editRange.filter.TargetCell?.Value !== undefined
         //   && item.TargetCell?.Value !== editRange.filter.TargetCell.Value) return
         //
@@ -567,6 +571,10 @@ export const useCommentRepository = (editRange?
         //   && item.TargetColumn?.ColumnId !== editRange.filter.TargetColumn.ColumnId) return
         // if (editRange.filter.TargetColumn?.ColumnName !== undefined
         //   && item.TargetColumn?.ColumnName !== editRange.filter.TargetColumn.ColumnName) return
+        // if (editRange.filter.TargetColumn?.ValueType !== undefined
+        //   && item.TargetColumn?.ValueType !== editRange.filter.TargetColumn.ValueType) return
+        // if (editRange.filter.TargetColumn?.CanReferOnly !== undefined
+        //   && item.TargetColumn?.CanReferOnly !== editRange.filter.TargetColumn.CanReferOnly) return
         localItems.push(cursor.value.item as AggregateType.CommentDisplayData)
       })
     }

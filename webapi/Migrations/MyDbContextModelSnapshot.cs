@@ -95,8 +95,14 @@ namespace FlexTree.Migrations
                     b.Property<string>("ColumnId")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CanReferOnly")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("ColumnName")
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("ValueType")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Columns_ID", "ColumnId");
 

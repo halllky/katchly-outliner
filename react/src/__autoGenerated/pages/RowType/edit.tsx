@@ -117,7 +117,7 @@ const RowTypeView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="14.0rem">
+      <VForm.Container leftColumnMinWidth="15.2rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="RowTypeName">
           <Input.Word {...registerEx(`own_members.RowTypeName`)} />
@@ -188,6 +188,76 @@ const ColumnsView = ({ }: {
           getTextValue: row => row.own_members?.ColumnName,
           setTextValue: (row, value) => {
             row.own_members.ColumnName = value
+          },
+        },
+      },
+      {
+        id: 'col2',
+        header: 'ValueType',
+        cell: cellProps => {
+          const value = cellProps.row.original.own_members?.ValueType
+          return (
+            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+              {value}
+              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+            </span>
+          )
+        },
+        accessorFn: row => row.own_members?.ValueType,
+        editSetting: (() => {
+          const comboSetting: Layout.ColumnEditSetting<AggregateType.ColumnsDisplayData, 'Text' | 'RefSingle' | 'RefMultiple'> = {
+            type: 'combo',
+            getValueFromRow: row => row.own_members?.ValueType,
+            setValueToRow: (row, value) => {
+              row.own_members.ValueType = value
+            },
+            onClipboardCopy: row => {
+              const formatted = row.own_members?.ValueType ?? ''
+              return formatted
+            },
+            onClipboardPaste: (row, value) => {
+              if (row.own_members === undefined) return
+              let formatted: 'Text' | 'RefSingle' | 'RefMultiple' | undefined
+              if (value === 'Text') {
+                formatted = 'Text'
+              } else if (value === 'RefSingle') {
+                formatted = 'RefSingle'
+              } else if (value === 'RefMultiple') {
+                formatted = 'RefMultiple'
+              } else {
+                formatted = undefined
+              }
+              row.own_members.ValueType = formatted
+            },
+            comboProps: {
+              options: ['Text' as const, 'RefSingle' as const, 'RefMultiple' as const],
+              emitValueSelector: opt => opt,
+              matchingKeySelectorFromEmitValue: value => value,
+              matchingKeySelectorFromOption: opt => opt,
+              textSelector: opt => opt,
+            },
+          }
+          return comboSetting as Layout.ColumnEditSetting<AggregateType.ColumnsDisplayData, unknown>
+        })(),
+      },
+      {
+        id: 'col3',
+        header: 'CanReferOnly',
+        cell: cellProps => {
+          const value = cellProps.row.original.own_members?.CanReferOnly
+          return (
+            <span className="block w-full px-1 overflow-hidden whitespace-nowrap">
+              {value}
+              &nbsp; {/* <= すべての値が空の行がつぶれるのを防ぐ */}
+            </span>
+          )
+        },
+        accessorFn: row => row.own_members?.CanReferOnly,
+        editSetting: {
+          type: 'text',
+          getTextValue: row => row.own_members?.CanReferOnly,
+          setTextValue: (row, value) => {
+            row.own_members.CanReferOnly = value
           },
         },
       },
