@@ -1,8 +1,6 @@
 import { UUID } from 'uuidjs'
 import * as Util from './util'
 
-// ------------------ NIJO::BackgroundTaskEntity ------------------
-
 // ------------------ Row ------------------
 /** Rowの登録・更新・削除用のデータ型 */
 export type RowSaveCommand = {

@@ -1,7 +1,8 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿namespace Katchly {
+    using Microsoft.Extensions.Logging;
+    using System.Reflection;
+    using System.Text.Json;
 
-namespace Katchly {
     public class JobChain {
         public JobChain(string jobId, Stack<string> currentSections, BackgroundTaskContextFactory contextFactory, CancellationToken cancellationToken) {
             _jobId = jobId;

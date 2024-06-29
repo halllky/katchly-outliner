@@ -6,7 +6,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-Katchly.DefaultConfigurer.InitWebHostBuilder(builder);
+Katchly.DefaultConfigurationInWebApi.InitWebHostBuilder(builder);
 
 var app = builder.Build();
 
@@ -22,6 +22,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-Katchly.DefaultConfigurer.InitWebApplication(app);
+Katchly.DefaultConfigurationInWebApi.InitWebApplication(app);
 
 app.Run();
