@@ -362,6 +362,8 @@
                     Columns_ID = this.ID,
                     ColumnId = item1.ColumnId,
                     ColumnName = item1.ColumnName,
+                    ValueType = item1.ValueType,
+                    CanReferOnly = item1.CanReferOnly,
                 }).ToHashSet() ?? new HashSet<Katchly.ColumnsDbEntity>(),
                 CreatedOn = this.CreatedOn,
                 CreateUser = this.CreateUser,
@@ -393,6 +395,8 @@
                     Columns_ID = this.ID,
                     ColumnId = item1.ColumnId,
                     ColumnName = item1.ColumnName,
+                    ValueType = item1.ValueType,
+                    CanReferOnly = item1.CanReferOnly,
                 }).ToHashSet() ?? new HashSet<Katchly.ColumnsDbEntity>(),
                 CreatedOn = this.CreatedOn,
                 CreateUser = this.CreateUser,
@@ -410,6 +414,8 @@
                 Columns = entity.Columns?.Select(item => new ColumnsSaveCommand() {
                     ColumnId = item.ColumnId,
                     ColumnName = item.ColumnName,
+                    ValueType = item.ValueType,
+                    CanReferOnly = item.CanReferOnly,
                 }).ToList(),
                 CreatedOn = entity.CreatedOn,
                 CreateUser = entity.CreateUser,
@@ -425,6 +431,8 @@
     public partial class ColumnsSaveCommand {
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     
     }
     /// <summary>
@@ -444,6 +452,8 @@
     public class ColumnsSearchCondition {
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     /// <summary>
     /// ほかの集約がRowTypeを参照するときに必要になる、どのRowTypeを指し示すかのキー情報。
@@ -489,6 +499,8 @@
         public string? Columns_ID { get; set; }
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     
         public virtual RowTypeDbEntity? Parent { get; set; }
         public virtual ICollection<AttrsDbEntity> RefferedBy_AttrsDbEntity_ColType { get; set; }
@@ -534,6 +546,8 @@
                     own_members = new() {
                         ColumnId = x0?.ColumnId,
                         ColumnName = x0?.ColumnName,
+                        ValueType = x0?.ValueType,
+                        CanReferOnly = x0?.CanReferOnly,
                     },
                 }).ToList() ?? [],
             };
@@ -567,6 +581,8 @@
     public class ColumnsDisplayDataOwnMembers {
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     
     // ----------------------- RowTypeRefInfo -----------------------
@@ -686,6 +702,10 @@ namespace Katchly {
                 entity.Property(e => e.ColumnId)
                     .IsRequired(true);
                 entity.Property(e => e.ColumnName)
+                    .IsRequired(false);
+                entity.Property(e => e.ValueType)
+                    .IsRequired(false);
+                entity.Property(e => e.CanReferOnly)
                     .IsRequired(false);
             
                 entity.HasMany(e => e.RefferedBy_AttrsDbEntity_ColType)

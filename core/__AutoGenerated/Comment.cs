@@ -466,6 +466,13 @@
                 var trimmed = filter.TargetCell.ColType.ColumnName.Trim();
                 query = query.Where(x => x.TargetCell.ColType.ColumnName.Contains(trimmed));
             }
+            if (filter?.TargetCell?.ColType?.ValueType != default) {
+                query = query.Where(x => x.TargetCell.ColType.ValueType == filter.TargetCell.ColType.ValueType);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.ColType?.CanReferOnly)) {
+                var trimmed = filter.TargetCell.ColType.CanReferOnly.Trim();
+                query = query.Where(x => x.TargetCell.ColType.CanReferOnly.Contains(trimmed));
+            }
             if (!string.IsNullOrWhiteSpace(filter?.TargetCell?.Value)) {
                 var trimmed = filter.TargetCell.Value.Trim();
                 query = query.Where(x => x.TargetCell.Value.Contains(trimmed));
@@ -536,6 +543,13 @@
             if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.ColumnName)) {
                 var trimmed = filter.TargetColumn.ColumnName.Trim();
                 query = query.Where(x => x.TargetColumn.ColumnName.Contains(trimmed));
+            }
+            if (filter?.TargetColumn?.ValueType != default) {
+                query = query.Where(x => x.TargetColumn.ValueType == filter.TargetColumn.ValueType);
+            }
+            if (!string.IsNullOrWhiteSpace(filter?.TargetColumn?.CanReferOnly)) {
+                var trimmed = filter.TargetColumn.CanReferOnly.Trim();
+                query = query.Where(x => x.TargetColumn.CanReferOnly.Contains(trimmed));
             }
         
             // 順番
@@ -769,6 +783,8 @@
         public Comment_TargetCell_ColType_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     /// <summary>
     /// RowTypeの一覧検索条件
@@ -799,6 +815,8 @@
         public Comment_TargetColumn_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     /// <summary>
     /// RowTypeの一覧検索条件

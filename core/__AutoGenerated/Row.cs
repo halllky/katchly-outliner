@@ -78,6 +78,8 @@
             var entity = DbContext.RowDbSet
                 .AsNoTracking()
                 .Include(x => x.Attrs)
+                .Include(x => x.Attrs)
+                .ThenInclude(x => x.RowAttrsRefs)
                 .Include(x => x.RowType)
                 .Include(x => x.Attrs)
                 .ThenInclude(x => x.ColType)
@@ -100,6 +102,8 @@
             var beforeDbEntity = DbContext.RowDbSet
                 .AsNoTracking()
                 .Include(x => x.Attrs)
+                .Include(x => x.Attrs)
+                .ThenInclude(x => x.RowAttrsRefs)
                 .Include(x => x.RowType)
                 .Include(x => x.Attrs)
                 .ThenInclude(x => x.ColType)
@@ -156,6 +160,30 @@
             }
             foreach (var b in arr0_before) {
                 var a = arr0_after.SingleOrDefault(a => a.KeyEquals(b));
+                if (a == null) {
+                    DbContext.Entry(b).State = EntityState.Deleted;
+                }
+            }
+            var arr1_before = beforeDbEntity
+                .Attrs?
+                .SelectMany(x => x.RowAttrsRefs)
+                .OfType<RowAttrsRefsDbEntity>()
+                ?? Enumerable.Empty<RowAttrsRefsDbEntity>();
+            var arr1_after = afterDbEntity
+                .Attrs?
+                .SelectMany(x => x.RowAttrsRefs)
+                .OfType<RowAttrsRefsDbEntity>()
+                ?? Enumerable.Empty<RowAttrsRefsDbEntity>();
+            foreach (var a in arr1_after) {
+                var b = arr1_before.SingleOrDefault(b => b.KeyEquals(a));
+                if (b == null) {
+                    DbContext.Entry(a).State = EntityState.Added;
+                } else {
+                    DbContext.Entry(a).State = EntityState.Modified;
+                }
+            }
+            foreach (var b in arr1_before) {
+                var a = arr1_after.SingleOrDefault(a => a.KeyEquals(b));
                 if (a == null) {
                     DbContext.Entry(b).State = EntityState.Deleted;
                 }
@@ -218,6 +246,8 @@
         
             var entity = DbContext.RowDbSet
                 .Include(x => x.Attrs)
+                .Include(x => x.Attrs)
+                .ThenInclude(x => x.RowAttrsRefs)
                 .Include(x => x.RowType)
                 .Include(x => x.Attrs)
                 .ThenInclude(x => x.ColType)
@@ -270,6 +300,8 @@
             var query = (IQueryable<RowDbEntity>)DbContext.RowDbSet
                 .AsNoTracking()
                 .Include(x => x.Attrs)
+                .Include(x => x.Attrs)
+                .ThenInclude(x => x.RowAttrsRefs)
                 .Include(x => x.RowType)
                 .Include(x => x.Attrs)
                 .ThenInclude(x => x.ColType)
@@ -395,6 +427,27 @@
         
             return results;
         }
+        /// <summary>
+        /// RowAttrsRefsをキーワードで検索します。
+        /// </summary>
+        public virtual IEnumerable<RowAttrsRefsRefInfo> SearchByKeywordRowAttrsRefs(string? keyword) {
+            var query = (IQueryable<RowAttrsRefsDbEntity>)DbContext.RowAttrsRefsDbSet;
+        
+            if (!string.IsNullOrWhiteSpace(keyword)) {
+                var like = $"%{keyword.Trim().Replace("%", "\\%")}%";
+                query = query.Where(item => EF.Functions.Like(item.Parent.Parent.ID, like)
+                                         || EF.Functions.Like(item.Parent.ColType.Parent.ID, like)
+                                         || EF.Functions.Like(item.Parent.ColType.ColumnId, like));
+            }
+        
+            var results = query
+                .OrderBy(m => m.Parent.Parent.ID)
+                .Take(101)
+                .AsEnumerable()
+                .Select(entity => RowAttrsRefsRefInfo.FromDbEntity(entity));
+        
+            return results;
+        }
     }
 
 
@@ -424,6 +477,12 @@
                     Attrs_ID = this.ID,
                     Value = item1.Value,
                     UpdatedOn = item1.UpdatedOn,
+                    RowAttrsRefs = item1.RowAttrsRefs?.Select(item2 => new Katchly.RowAttrsRefsDbEntity {
+                        RowAttrsRefs_Attrs_ID = this.ID,
+                        RefToRow = item2.RefToRow,
+                        RowAttrsRefs_ColType_Columns_ID = item1.ColType?.Parent?.ID,
+                        RowAttrsRefs_ColType_ColumnId = item1.ColType?.ColumnId,
+                    }).ToHashSet() ?? new HashSet<Katchly.RowAttrsRefsDbEntity>(),
                     ColType_Columns_ID = item1.ColType?.Parent?.ID,
                     ColType_ColumnId = item1.ColType?.ColumnId,
                 }).ToHashSet() ?? new HashSet<Katchly.AttrsDbEntity>(),
@@ -461,6 +520,12 @@
                     Attrs_ID = this.ID,
                     Value = item1.Value,
                     UpdatedOn = item1.UpdatedOn,
+                    RowAttrsRefs = item1.RowAttrsRefs?.Select(item2 => new Katchly.RowAttrsRefsDbEntity {
+                        RowAttrsRefs_Attrs_ID = this.ID,
+                        RefToRow = item2.RefToRow,
+                        RowAttrsRefs_ColType_Columns_ID = item1.ColType?.Parent?.ID,
+                        RowAttrsRefs_ColType_ColumnId = item1.ColType?.ColumnId,
+                    }).ToHashSet() ?? new HashSet<Katchly.RowAttrsRefsDbEntity>(),
                     ColType_Columns_ID = item1.ColType?.Parent?.ID,
                     ColType_ColumnId = item1.ColType?.ColumnId,
                 }).ToHashSet() ?? new HashSet<Katchly.AttrsDbEntity>(),
@@ -491,6 +556,9 @@
                     },
                     Value = item.Value,
                     UpdatedOn = item.UpdatedOn,
+                    RowAttrsRefs = item.RowAttrsRefs?.Select(item1 => new RowAttrsRefsSaveCommand() {
+                        RefToRow = item1.RefToRow,
+                    }).ToList(),
                 }).ToList(),
                 Indent = entity.Indent,
                 CreatedOn = entity.CreatedOn,
@@ -508,6 +576,14 @@
         public ColumnsKeys? ColType { get; set; }
         public string? Value { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public List<RowAttrsRefsSaveCommand>? RowAttrsRefs { get; set; }
+    
+    }
+    /// <summary>
+    /// RowAttrsRefsの登録・更新・削除用のデータ型
+    /// </summary>
+    public partial class RowAttrsRefsSaveCommand {
+        public string? RefToRow { get; set; }
     
     }
     /// <summary>
@@ -532,6 +608,12 @@
         public FromTo<DateTime?> UpdatedOn { get; set; } = new();
     }
     /// <summary>
+    /// RowAttrsRefsの一覧検索条件
+    /// </summary>
+    public class RowAttrsRefsSearchCondition {
+        public string? RefToRow { get; set; }
+    }
+    /// <summary>
     /// RowTypeの一覧検索条件
     /// </summary>
     public class Row_RowTypeSearchCondition {
@@ -549,6 +631,8 @@
         public Attrs_ColType_ParentSearchCondition Parent { get; set; } = new();
         public string? ColumnId { get; set; }
         public string? ColumnName { get; set; }
+        public ColumnValueType? ValueType { get; set; }
+        public string? CanReferOnly { get; set; }
     }
     /// <summary>
     /// RowTypeの一覧検索条件
@@ -576,6 +660,13 @@
         public RowKeys? Parent { get; set; }
         [Key]
         public ColumnsKeys? ColType { get; set; }
+    }
+    /// <summary>
+    /// ほかの集約がRowAttrsRefsを参照するときに必要になる、どのRowAttrsRefsを指し示すかのキー情報。
+    /// </summary>
+    public class RowAttrsRefsKeys {
+        [Key]
+        public AttrsKeys? Parent { get; set; }
     }
     /// <summary>
     /// Entity Framework Core のルールに則ったRowのデータ型
@@ -613,6 +704,7 @@
     
         public virtual RowDbEntity? Parent { get; set; }
         public virtual ColumnsDbEntity? ColType { get; set; }
+        public virtual ICollection<RowAttrsRefsDbEntity> RowAttrsRefs { get; set; }
         public virtual ICollection<CommentDbEntity> RefferedBy_CommentDbEntity_TargetCell { get; set; }
     
         /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
@@ -620,6 +712,25 @@
             if (entity.Attrs_ID != this.Attrs_ID) return false;
             if (entity.ColType_Columns_ID != this.ColType_Columns_ID) return false;
             if (entity.ColType_ColumnId != this.ColType_ColumnId) return false;
+            return true;
+        }
+    }
+    /// <summary>
+    /// Entity Framework Core のルールに則ったRowAttrsRefsのデータ型
+    /// </summary>
+    public partial class RowAttrsRefsDbEntity {
+        public string? RowAttrsRefs_Attrs_ID { get; set; }
+        public string? RefToRow { get; set; }
+        public string? RowAttrsRefs_ColType_Columns_ID { get; set; }
+        public string? RowAttrsRefs_ColType_ColumnId { get; set; }
+    
+        public virtual AttrsDbEntity? Parent { get; set; }
+    
+        /// <summary>このオブジェクトと比較対象のオブジェクトの主キーが一致するかを返します。</summary>
+        public bool KeyEquals(RowAttrsRefsDbEntity entity) {
+            if (entity.RowAttrsRefs_Attrs_ID != this.RowAttrsRefs_Attrs_ID) return false;
+            if (entity.RowAttrsRefs_ColType_Columns_ID != this.RowAttrsRefs_ColType_Columns_ID) return false;
+            if (entity.RowAttrsRefs_ColType_ColumnId != this.RowAttrsRefs_ColType_ColumnId) return false;
             return true;
         }
     }
@@ -672,6 +783,15 @@
                         Value = x0?.Value,
                         UpdatedOn = x0?.UpdatedOn,
                     },
+                    child_RowAttrsRefs = x0?.RowAttrsRefs?.Select(x1 => new RowAttrsRefsDisplayData {
+                        localRepositoryItemKey = new object?[] { dbEntity.ID, x0?.ColType?.Parent?.ID, x0?.ColType?.ColumnId }.ToJson(),
+                        existsInRemoteRepository = true,
+                        willBeChanged = false,
+                        willBeDeleted = false,
+                        own_members = new() {
+                            RefToRow = x1?.RefToRow,
+                        },
+                    }).ToList() ?? [],
                 }).ToList() ?? [],
                 ref_from_Row_RowOrder = dbEntity?.RefferedBy_RowOrderDbEntity_Row == null
                     ? null
@@ -702,6 +822,7 @@
         public bool willBeChanged { get; set; }
         public bool willBeDeleted { get; set; }
         public AttrsDisplayDataOwnMembers own_members { get; set; } = new();
+        public List<RowAttrsRefsDisplayData> child_RowAttrsRefs { get; set; }
     }
     /// <summary>
     /// Attrsの画面表示用データのうちAttrs自身の属性
@@ -710,6 +831,22 @@
         public ColumnsRefInfo? ColType { get; set; }
         public string? Value { get; set; }
         public DateTime? UpdatedOn { get; set; }
+    }
+    /// <summary>
+    /// RowAttrsRefsの画面表示用データ
+    /// </summary>
+    public partial class RowAttrsRefsDisplayData {
+        public string localRepositoryItemKey { get; set; }
+        public bool existsInRemoteRepository { get; set; }
+        public bool willBeChanged { get; set; }
+        public bool willBeDeleted { get; set; }
+        public RowAttrsRefsDisplayDataOwnMembers own_members { get; set; } = new();
+    }
+    /// <summary>
+    /// RowAttrsRefsの画面表示用データのうちRowAttrsRefs自身の属性
+    /// </summary>
+    public class RowAttrsRefsDisplayDataOwnMembers {
+        public string? RefToRow { get; set; }
     }
     
     // ----------------------- RowRefInfo -----------------------
@@ -788,6 +925,60 @@
     public partial class AttrsRefInfo_ColType_Parent {
         public string? ID { get; set; }
     }
+    
+    // ----------------------- RowAttrsRefsRefInfo -----------------------
+    /// <summary>
+    /// 他のデータがRowAttrsRefsを参照している場合に、その参照元のデータの画面上に表示されるRowAttrsRefsのデータ型。
+    /// </summary>
+    public partial class RowAttrsRefsRefInfo {
+        /// <summary>
+        /// RowAttrsRefsのキー。保存するときはこの値が使用される。
+        /// 新規作成されてからDBに登録されるまでの間のRowAttrsRefsをUUID等の不変の値で参照できるようにするために文字列になっている。
+        /// </summary>
+        public string? __instanceKey { get; set; }
+    
+        public RowAttrsRefsRefInfo_Parent? Parent { get; set; }
+    
+        public static RowAttrsRefsRefInfo FromDbEntity(RowAttrsRefsDbEntity dbEntity) {
+            var instance = new RowAttrsRefsRefInfo {
+                __instanceKey = new object?[] {
+                    dbEntity.RowAttrsRefs_Attrs_ID,
+                    dbEntity.RowAttrsRefs_ColType_Columns_ID,
+                    dbEntity.RowAttrsRefs_ColType_ColumnId,
+                }.ToJson(),
+                
+            };
+            return instance;
+        }
+    }
+    /// <summary>
+    /// <see cref="RowAttrsRefsRefInfo"/> の一部分
+    /// </summary>
+    public partial class RowAttrsRefsRefInfo_Parent {
+        public RowAttrsRefsRefInfo_Parent_Parent? Parent { get; set; }
+        public RowAttrsRefsRefInfo_Parent_ColType? ColType { get; set; }
+        public string? Value { get; set; }
+    }
+    /// <summary>
+    /// <see cref="RowAttrsRefsRefInfo"/> の一部分
+    /// </summary>
+    public partial class RowAttrsRefsRefInfo_Parent_Parent {
+        public string? ID { get; set; }
+        public string? Text { get; set; }
+    }
+    /// <summary>
+    /// <see cref="RowAttrsRefsRefInfo"/> の一部分
+    /// </summary>
+    public partial class RowAttrsRefsRefInfo_Parent_ColType {
+        public RowAttrsRefsRefInfo_Parent_ColType_Parent? Parent { get; set; }
+        public string? ColumnId { get; set; }
+    }
+    /// <summary>
+    /// <see cref="RowAttrsRefsRefInfo"/> の一部分
+    /// </summary>
+    public partial class RowAttrsRefsRefInfo_Parent_ColType_Parent {
+        public string? ID { get; set; }
+    }
 #endregion データ構造クラス
 }
 
@@ -798,6 +989,7 @@ namespace Katchly {
     partial class MyDbContext {
         public virtual DbSet<RowDbEntity> RowDbSet { get; set; }
         public virtual DbSet<AttrsDbEntity> AttrsDbSet { get; set; }
+        public virtual DbSet<RowAttrsRefsDbEntity> RowAttrsRefsDbSet { get; set; }
 
         private void OnModelCreating_Row(ModelBuilder modelBuilder) {
             modelBuilder.Entity<Katchly.RowDbEntity>(entity => {
@@ -861,6 +1053,14 @@ namespace Katchly {
                 entity.Property(e => e.ColType_ColumnId)
                     .IsRequired(true);
             
+                entity.HasMany(e => e.RowAttrsRefs)
+                    .WithOne(e => e.Parent)
+                    .HasForeignKey(e => new {
+                        e.RowAttrsRefs_Attrs_ID,
+                        e.RowAttrsRefs_ColType_Columns_ID,
+                        e.RowAttrsRefs_ColType_ColumnId,
+                    })
+                    .OnDelete(DeleteBehavior.Cascade);
                 entity.HasMany(e => e.RefferedBy_CommentDbEntity_TargetCell)
                     .WithOne(e => e.TargetCell)
                     .HasForeignKey(e => new {
@@ -869,6 +1069,25 @@ namespace Katchly {
                         e.TargetCell_ColType_ColumnId,
                     })
                     .OnDelete(DeleteBehavior.NoAction);
+            });
+            modelBuilder.Entity<Katchly.RowAttrsRefsDbEntity>(entity => {
+            
+                entity.HasKey(e => new {
+                    e.RowAttrsRefs_Attrs_ID,
+                    e.RowAttrsRefs_ColType_Columns_ID,
+                    e.RowAttrsRefs_ColType_ColumnId,
+                });
+            
+                entity.Property(e => e.RowAttrsRefs_Attrs_ID)
+                    .IsRequired(true);
+                entity.Property(e => e.RefToRow)
+                    .IsRequired(false);
+                entity.Property(e => e.RowAttrsRefs_ColType_Columns_ID)
+                    .IsRequired(true);
+                entity.Property(e => e.RowAttrsRefs_ColType_ColumnId)
+                    .IsRequired(true);
+            
+                
             });
         }
     }
