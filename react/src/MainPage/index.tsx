@@ -398,14 +398,14 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       >
         <Panel className="flex flex-col gap-1">
           <div className="flex gap-1 items-center">
+            <div className="basis-44">
+              <Input.IconButton icon={InboxIcon} onClick={handleSave} className="p-1" outline>
+                {nowSaving ? '保存中...' : '保存（Ctrl + S）'}
+              </Input.IconButton>
+            </div>
             <Input.IconButton icon={PlusIcon} onClick={handleAddRowByButton} hideText className="p-1">追加（Ctrl + Enter）</Input.IconButton>
             <Input.IconButton icon={MinusIcon} onClick={handleDeleteRows} hideText className="p-1">削除（Shift + Delete）</Input.IconButton>
             <Input.IconButton icon={CubeIcon} onClick={openNewRowTypeDialog} hideText className="p-1">種類新規作成</Input.IconButton>
-            {nowSaving ? (
-              <Input.IconButton onClick={handleSave} className="p-1" outline>保存中...</Input.IconButton>
-            ) : (
-              <Input.IconButton icon={InboxIcon} onClick={handleSave} hideText className="p-1" outline>保存（Ctrl + S）</Input.IconButton>
-            )}
             <div className="flex-1"></div>
             {children}
           </div>
