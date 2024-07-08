@@ -296,7 +296,7 @@ export const useDummyDataGenerator = () => {
     const response10415865 = await post<AggregateType.CommentSaveCommand>(`/api/Comment/create`, data61315786)
     if (!response10415865.ok) return false
     
-    const data17276762 = AggregateType.createLog()
+    const data17276762 = AggregateType.createChangeLog()
     
     data17276762.LogTime = '2005-01-01'
     data17276762.UpdatedObject = 'GGGGGGGGGG'
@@ -305,10 +305,10 @@ export const useDummyDataGenerator = () => {
     data17276762.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
     
-    const response18453276 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data17276762)
+    const response18453276 = await post<AggregateType.ChangeLogSaveCommand>(`/api/ChangeLog/create`, data17276762)
     if (!response18453276.ok) return false
     
-    const data06343665 = AggregateType.createLog()
+    const data06343665 = AggregateType.createChangeLog()
     
     data06343665.LogTime = '2006-12-02'
     data06343665.UpdatedObject = 'OOOOOOOOOO'
@@ -317,10 +317,10 @@ export const useDummyDataGenerator = () => {
     data06343665.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
     
-    const response26368373 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data06343665)
+    const response26368373 = await post<AggregateType.ChangeLogSaveCommand>(`/api/ChangeLog/create`, data06343665)
     if (!response26368373.ok) return false
     
-    const data97012727 = AggregateType.createLog()
+    const data97012727 = AggregateType.createChangeLog()
     
     data97012727.LogTime = '2004-03-18'
     data97012727.UpdatedObject = 'EEEEEEEEEE'
@@ -329,10 +329,10 @@ export const useDummyDataGenerator = () => {
     data97012727.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
     
-    const response07770919 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data97012727)
+    const response07770919 = await post<AggregateType.ChangeLogSaveCommand>(`/api/ChangeLog/create`, data97012727)
     if (!response07770919.ok) return false
     
-    const data57539339 = AggregateType.createLog()
+    const data57539339 = AggregateType.createChangeLog()
     
     data57539339.LogTime = '2005-07-10'
     data57539339.UpdatedObject = 'ZZZZZZZZZZ'
@@ -341,7 +341,7 @@ export const useDummyDataGenerator = () => {
     data57539339.Content = 'XXXXXXXXXXXXXX\nXXXXXXXXXXXXXX'
     
     
-    const response55286183 = await post<AggregateType.LogSaveCommand>(`/api/Log/create`, data57539339)
+    const response55286183 = await post<AggregateType.ChangeLogSaveCommand>(`/api/ChangeLog/create`, data57539339)
     if (!response55286183.ok) return false
     
 

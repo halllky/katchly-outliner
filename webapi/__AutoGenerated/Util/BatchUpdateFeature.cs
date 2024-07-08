@@ -17,7 +17,7 @@
         public class ParameterItem {
             /// <summary>
             /// 更新データ種別名。以下のうちいずれか:
-            /// RowType, Row, RowOrder, Comment, Log
+            /// RowType, Row, RowOrder, Comment, ChangeLog
             /// </summary>
             public string? DataType { get; set; }
             /// <summary>
@@ -30,7 +30,7 @@
             /// <see cref="RowSaveCommand"/>
             /// <see cref="RowOrderSaveCommand"/>
             /// <see cref="CommentSaveCommand"/>
-            /// <see cref="LogSaveCommand"/>
+            /// <see cref="ChangeLogSaveCommand"/>
             /// </summary>
             public object? Data { get; set; }
         }
@@ -65,9 +65,9 @@
             var insertComment = new List<CommentCreateCommand>();
             var updateComment = new List<CommentSaveCommand>();
             var deleteComment = new List<CommentSaveCommand>();
-            var insertLog = new List<LogCreateCommand>();
-            var updateLog = new List<LogSaveCommand>();
-            var deleteLog = new List<LogSaveCommand>();
+            var insertChangeLog = new List<ChangeLogCreateCommand>();
+            var updateChangeLog = new List<ChangeLogSaveCommand>();
+            var deleteChangeLog = new List<ChangeLogSaveCommand>();
 
             var i = 0;
             while (allItems.Count > 0) {
@@ -166,24 +166,24 @@
                         errors.Add($"{i + 1}件目:\t更新種別が不正です。");
                     }
 
-                } else if (item.DataType == "Log") {
+                } else if (item.DataType == "ChangeLog") {
                     if (item.Action == E_ActionType.ADD) {
-                        if (Util.TryParseAsObjectType<LogCreateCommand>(item.Data, out var parsed))
-                            insertLog.Add(parsed);
+                        if (Util.TryParseAsObjectType<ChangeLogCreateCommand>(item.Data, out var parsed))
+                            insertChangeLog.Add(parsed);
                         else
-                            errors.Add($"{i + 1}件目:\tパラメータをLogデータとして解釈できません => '{item.Data?.ToJson()}'");
+                            errors.Add($"{i + 1}件目:\tパラメータをChangeLogデータとして解釈できません => '{item.Data?.ToJson()}'");
 
                     } else if (item.Action == E_ActionType.MOD) {
-                        if (Util.TryParseAsObjectType<LogSaveCommand>(item.Data, out var parsed))
-                            updateLog.Add(parsed);
+                        if (Util.TryParseAsObjectType<ChangeLogSaveCommand>(item.Data, out var parsed))
+                            updateChangeLog.Add(parsed);
                         else
-                            errors.Add($"{i + 1}件目:\tパラメータをLogデータとして解釈できません => '{item.Data?.ToJson()}'");
+                            errors.Add($"{i + 1}件目:\tパラメータをChangeLogデータとして解釈できません => '{item.Data?.ToJson()}'");
 
                     } else if (item.Action == E_ActionType.DEL) {
-                        if (Util.TryParseAsObjectType<LogSaveCommand>(item.Data, out var parsed))
-                            deleteLog.Add(parsed);
+                        if (Util.TryParseAsObjectType<ChangeLogSaveCommand>(item.Data, out var parsed))
+                            deleteChangeLog.Add(parsed);
                         else
-                            errors.Add($"{i + 1}件目:\tパラメータをLogデータとして解釈できません => '{item.Data?.ToJson()}'");
+                            errors.Add($"{i + 1}件目:\tパラメータをChangeLogデータとして解釈できません => '{item.Data?.ToJson()}'");
 
                     } else {
                         errors.Add($"{i + 1}件目:\t更新種別が不正です。");
@@ -209,9 +209,9 @@
                 InsertComment = insertComment,
                 UpdateComment = updateComment,
                 DeleteComment = deleteComment,
-                InsertLog = insertLog,
-                UpdateLog = updateLog,
-                DeleteLog = deleteLog,
+                InsertChangeLog = insertChangeLog,
+                UpdateChangeLog = updateChangeLog,
+                DeleteChangeLog = deleteChangeLog,
             };
             return errors.Count == 0;
         }
@@ -231,8 +231,8 @@
             errors = new List<string>();
             ICollection<string> errors2;
 
-            foreach (var item in DeleteLog) {
-                if (!applicationService.DeleteLog(item, out errors2)) {
+            foreach (var item in DeleteChangeLog) {
+                if (!applicationService.DeleteChangeLog(item, out errors2)) {
                     foreach (var err in errors2) errors.Add(err);
                 }
             }
@@ -296,13 +296,13 @@
                     foreach (var err in errors2) errors.Add(err);
                 }
             }
-            foreach (var item in UpdateLog) {
-                if (!applicationService.UpdateLog(item, out var _, out errors2)) {
+            foreach (var item in UpdateChangeLog) {
+                if (!applicationService.UpdateChangeLog(item, out var _, out errors2)) {
                     foreach (var err in errors2) errors.Add(err);
                 }
             }
-            foreach (var item in InsertLog) {
-                if (!applicationService.CreateLog(item, out var _, out errors2)) {
+            foreach (var item in InsertChangeLog) {
+                if (!applicationService.CreateChangeLog(item, out var _, out errors2)) {
                     foreach (var err in errors2) errors.Add(err);
                 }
             }
@@ -326,8 +326,8 @@
         private IReadOnlyList<CommentCreateCommand> InsertComment { get; init; }
         private IReadOnlyList<CommentSaveCommand> UpdateComment { get; init; }
         private IReadOnlyList<CommentSaveCommand> DeleteComment { get; init; }
-        private IReadOnlyList<LogCreateCommand> InsertLog { get; init; }
-        private IReadOnlyList<LogSaveCommand> UpdateLog { get; init; }
-        private IReadOnlyList<LogSaveCommand> DeleteLog { get; init; }
+        private IReadOnlyList<ChangeLogCreateCommand> InsertChangeLog { get; init; }
+        private IReadOnlyList<ChangeLogSaveCommand> UpdateChangeLog { get; init; }
+        private IReadOnlyList<ChangeLogSaveCommand> DeleteChangeLog { get; init; }
     }
 }

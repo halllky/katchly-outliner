@@ -14,10 +14,10 @@ import CommentCreateView from './pages/Comment/new'
 import CommentMultiView from './pages/Comment/list'
 import CommentDetailView from './pages/Comment/detail'
 import CommentEditView from './pages/Comment/edit'
-import LogCreateView from './pages/Log/new'
-import LogMultiView from './pages/Log/list'
-import LogDetailView from './pages/Log/detail'
-import LogEditView from './pages/Log/edit'
+import ChangeLogCreateView from './pages/ChangeLog/new'
+import ChangeLogMultiView from './pages/ChangeLog/list'
+import ChangeLogDetailView from './pages/ChangeLog/detail'
+import ChangeLogEditView from './pages/ChangeLog/edit'
 
 export const THIS_APPLICATION_NAME = 'Katchly' as const
 
@@ -38,15 +38,15 @@ export const routes: { url: string, el: JSX.Element }[] = [
   { url: '/x6940e80bcd51a8fd2f00f79328cf4efc', el: <CommentMultiView /> },
   { url: '/xcc9c15b1503ef15d999d64ce6d5fe189/detail/:key0', el: <CommentDetailView /> },
   { url: '/xcc9c15b1503ef15d999d64ce6d5fe189/edit/:key0', el: <CommentEditView /> },
-  { url: '/x2be65a1401b75f2cdd8deaec5a04a976/new/:key0?', el: <LogCreateView /> },
-  { url: '/x1ee70bce22334c6e1db2bcea5959f16b', el: <LogMultiView /> },
-  { url: '/x2be65a1401b75f2cdd8deaec5a04a976/detail/:key0', el: <LogDetailView /> },
-  { url: '/x2be65a1401b75f2cdd8deaec5a04a976/edit/:key0', el: <LogEditView /> },
+  { url: '/x2f89be282c4027a76b6857544038122c/new/:key0?', el: <ChangeLogCreateView /> },
+  { url: '/x47b5f00277c2259dcff89672135f20e3', el: <ChangeLogMultiView /> },
+  { url: '/x2f89be282c4027a76b6857544038122c/detail/:key0', el: <ChangeLogDetailView /> },
+  { url: '/x2f89be282c4027a76b6857544038122c/edit/:key0', el: <ChangeLogEditView /> },
 ]
 export const menuItems: { url: string, text: string }[] = [
   { url: '/xaa6703a7b77c514e0f4f9413ccf059d3', text: 'Row' },
   { url: '/x1827ce8197ce65dd7400e6eeb2155790', text: 'RowOrder' },
   { url: '/x32605e58c9870700a3a2652f36a5c4b5', text: 'RowType' },
   { url: '/x6940e80bcd51a8fd2f00f79328cf4efc', text: 'Comment' },
-  { url: '/x1ee70bce22334c6e1db2bcea5959f16b', text: 'Log' },
+  { url: '/x47b5f00277c2259dcff89672135f20e3', text: 'ChangeLog' },
 ]

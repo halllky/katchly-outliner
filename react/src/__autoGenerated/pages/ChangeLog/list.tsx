@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import { useFieldArray, FormProvider } from 'react-hook-form'
-import { BookmarkSquareIcon, PencilIcon, XMarkIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, PencilIcon, XMarkIcon, PlusIcon, ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import dayjs from 'dayjs'
 import { UUID } from 'uuidjs'
 import * as Util from '../../util'
@@ -25,12 +26,28 @@ const Page = () => {
   const { get } = Util.useHttpRequest()
 
   // 検索条件
-  const [filter, setFilter] = useState<AggregateType.LogSearchCondition>(() => AggregateType.createLogSearchCondition())
+  const [filter, setFilter] = useState<AggregateType.ChangeLogSearchCondition>(() => AggregateType.createChangeLogSearchCondition())
   const [currentPage, dispatchPaging] = useReducer(pagingReducer, { pageIndex: 0 })
+  const searchConditionPanelRef = useRef<ImperativePanelHandle>(null)
+  const [collapsed, setCollapsed] = useState(false)
 
-  const rhfSearchMethods = Util.useFormEx<AggregateType.LogSearchCondition>({})
-  const getConditionValues = rhfSearchMethods.getValues
-  const registerExCondition = rhfSearchMethods.registerEx
+  const rhfSearchMethods = Util.useFormEx<AggregateType.ChangeLogSearchCondition>({})
+  const {
+    getValues: getConditionValues,
+    registerEx: registerExCondition,
+    reset: resetSearchCondition,
+  } = rhfSearchMethods
+  const clearSearchCondition = useCallback(() => {
+    resetSearchCondition()
+    searchConditionPanelRef.current?.expand()
+  }, [resetSearchCondition, searchConditionPanelRef])
+  const toggleSearchCondition = useCallback(() => {
+    if (searchConditionPanelRef.current?.getCollapsed()) {
+      searchConditionPanelRef.current.expand()
+    } else {
+      searchConditionPanelRef.current?.collapse()
+    }
+  }, [searchConditionPanelRef])
 
   // 編集対象（リモートリポジトリ + ローカルリポジトリ）
   const editRange = useMemo(() => ({
@@ -38,7 +55,7 @@ const Page = () => {
     skip: currentPage.pageIndex * 20,
     take: 20,
   }), [filter, currentPage])
-  const { load, commit } = Util.useLogRepository(editRange)
+  const { load, commit } = Util.useChangeLogRepository(editRange)
 
   const reactHookFormMethods = Util.useFormEx<{ currentPageItems: GridRow[] }>({})
   const { control, registerEx, handleSubmit, reset } = reactHookFormMethods
@@ -55,11 +72,12 @@ const Page = () => {
 
   const handleReload = useCallback(() => {
     setFilter(getConditionValues())
-  }, [getConditionValues])
+    searchConditionPanelRef.current?.collapse()
+  }, [getConditionValues, searchConditionPanelRef])
 
   // データ編集
   const handleAdd: React.MouseEventHandler<HTMLButtonElement> = useCallback(async () => {
-    const newRow: AggregateType.LogDisplayData = {
+    const newRow: AggregateType.ChangeLogDisplayData = {
       localRepositoryItemKey: JSON.stringify(UUID.generate()) as Util.ItemKey,
       existsInRemoteRepository: false,
       willBeChanged: true,
@@ -98,7 +116,7 @@ const Page = () => {
       cell: cellProps => {
         const row = cellProps.row.original
         const state = Util.getLocalRepositoryState(row)
-        const singleViewUrl = Util.getLogSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
+        const singleViewUrl = Util.getChangeLogSingleViewUrl(row.localRepositoryItemKey, state === '+' ? 'new' : 'edit')
         return (
           <div className="flex items-center gap-1 pl-1">
             <Link to={singleViewUrl} className="text-link">詳細</Link>
@@ -218,61 +236,74 @@ const Page = () => {
   ], [get, update])
 
   return (
-    <div className="page-content-root gap-4">
+    <div className="page-content-root">
 
-      <FormProvider {...rhfSearchMethods}>
-        <form className="flex flex-col gap-2">
-          <div className="flex gap-2 justify-start">
-            <h1 className="text-base font-semibold select-none py-1">
-              Log
-            </h1>
-            <Input.Button onClick={handleReload}>再読み込み</Input.Button>
-            <div className="basis-4"></div>
-            <Input.Button onClick={handleAdd}>追加</Input.Button>
-            <Input.Button onClick={handleRemove}>削除</Input.Button>
-            <Input.IconButton fill icon={BookmarkSquareIcon} onClick={onSave}>一時保存</Input.IconButton>
+      <div className="flex gap-4 p-1">
+        <div className="flex gap-4 flex-wrap">
+          <Util.SideMenuCollapseButton />
+          <h1 className="self-center text-base font-semibold whitespace-nowrap select-none">
+            ChangeLog
+          </h1>
+          <Input.IconButton className="self-center" onClick={handleAdd}>追加</Input.IconButton>
+          <Input.IconButton className="self-center" onClick={handleRemove}>削除</Input.IconButton>
+          <Input.IconButton className="self-center" onClick={onSave}>一時保存</Input.IconButton>
+        </div>
+        <div className="flex-1"></div>
+        <Input.IconButton className="self-center" onClick={clearSearchCondition}>クリア</Input.IconButton>
+        <div className="self-center flex">
+          <Input.IconButton icon={MagnifyingGlassIcon} fill onClick={handleReload}>検索</Input.IconButton>
+          <div className="self-stretch w-px bg-color-base"></div>
+          <Input.IconButton icon={collapsed ? ChevronDownIcon : ChevronUpIcon} fill onClick={toggleSearchCondition} hideText>検索条件</Input.IconButton>
+        </div>
+      </div>
+
+      <PanelGroup direction="vertical">
+        <Panel ref={searchConditionPanelRef} defaultSize={30} collapsible onCollapse={setCollapsed}>
+          <div className="h-full overflow-auto">
+            <FormProvider {...rhfSearchMethods}>
+              <VForm.Container leftColumnMinWidth="10rem" className="p-1">
+                <VForm.Item label="LogTime">
+                  <Input.Date {...registerExCondition(`LogTime.From`)} />
+                  <span className="select-none">～</span>
+                  <Input.Date {...registerExCondition(`LogTime.To`)} />
+                </VForm.Item>
+                <VForm.Item label="UpdatedObject">
+                  <Input.Word {...registerExCondition(`UpdatedObject`)} />
+                </VForm.Item>
+                <VForm.Item label="UpdateType">
+                  <Input.Word {...registerExCondition(`UpdateType`)} />
+                </VForm.Item>
+                <VForm.Item label="RowIdOrRowTypeId">
+                  <Input.Word {...registerExCondition(`RowIdOrRowTypeId`)} />
+                </VForm.Item>
+                <VForm.Item label="Content">
+                  <Input.Description {...registerExCondition(`Content`)} />
+                </VForm.Item>
+              </VForm.Container>
+            </FormProvider>
           </div>
+        </Panel>
 
+        <PanelResizeHandle className="h-2 bg-color-4" />
+
+        <Panel>
           <Util.InlineMessageList />
-
-          <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="LogTime">
-              <Input.Date {...registerExCondition(`LogTime.From`)} />
-              <span className="select-none">～</span>
-              <Input.Date {...registerExCondition(`LogTime.To`)} />
-            </VForm.Item>
-            <VForm.Item label="UpdatedObject">
-              <Input.Word {...registerExCondition(`UpdatedObject`)} />
-            </VForm.Item>
-            <VForm.Item label="UpdateType">
-              <Input.Word {...registerExCondition(`UpdateType`)} />
-            </VForm.Item>
-            <VForm.Item label="RowIdOrRowTypeId">
-              <Input.Word {...registerExCondition(`RowIdOrRowTypeId`)} />
-            </VForm.Item>
-            <VForm.Item label="Content">
-              <Input.Description {...registerExCondition(`Content`)} />
-            </VForm.Item>
-          </VForm.Container>
-        </form>
-      </FormProvider>
-
-      <FormProvider {...reactHookFormMethods}>
-        <form className="flex-1">
-          <Layout.DataTable
-            data={fields}
-            columns={columnDefs}
-            onChangeRow={handleUpdateRow}
-            ref={dtRef}
-            className="h-full"
-          ></Layout.DataTable>
-        </form>
-      </FormProvider>
+          <FormProvider {...reactHookFormMethods}>
+            <Layout.DataTable
+              data={fields}
+              columns={columnDefs}
+              onChangeRow={handleUpdateRow}
+              ref={dtRef}
+              className="h-full"
+            ></Layout.DataTable>
+          </FormProvider>
+        </Panel>
+      </PanelGroup>
     </div>
   )
 }
 
-type GridRow = AggregateType.LogDisplayData
+type GridRow = AggregateType.ChangeLogDisplayData
 
 // TODO: utilに持っていく
 type PageState = { pageIndex: number, loaded?: boolean }

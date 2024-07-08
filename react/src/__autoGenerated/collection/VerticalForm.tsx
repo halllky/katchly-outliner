@@ -1,50 +1,62 @@
-import React from "react"
+import React, { useContext } from "react"
 
 /** 0個以上のItemまたはContainerを内部に含む入れ物。Containerに内包された要素はインデントが1段下がる。 */
 const Container = ({
   label,
   labelSide,
   leftColumnMinWidth: propsLeftColMinWidth,
-  indentSizePx: propsIndentSizePx,
-  nowrap: propsNowrap,
   children,
   className,
 }: {
   label?: string
   labelSide?: React.ReactNode
   leftColumnMinWidth?: string
-  indentSizePx?: number
-  nowrap?: boolean
   children?: React.ReactNode
   className?: string
 }) => {
-  const { depth, indentSizePx, nowrap: contextNowrap, leftColumnMinWidth } = React.useContext(VFormContext)
+  const { depth, leftColumnMinWidth: contextLeftColumnMinWidth } = React.useContext(VFormContext)
+  const leftColumnMinWidth = propsLeftColMinWidth ?? contextLeftColumnMinWidth
+
   const innerContextValue = React.useMemo<VFormContextValue>(() => ({
     depth: depth + 1,
-    leftColumnMinWidth: propsLeftColMinWidth ?? leftColumnMinWidth,
-    indentSizePx: propsIndentSizePx ?? indentSizePx,
-    nowrap: propsNowrap ?? contextNowrap,
-  }), [depth, propsLeftColMinWidth, leftColumnMinWidth, propsIndentSizePx, propsNowrap, indentSizePx, contextNowrap])
+    leftColumnMinWidth,
+  }), [depth, leftColumnMinWidth])
 
-  const isRoot = depth === 0
-  const nowrap = propsNowrap ?? contextNowrap
+  const gridStyle: React.CSSProperties = {
+    gridTemplateColumns: leftColumnMinWidth
+      ? `repeat(auto-fit, minmax(calc(16rem + ${leftColumnMinWidth?.trim()}), 1fr))`
+      : `repeat(auto-fit, minmax(16rem, 1fr))`,
+  }
 
   return (
     <VFormContext.Provider value={innerContextValue}>
-      <div className={`flex flex-col justify-start ${!isRoot && 'basis-full border-t border-l border-color-5'} ${className}`}>
-        {(label || labelSide) && (
-          <div className={`flex flex-wrap gap-2 items-center ${isRoot ? 'py-1' : 'p-1'}`}>
-            <LabelText>{label}</LabelText>
-            {labelSide}
-          </div>)}
-        <div className="flex-1 flex bg-color-3">
-          {!isRoot && <Indent className="bg-color-3" />}
-          {/* なぜか width:0 （というよりwidthに明示的な値を）を指定しないとDataTableなど横長のコンテンツがページ外まで伸びてしまう */}
-          <div className={`w-0 flex-1 flex overflow-x-hidden ${nowrap ? 'flex-col' : 'flex-wrap'} ${isRoot && 'border-r border-b'} border-color-5`}>
+      {depth <= 1 ? (
+
+        <div className={`col-span-full flex flex-col ${depth === 1 ? 'mt-4' : ''} ${className ?? ''}`}>
+          {(label || labelSide) && (
+            <div className="p-1 flex flex-wrap items-center gap-1">
+              <LabelText>{label}</LabelText>
+              {labelSide}
+            </div>
+          )}
+          <div className="grid gap-px flex-1" style={gridStyle}>
             {children}
           </div>
         </div>
-      </div>
+
+      ) : (
+
+        <div className={`col-span-full flex flex-col bg-color-2 border-vform ${className ?? ''}`}>
+          <div className="p-1 flex flex-wrap items-center gap-1">
+            <LabelText>{label}</LabelText>
+            {labelSide}
+          </div>
+          <div className="grid gap-px flex-1 ml-[2rem]" style={gridStyle}>
+            {children}
+          </div>
+        </div>
+
+      )}
     </VFormContext.Provider>
   )
 }
@@ -57,58 +69,54 @@ const Item = ({ label, labelSide, wide, children, className }: {
   children?: React.ReactNode
   className?: string
 }) => {
-  const { depth, leftColumnMinWidth, indentSizePx, nowrap } = React.useContext(VFormContext)
-  const leftColumnStyle: React.CSSProperties = {
-    minWidth: leftColumnMinWidth ? `calc(${leftColumnMinWidth} - ${depth * (indentSizePx ?? 24)}px)` : undefined,
-  }
+  const { leftColumnMinWidth } = useContext(VFormContext)
 
-  return <>
-    {wide && (label || labelSide) && (
-      <div className={`basis-full flex flex-wrap items-center gap-2 p-1 border-t border-l border-color-5 ${className}`}>
-        <LabelText>{label}</LabelText>
-        {labelSide}
-      </div >
-    )}
-    <div className={`${nowrap ? '' : 'flex-1'} ${(wide ? 'basis-full' : 'min-w-fit')} flex align-center overflow-x-hidden border-t border-l border-color-5 ${className}`}>
-      {!wide && (label || labelSide) && (
-        <div className="flex flex-col items-start gap-2 p-1 bg-color-3 border-r border-color-5" style={leftColumnStyle}>
+  return wide ? (
+    <div className="flex flex-col col-span-full border-vform">
+      {(label || labelSide) && (
+        <Label>
           <LabelText>{label}</LabelText>
           {labelSide}
-        </div>
+        </Label>
       )}
-      <div className="flex-1 p-1 bg-color-0 overflow-x-auto">
+      <div className={`flex-1 bg-color-0 ${className ?? ''}`}>
         {children}
       </div>
     </div>
-  </>
+  ) : (
+    <div className="flex border-vform">
+      {(label || labelSide) && (
+        <Label flexBasis={leftColumnMinWidth}>
+          <LabelText>{label}</LabelText>
+          {labelSide}
+        </Label>
+      )}
+      <div className={`flex-1 bg-color-0 p-1 ${className ?? ''}`}>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+const Label = ({ flexBasis, children }: { flexBasis?: string, children?: React.ReactNode }) => {
+  return (
+    <div className="flex flex-wrap items-start gap-1 bg-color-2 p-1" style={{ flexBasis }}>
+      {children}
+    </div>
+  )
 }
 const LabelText = ({ children }: {
   children?: React.ReactNode
 }) => {
   return children && (
-    <span className="select-none text-color-7">
+    <span className="select-none text-color-7 text-sm font-semibold">
       {children}
     </span>
   )
 }
 
-const Indent = ({ className }: {
-  className?: string
-}) => {
-  const { indentSizePx } = React.useContext(VFormContext)
-
-  return (
-    <div
-      className={className}
-      style={{ flexBasis: indentSizePx ?? 24 }}
-    ></div>
-  )
-}
-
 type VFormContextValuePublic = {
   leftColumnMinWidth?: string
-  indentSizePx?: number
-  nowrap?: boolean
 }
 type VFormContextValue = VFormContextValuePublic & {
   depth: number

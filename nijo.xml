@@ -67,7 +67,7 @@
   </Comment>
 
   <!-- LogOrderの履歴管理をしていないのは、並び順のデータ構造の仕様が定まっていないため。 -->
-  <Log is="write-model">
+  <ChangeLog is="write-model">
     <ID is="uuid"/>
     <LogTime is="datetime" />
 
@@ -78,6 +78,6 @@
 
     <RowIdOrRowTypeId is="word" />
     <Content is="sentence" />
-  </Log>
+  </ChangeLog>
 
 </Katchly>

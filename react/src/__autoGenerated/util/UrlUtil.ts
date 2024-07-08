@@ -105,18 +105,18 @@ export const getCommentSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 
   }
 }
 
-export const getLogSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
+export const getChangeLogSingleViewUrl = (key: ItemKey | undefined, mode: 'new' | 'view' | 'edit'): string => {
   if (!key) {
     return ''
   }
   if (mode === 'new') {
-    return `/x2be65a1401b75f2cdd8deaec5a04a976/new/${window.encodeURI(`${key}`)}`
+    return `/x2f89be282c4027a76b6857544038122c/new/${window.encodeURI(`${key}`)}`
   }
   const [ID] = JSON.parse(key) as [string | undefined]
   if (mode === 'view') {
-    return `/x2be65a1401b75f2cdd8deaec5a04a976/detail/${window.encodeURI(`${ID}`)}`
+    return `/x2f89be282c4027a76b6857544038122c/detail/${window.encodeURI(`${ID}`)}`
   } else {
-    return `/x2be65a1401b75f2cdd8deaec5a04a976/edit/${window.encodeURI(`${ID}`)}`
+    return `/x2f89be282c4027a76b6857544038122c/edit/${window.encodeURI(`${ID}`)}`
   }
 }
 

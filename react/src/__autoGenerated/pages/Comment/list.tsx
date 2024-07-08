@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import { useFieldArray, FormProvider } from 'react-hook-form'
-import { BookmarkSquareIcon, PencilIcon, XMarkIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, PencilIcon, XMarkIcon, PlusIcon, ChevronDownIcon, ChevronUpIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import dayjs from 'dayjs'
 import { UUID } from 'uuidjs'
 import * as Util from '../../util'
@@ -27,10 +28,26 @@ const Page = () => {
   // 検索条件
   const [filter, setFilter] = useState<AggregateType.CommentSearchCondition>(() => AggregateType.createCommentSearchCondition())
   const [currentPage, dispatchPaging] = useReducer(pagingReducer, { pageIndex: 0 })
+  const searchConditionPanelRef = useRef<ImperativePanelHandle>(null)
+  const [collapsed, setCollapsed] = useState(false)
 
   const rhfSearchMethods = Util.useFormEx<AggregateType.CommentSearchCondition>({})
-  const getConditionValues = rhfSearchMethods.getValues
-  const registerExCondition = rhfSearchMethods.registerEx
+  const {
+    getValues: getConditionValues,
+    registerEx: registerExCondition,
+    reset: resetSearchCondition,
+  } = rhfSearchMethods
+  const clearSearchCondition = useCallback(() => {
+    resetSearchCondition()
+    searchConditionPanelRef.current?.expand()
+  }, [resetSearchCondition, searchConditionPanelRef])
+  const toggleSearchCondition = useCallback(() => {
+    if (searchConditionPanelRef.current?.getCollapsed()) {
+      searchConditionPanelRef.current.expand()
+    } else {
+      searchConditionPanelRef.current?.collapse()
+    }
+  }, [searchConditionPanelRef])
 
   // 編集対象（リモートリポジトリ + ローカルリポジトリ）
   const editRange = useMemo(() => ({
@@ -55,7 +72,8 @@ const Page = () => {
 
   const handleReload = useCallback(() => {
     setFilter(getConditionValues())
-  }, [getConditionValues])
+    searchConditionPanelRef.current?.collapse()
+  }, [getConditionValues, searchConditionPanelRef])
 
   // データ編集
   const handleAdd: React.MouseEventHandler<HTMLButtonElement> = useCallback(async () => {
@@ -505,242 +523,255 @@ const Page = () => {
   ], [get, update])
 
   return (
-    <div className="page-content-root gap-4">
+    <div className="page-content-root">
 
-      <FormProvider {...rhfSearchMethods}>
-        <form className="flex flex-col gap-2">
-          <div className="flex gap-2 justify-start">
-            <h1 className="text-base font-semibold select-none py-1">
-              Comment
-            </h1>
-            <Input.Button onClick={handleReload}>再読み込み</Input.Button>
-            <div className="basis-4"></div>
-            <Input.Button onClick={handleAdd}>追加</Input.Button>
-            <Input.Button onClick={handleRemove}>削除</Input.Button>
-            <Input.IconButton fill icon={BookmarkSquareIcon} onClick={onSave}>一時保存</Input.IconButton>
+      <div className="flex gap-4 p-1">
+        <div className="flex gap-4 flex-wrap">
+          <Util.SideMenuCollapseButton />
+          <h1 className="self-center text-base font-semibold whitespace-nowrap select-none">
+            Comment
+          </h1>
+          <Input.IconButton className="self-center" onClick={handleAdd}>追加</Input.IconButton>
+          <Input.IconButton className="self-center" onClick={handleRemove}>削除</Input.IconButton>
+          <Input.IconButton className="self-center" onClick={onSave}>一時保存</Input.IconButton>
+        </div>
+        <div className="flex-1"></div>
+        <Input.IconButton className="self-center" onClick={clearSearchCondition}>クリア</Input.IconButton>
+        <div className="self-center flex">
+          <Input.IconButton icon={MagnifyingGlassIcon} fill onClick={handleReload}>検索</Input.IconButton>
+          <div className="self-stretch w-px bg-color-base"></div>
+          <Input.IconButton icon={collapsed ? ChevronDownIcon : ChevronUpIcon} fill onClick={toggleSearchCondition} hideText>検索条件</Input.IconButton>
+        </div>
+      </div>
+
+      <PanelGroup direction="vertical">
+        <Panel ref={searchConditionPanelRef} defaultSize={30} collapsible onCollapse={setCollapsed}>
+          <div className="h-full overflow-auto">
+            <FormProvider {...rhfSearchMethods}>
+              <VForm.Container leftColumnMinWidth="10rem" className="p-1">
+                <VForm.Item label="Text">
+                  <Input.Description {...registerExCondition(`Text`)} />
+                </VForm.Item>
+                <VForm.Item label="Author">
+                  <Input.Word {...registerExCondition(`Author`)} />
+                </VForm.Item>
+                <VForm.Item label="Indent">
+                  <Input.Num {...registerExCondition(`Indent.From`)} />
+                  <span className="select-none">～</span>
+                  <Input.Num {...registerExCondition(`Indent.To`)} />
+                </VForm.Item>
+                <VForm.Item label="Order">
+                  <Input.Num {...registerExCondition(`Order.From`)} />
+                  <span className="select-none">～</span>
+                  <Input.Num {...registerExCondition(`Order.To`)} />
+                </VForm.Item>
+                <VForm.Item label="CreatedOn">
+                  <Input.Date {...registerExCondition(`CreatedOn.From`)} />
+                  <span className="select-none">～</span>
+                  <Input.Date {...registerExCondition(`CreatedOn.To`)} />
+                </VForm.Item>
+                <VForm.Item label="UpdatedOn">
+                  <Input.Date {...registerExCondition(`UpdatedOn.From`)} />
+                  <span className="select-none">～</span>
+                  <Input.Date {...registerExCondition(`UpdatedOn.To`)} />
+                </VForm.Item>
+                <VForm.Container label="Row">
+                  <VForm.Item label="Text">
+                    <Input.Description {...registerExCondition(`TargetRow.Text`)} />
+                  </VForm.Item>
+                  <VForm.Item label="Indent">
+                    <Input.Num {...registerExCondition(`TargetRow.Indent.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Num {...registerExCondition(`TargetRow.Indent.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetRow.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRow.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetRow.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetRow.UpdateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="Text">
+                    <Input.Description {...registerExCondition(`TargetCell.Parent.Text`)} />
+                  </VForm.Item>
+                  <VForm.Item label="Indent">
+                    <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.Parent.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.Parent.UpdateUser`)} />
+                  </VForm.Item>
+                </VForm.Container>
+                <VForm.Container label="RowType">
+                  <VForm.Item label="RowTypeName">
+                    <Input.Word {...registerExCondition(`TargetRow.RowType.RowTypeName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetRow.RowType.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetRow.RowType.UpdateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="RowTypeName">
+                    <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.RowTypeName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.UpdateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="RowTypeName">
+                    <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.RowTypeName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.UpdateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="RowTypeName">
+                    <Input.Word {...registerExCondition(`TargetRowType.RowTypeName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetRowType.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetRowType.UpdateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="RowTypeName">
+                    <Input.Word {...registerExCondition(`TargetColumn.Parent.RowTypeName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreatedOn">
+                    <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="CreateUser">
+                    <Input.Word {...registerExCondition(`TargetColumn.Parent.CreateUser`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.To`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdateUser">
+                    <Input.Word {...registerExCondition(`TargetColumn.Parent.UpdateUser`)} />
+                  </VForm.Item>
+                </VForm.Container>
+                <VForm.Container label="Columns">
+                  <VForm.Item label="ColumnName">
+                    <Input.Word {...registerExCondition(`TargetCell.ColType.ColumnName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="ValueType">
+                    <Input.Selection {...registerExCondition(`TargetCell.ColType.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
+                  </VForm.Item>
+                  <VForm.Item label="CanReferOnly">
+                    <Input.Word {...registerExCondition(`TargetCell.ColType.CanReferOnly`)} />
+                  </VForm.Item>
+                  <VForm.Item label="ColumnName">
+                    <Input.Word {...registerExCondition(`TargetColumn.ColumnName`)} />
+                  </VForm.Item>
+                  <VForm.Item label="ValueType">
+                    <Input.Selection {...registerExCondition(`TargetColumn.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
+                  </VForm.Item>
+                  <VForm.Item label="CanReferOnly">
+                    <Input.Word {...registerExCondition(`TargetColumn.CanReferOnly`)} />
+                  </VForm.Item>
+                </VForm.Container>
+                <VForm.Container label="Attrs">
+                  <VForm.Item label="Value">
+                    <Input.Description {...registerExCondition(`TargetCell.Value`)} />
+                  </VForm.Item>
+                  <VForm.Item label="UpdatedOn">
+                    <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.From`)} />
+                    <span className="select-none">～</span>
+                    <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.To`)} />
+                  </VForm.Item>
+                </VForm.Container>
+              </VForm.Container>
+            </FormProvider>
           </div>
+        </Panel>
 
+        <PanelResizeHandle className="h-2 bg-color-4" />
+
+        <Panel>
           <Util.InlineMessageList />
-
-          <VForm.Container leftColumnMinWidth="10rem">
-            <VForm.Item label="Text">
-              <Input.Description {...registerExCondition(`Text`)} />
-            </VForm.Item>
-            <VForm.Item label="Author">
-              <Input.Word {...registerExCondition(`Author`)} />
-            </VForm.Item>
-            <VForm.Item label="Indent">
-              <Input.Num {...registerExCondition(`Indent.From`)} />
-              <span className="select-none">～</span>
-              <Input.Num {...registerExCondition(`Indent.To`)} />
-            </VForm.Item>
-            <VForm.Item label="Order">
-              <Input.Num {...registerExCondition(`Order.From`)} />
-              <span className="select-none">～</span>
-              <Input.Num {...registerExCondition(`Order.To`)} />
-            </VForm.Item>
-            <VForm.Item label="CreatedOn">
-              <Input.Date {...registerExCondition(`CreatedOn.From`)} />
-              <span className="select-none">～</span>
-              <Input.Date {...registerExCondition(`CreatedOn.To`)} />
-            </VForm.Item>
-            <VForm.Item label="UpdatedOn">
-              <Input.Date {...registerExCondition(`UpdatedOn.From`)} />
-              <span className="select-none">～</span>
-              <Input.Date {...registerExCondition(`UpdatedOn.To`)} />
-            </VForm.Item>
-            <VForm.Container label="Row">
-              <VForm.Item label="Text">
-                <Input.Description {...registerExCondition(`TargetRow.Text`)} />
-              </VForm.Item>
-              <VForm.Item label="Indent">
-                <Input.Num {...registerExCondition(`TargetRow.Indent.From`)} />
-                <span className="select-none">～</span>
-                <Input.Num {...registerExCondition(`TargetRow.Indent.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetRow.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRow.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetRow.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRow.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetRow.UpdateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="Text">
-                <Input.Description {...registerExCondition(`TargetCell.Parent.Text`)} />
-              </VForm.Item>
-              <VForm.Item label="Indent">
-                <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.From`)} />
-                <span className="select-none">～</span>
-                <Input.Num {...registerExCondition(`TargetCell.Parent.Indent.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.Parent.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetCell.Parent.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.Parent.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetCell.Parent.UpdateUser`)} />
-              </VForm.Item>
-            </VForm.Container>
-            <VForm.Container label="RowType">
-              <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`TargetRow.RowType.RowTypeName`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRow.RowType.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetRow.RowType.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRow.RowType.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetRow.RowType.UpdateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.RowTypeName`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.Parent.RowType.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetCell.Parent.RowType.UpdateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.RowTypeName`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.ColType.Parent.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetCell.ColType.Parent.UpdateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`TargetRowType.RowTypeName`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRowType.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetRowType.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetRowType.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetRowType.UpdateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="RowTypeName">
-                <Input.Word {...registerExCondition(`TargetColumn.Parent.RowTypeName`)} />
-              </VForm.Item>
-              <VForm.Item label="CreatedOn">
-                <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetColumn.Parent.CreatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="CreateUser">
-                <Input.Word {...registerExCondition(`TargetColumn.Parent.CreateUser`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetColumn.Parent.UpdatedOn.To`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdateUser">
-                <Input.Word {...registerExCondition(`TargetColumn.Parent.UpdateUser`)} />
-              </VForm.Item>
-            </VForm.Container>
-            <VForm.Container label="Columns">
-              <VForm.Item label="ColumnName">
-                <Input.Word {...registerExCondition(`TargetCell.ColType.ColumnName`)} />
-              </VForm.Item>
-              <VForm.Item label="ValueType">
-                <Input.Selection {...registerExCondition(`TargetCell.ColType.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
-              </VForm.Item>
-              <VForm.Item label="CanReferOnly">
-                <Input.Word {...registerExCondition(`TargetCell.ColType.CanReferOnly`)} />
-              </VForm.Item>
-              <VForm.Item label="ColumnName">
-                <Input.Word {...registerExCondition(`TargetColumn.ColumnName`)} />
-              </VForm.Item>
-              <VForm.Item label="ValueType">
-                <Input.Selection {...registerExCondition(`TargetColumn.ValueType`)} options={['Text' as const, 'RefSingle' as const, 'RefMultiple' as const]} textSelector={item => item} />
-              </VForm.Item>
-              <VForm.Item label="CanReferOnly">
-                <Input.Word {...registerExCondition(`TargetColumn.CanReferOnly`)} />
-              </VForm.Item>
-            </VForm.Container>
-            <VForm.Container label="Attrs">
-              <VForm.Item label="Value">
-                <Input.Description {...registerExCondition(`TargetCell.Value`)} />
-              </VForm.Item>
-              <VForm.Item label="UpdatedOn">
-                <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.From`)} />
-                <span className="select-none">～</span>
-                <Input.Date {...registerExCondition(`TargetCell.UpdatedOn.To`)} />
-              </VForm.Item>
-            </VForm.Container>
-          </VForm.Container>
-        </form>
-      </FormProvider>
-
-      <FormProvider {...reactHookFormMethods}>
-        <form className="flex-1">
-          <Layout.DataTable
-            data={fields}
-            columns={columnDefs}
-            onChangeRow={handleUpdateRow}
-            ref={dtRef}
-            className="h-full"
-          ></Layout.DataTable>
-        </form>
-      </FormProvider>
+          <FormProvider {...reactHookFormMethods}>
+            <Layout.DataTable
+              data={fields}
+              columns={columnDefs}
+              onChangeRow={handleUpdateRow}
+              ref={dtRef}
+              className="h-full"
+            ></Layout.DataTable>
+          </FormProvider>
+        </Panel>
+      </PanelGroup>
     </div>
   )
 }

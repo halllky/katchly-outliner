@@ -235,7 +235,7 @@ const CommentList = Util.forwardRefEx<CommentListRef, CommentListProps>(({ row, 
   const columnDef = useMemo((): Collection.ColumnDefEx<Comment>[] => [
     {
       id: 'col0',
-      header: 'コメント',
+      header: '',
       cell: cellProps => <CommnetView comment={cellProps.row.original} />,
       accessorFn: x => x.text,
       editSetting: {

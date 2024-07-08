@@ -21,16 +21,16 @@ export default function () {
 
 const Page = () => {
   const { key0: keyOfNewItem } = useParams()
-  const { load, commit } = Util.useLogRepository(keyOfNewItem as Util.ItemKey | undefined)
+  const { load, commit } = Util.useChangeLogRepository(keyOfNewItem as Util.ItemKey | undefined)
 
-  const [defaultValues, setDefaultValues] = useState<AggregateType.LogDisplayData | undefined>()
+  const [defaultValues, setDefaultValues] = useState<AggregateType.ChangeLogDisplayData | undefined>()
   useEffect(() => {
     load().then(items => {
       setDefaultValues(items?.[0])
     })
   }, [load])
 
-  const handleCommit: ReturnType<typeof Util.useLogRepository>['commit'] = useCallback(async (...items) => {
+  const handleCommit: ReturnType<typeof Util.useChangeLogRepository>['commit'] = useCallback(async (...items) => {
     await commit(...items)
     const afterCommit = await load()
     setDefaultValues(afterCommit?.[0])
@@ -52,8 +52,8 @@ const AfterLoaded = ({
   defaultValues,
   commit,
 }: {
-  defaultValues: AggregateType.LogDisplayData
-  commit: ReturnType<typeof Util.useLogRepository>['commit']
+  defaultValues: AggregateType.ChangeLogDisplayData
+  commit: ReturnType<typeof Util.useChangeLogRepository>['commit']
 }) => {
 
   const navigate = useNavigate()
@@ -75,33 +75,36 @@ const AfterLoaded = ({
   }, [])
 
   // データの一時保存
-  const onSave: SubmitHandler<AggregateType.LogDisplayData> = useCallback(async data => {
+  const onSave: SubmitHandler<AggregateType.ChangeLogDisplayData> = useCallback(async data => {
     await commit({ ...data, willBeChanged: true })
   }, [commit])
 
   return (
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2" ref={formRef} onSubmit={handleSubmit(onSave)} onKeyDown={onKeyDown}>
-        <h1 className="flex text-base font-semibold select-none py-1">
-          <Link to="/x1ee70bce22334c6e1db2bcea5959f16b">Log</Link>
+        <h1 className="flex items-center text-base font-semibold select-none py-1">
+          <Util.SideMenuCollapseButton />
+          <Link to="/x47b5f00277c2259dcff89672135f20e3">ChangeLog</Link>
           &nbsp;&#047;&nbsp;
           新規作成
           <div className="flex-1"></div>
+
+          <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
         </h1>
 
         <Util.InlineMessageList />
 
-        <LogView />
-
-        <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
+        <div className="flex-1 p-1">
+          <ChangeLogView />
+        </div>
       </form>
     </FormProvider>
   )
 }
 
-const LogView = ({ }: {
+const ChangeLogView = ({ }: {
 }) => {
-  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.LogDisplayData>()
+  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.ChangeLogDisplayData>()
   const item = getValues()
 
   return (

@@ -724,9 +724,9 @@ export type CommentRefInfo = {
 }
 
 
-// ------------------ Log ------------------
-/** Logの登録・更新・削除用のデータ型 */
-export type LogSaveCommand = {
+// ------------------ ChangeLog ------------------
+/** ChangeLogの登録・更新・削除用のデータ型 */
+export type ChangeLogSaveCommand = {
   ID?: string
   LogTime?: string
   UpdatedObject?: string
@@ -735,13 +735,13 @@ export type LogSaveCommand = {
   Content?: string
 }
 
-/** 画面上でLogのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
-export const createLog = (): LogSaveCommand => ({
+/** 画面上でChangeLogのオブジェクトが新しく作成されるタイミングで呼ばれる新規作成関数 */
+export const createChangeLog = (): ChangeLogSaveCommand => ({
   ID: UUID.generate(),
 })
 
-/** Logの一覧検索条件 */
-export type LogSearchCondition = {
+/** ChangeLogの一覧検索条件 */
+export type ChangeLogSearchCondition = {
   ID?: string
   LogTime: { From?: string, To?: string }
   UpdatedObject?: string
@@ -750,12 +750,12 @@ export type LogSearchCondition = {
   Content?: string
 }
 
-export const createLogSearchCondition = (): LogSearchCondition => ({
+export const createChangeLogSearchCondition = (): ChangeLogSearchCondition => ({
     LogTime: {},
 })
 
-/** Logの画面表示用データ */
-export type LogDisplayData = {
+/** ChangeLogの画面表示用データ */
+export type ChangeLogDisplayData = {
   localRepositoryItemKey: Util.ItemKey
   existsInRemoteRepository: boolean
   willBeChanged: boolean
@@ -771,8 +771,8 @@ export type LogDisplayData = {
 }
 
 /** 画面に表示されるデータ型を登録更新される粒度の型に変換します。 */
-export const convertLogToLocalRepositoryItem = (displayData: LogDisplayData) => {
-  const item0: Util.LocalRepositoryItem<LogSaveCommand> = {
+export const convertChangeLogToLocalRepositoryItem = (displayData: ChangeLogDisplayData) => {
+  const item0: Util.LocalRepositoryItem<ChangeLogSaveCommand> = {
     itemKey: displayData.localRepositoryItemKey,
     existsInRemoteRepository: displayData.existsInRemoteRepository,
     willBeChanged: displayData.willBeChanged,
@@ -792,10 +792,10 @@ export const convertLogToLocalRepositoryItem = (displayData: LogDisplayData) => 
   ] as const
 }
 
-/** Logを参照する他のデータの画面上に表示されるLogのデータ型。 */
-export type LogRefInfo = {
-  /** Logのキー。保存するときはこの値が使用される。
-      新規作成されてからDBに登録されるまでの間のLogをUUID等の不変の値で参照できるようにするために文字列になっている。 */
+/** ChangeLogを参照する他のデータの画面上に表示されるChangeLogのデータ型。 */
+export type ChangeLogRefInfo = {
+  /** ChangeLogのキー。保存するときはこの値が使用される。
+      新規作成されてからDBに登録されるまでの間のChangeLogをUUID等の不変の値で参照できるようにするために文字列になっている。 */
   __instanceKey?: Util.ItemKey
 
   ID?: string,

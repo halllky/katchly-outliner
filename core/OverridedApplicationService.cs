@@ -18,7 +18,7 @@ namespace Katchly {
                 attr.UpdatedOn = now;
             }
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "Row",
                 RowIdOrRowTypeId = arg.Data.ID,
@@ -39,7 +39,7 @@ namespace Katchly {
                 }
             }
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "Row",
                 RowIdOrRowTypeId = arg.After.ID,
@@ -51,7 +51,7 @@ namespace Katchly {
         protected override void OnRowDeleting(IBeforeDeleteEventArgs<RowSaveCommand> arg) {
             var now = DateTime.Now;
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "Row",
                 RowIdOrRowTypeId = arg.Data.ID,
@@ -68,7 +68,7 @@ namespace Katchly {
             arg.Data.CreatedOn = now;
             arg.Data.UpdatedOn = now;
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "RowType",
                 RowIdOrRowTypeId = arg.Data.ID,
@@ -83,7 +83,7 @@ namespace Katchly {
             arg.After.CreatedOn = arg.Before.CreatedOn;
             arg.After.UpdatedOn = now;
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "RowType",
                 RowIdOrRowTypeId = arg.After.ID,
@@ -95,7 +95,7 @@ namespace Katchly {
         protected override void OnRowTypeDeleting(IBeforeDeleteEventArgs<RowTypeSaveCommand> arg) {
             var now = DateTime.Now;
 
-            DbContext.LogDbSet.Add(new LogDbEntity {
+            DbContext.ChangeLogDbSet.Add(new ChangeLogDbEntity {
                 ID = Guid.NewGuid().ToString(),
                 UpdatedObject = "RowType",
                 RowIdOrRowTypeId = arg.Data.ID,

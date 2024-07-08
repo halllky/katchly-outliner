@@ -9,7 +9,7 @@ export type BatchUpdateItem
   | { DataType: 'Row', Action: 'ADD' | 'MOD' | 'DEL', Data: Types.RowSaveCommand }
   | { DataType: 'RowOrder', Action: 'ADD' | 'MOD' | 'DEL', Data: Types.RowOrderSaveCommand }
   | { DataType: 'Comment', Action: 'ADD' | 'MOD' | 'DEL', Data: Types.CommentSaveCommand }
-  | { DataType: 'Log', Action: 'ADD' | 'MOD' | 'DEL', Data: Types.LogSaveCommand }
+  | { DataType: 'ChangeLog', Action: 'ADD' | 'MOD' | 'DEL', Data: Types.ChangeLogSaveCommand }
 
 export default () => {
   const [, dispatchMsg] = useMsgContext()

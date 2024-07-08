@@ -26,9 +26,9 @@ const Page = () => {
     return [urlKeyID]
   }, [key0])
 
-  const { load } = Util.useLogRepository(pkArray)
+  const { load } = Util.useChangeLogRepository(pkArray)
 
-  const [defaultValues, setDefaultValues] = useState<AggregateType.LogDisplayData | undefined>()
+  const [defaultValues, setDefaultValues] = useState<AggregateType.ChangeLogDisplayData | undefined>()
   useEffect(() => {
     load().then(items => {
       setDefaultValues(items?.[0])
@@ -52,7 +52,7 @@ const AfterLoaded = ({
   defaultValues,
 }: {
   pkArray: [string | undefined]
-  defaultValues: AggregateType.LogDisplayData
+  defaultValues: AggregateType.ChangeLogDisplayData
 }) => {
 
   const navigate = useNavigate()
@@ -77,33 +77,36 @@ const AfterLoaded = ({
   }, [])
 
   const navigateToEditView = useCallback((e: React.MouseEvent) => {
-    navigate(`/x2be65a1401b75f2cdd8deaec5a04a976/edit/${window.encodeURI(`${pkArray[0]}`)}`)
+    navigate(`/x2f89be282c4027a76b6857544038122c/edit/${window.encodeURI(`${pkArray[0]}`)}`)
     e.preventDefault()
   }, [navigate, pkArray])
 
   return (
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2">
-        <h1 className="flex text-base font-semibold select-none py-1">
-          <Link to="/x1ee70bce22334c6e1db2bcea5959f16b">Log</Link>
+        <h1 className="flex items-center text-base font-semibold select-none py-1">
+          <Util.SideMenuCollapseButton />
+          <Link to="/x47b5f00277c2259dcff89672135f20e3">ChangeLog</Link>
           &nbsp;&#047;&nbsp;
           <span className="select-all">{instanceName}</span>
           <div className="flex-1"></div>
+
+          <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
         </h1>
 
         <Util.InlineMessageList />
 
-        <LogView />
-
-        <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
+        <div className="flex-1 p-1">
+          <ChangeLogView />
+        </div>
       </form>
     </FormProvider>
   )
 }
 
-const LogView = ({ }: {
+const ChangeLogView = ({ }: {
 }) => {
-  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.LogDisplayData>()
+  const { register, registerEx, watch, getValues } = Util.useFormContextEx<AggregateType.ChangeLogDisplayData>()
   const item = getValues()
 
   return (

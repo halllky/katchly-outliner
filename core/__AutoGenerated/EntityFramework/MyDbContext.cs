@@ -12,7 +12,7 @@ namespace Katchly {
             this.OnModelCreating_RowOrder(modelBuilder);
             this.OnModelCreating_RowType(modelBuilder);
             this.OnModelCreating_Comment(modelBuilder);
-            this.OnModelCreating_Log(modelBuilder);
+            this.OnModelCreating_ChangeLog(modelBuilder);
             BackgroundTaskEntity.OnModelCreating(modelBuilder);
         }
 

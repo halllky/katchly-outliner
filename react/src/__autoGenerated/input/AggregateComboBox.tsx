@@ -164,12 +164,12 @@ export const ComboBoxComment = defineCustomComponent<Types.CommentRefInfo>((prop
     />
   )
 })
-export const ComboBoxLog = defineCustomComponent<Types.LogRefInfo>((props, ref) => {
-  const [queryKey, setQueryKey] = useState<string>(`combo-x2be65a1401b75f2cdd8deaec5a04a976::`)
+export const ComboBoxChangeLog = defineCustomComponent<Types.ChangeLogRefInfo>((props, ref) => {
+  const [queryKey, setQueryKey] = useState<string>(`combo-x2f89be282c4027a76b6857544038122c::`)
   const { get } = Util.useHttpRequest()
-  const query = useCallback(async (keyword: string | undefined): Promise<Types.LogRefInfo[]> => {
-    setQueryKey(`combo-x2be65a1401b75f2cdd8deaec5a04a976::${keyword ?? ''}`)
-    const response = await get<Types.LogRefInfo []>(`/api/Log/list-by-keyword`, { keyword })
+  const query = useCallback(async (keyword: string | undefined): Promise<Types.ChangeLogRefInfo[]> => {
+    setQueryKey(`combo-x2f89be282c4027a76b6857544038122c::${keyword ?? ''}`)
+    const response = await get<Types.ChangeLogRefInfo []>(`/api/ChangeLog/list-by-keyword`, { keyword })
     if (!response.ok) return []
     return response.data
   }, [get])

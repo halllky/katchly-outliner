@@ -105,21 +105,21 @@ export const useLocalRepositoryCommitHandling = () => {
         return { commit: false }
       }
     }],
-    ['Log', async (localReposItem: LocalRepositoryStoredItem<AggregateType.LogDisplayData>) => {
-      const [{ item: saveItem }] = AggregateType.convertLogToLocalRepositoryItem(localReposItem.item)
+    ['ChangeLog', async (localReposItem: LocalRepositoryStoredItem<AggregateType.ChangeLogDisplayData>) => {
+      const [{ item: saveItem }] = AggregateType.convertChangeLogToLocalRepositoryItem(localReposItem.item)
       const state = getLocalRepositoryState(localReposItem)
       if (state === '+') {
-        const url = `/api/Log/create`
-        const response = await post<AggregateType.LogDisplayData>(url, saveItem)
+        const url = `/api/ChangeLog/create`
+        const response = await post<AggregateType.ChangeLogDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '*') {
-        const url = `/api/Log/update`
-        const response = await post<AggregateType.LogDisplayData>(url, saveItem)
+        const url = `/api/ChangeLog/update`
+        const response = await post<AggregateType.ChangeLogDisplayData>(url, saveItem)
         return { commit: response.ok }
     
       } else if (state === '-') {
-        const url = `/api/Log/delete`
+        const url = `/api/ChangeLog/delete`
         const response = await httpDelete(url, saveItem)
         return { commit: response.ok }
     

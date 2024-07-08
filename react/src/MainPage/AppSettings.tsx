@@ -104,7 +104,7 @@ export const AppSttingsDialog = ({ open, onClose }: {
             </VerticalForm.Item>
           </VerticalForm.Container>
 
-          <VerticalForm.Container label="アプリ設定" leftColumnMinWidth="14rem" nowrap>
+          <VerticalForm.Container label="アプリ設定" leftColumnMinWidth="14rem">
             <VerticalForm.Item label="ウィンドウ表示名">
               <Input.Word {...registerEx(`windowTitle`)} />
             </VerticalForm.Item>

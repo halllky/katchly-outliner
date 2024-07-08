@@ -84,18 +84,21 @@ const AfterLoaded = ({
   return (
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2">
-        <h1 className="flex text-base font-semibold select-none py-1">
+        <h1 className="flex items-center text-base font-semibold select-none py-1">
+          <Util.SideMenuCollapseButton />
           <Link to="/x6940e80bcd51a8fd2f00f79328cf4efc">Comment</Link>
           &nbsp;&#047;&nbsp;
           <span className="select-all">{instanceName}</span>
           <div className="flex-1"></div>
+
+          <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
         </h1>
 
         <Util.InlineMessageList />
 
-        <CommentView />
-
-        <Input.IconButton submit fill className="self-start" icon={PencilIcon} onClick={navigateToEditView}>編集</Input.IconButton>
+        <div className="flex-1 p-1">
+          <CommentView />
+        </div>
       </form>
     </FormProvider>
   )

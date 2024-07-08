@@ -4,6 +4,7 @@ import { VerticalForm as VForm } from "../collection";
 import { useFormEx } from "./ReactHookFormUtil";
 import { defineStorageContext } from './Storage'
 import { useToastContext } from './Notification'
+import { SideMenuCollapseButton } from './SideMenuCollapseButton';
 
 export type UserSettings = {
   apiDomain?: string
@@ -38,31 +39,35 @@ export const ServerSettingScreen = () => {
 
   return (
     <form className="page-content-root" onSubmit={handleSubmit(handleSave)}>
-      <VForm.Container>
+      <h1 className="flex gap-1 p-1 font-semibold select-none">
+        <SideMenuCollapseButton />
+        設定
+      </h1>
+      <VForm.Container className="p-1">
         <VForm.Container label="基本設定">
           <VForm.Item label="ダークモード">
             <Input.CheckBox {...registerEx('darkMode')} />
           </VForm.Item>
-          <VForm.Item label="フォント(font-family)">
-            <Input.Word {...registerEx('fontFamily')} className="flex-1" />
+          <VForm.Item label="フォント(font-family)" wide className="p-1">
+            <Input.Word {...registerEx('fontFamily')} className="w-full" />
           </VForm.Item>
-          <VForm.Item label="画面隅のリボンの文字">
-            <Input.Word {...registerEx('environmentName')} />
-          </VForm.Item>
-          <VForm.Item label="画面隅のリボンの色">
-            <Input.Word {...registerEx('environmentColor')} />
-          </VForm.Item>
-          <VForm.Item label="APIサーバーURL">
-            <div className="flex flex-col w-full">
-              <Input.Word {...registerEx('apiDomain')} />
-              <span className="text-sm">
-                この値は基本的に未指定で問題ありませんが、
-                APIサーバーが動作しているにもかかわらず
-                接続できない場合は手入力してください。
-                <br />
-                未指定の場合の規定値は <span>{import.meta.env.VITE_BACKEND_API}</span> です。
-              </span>
-            </div>
+          <VForm.Container label="画面隅のリボン" leftColumnMinWidth="8rem">
+            <VForm.Item label="文字">
+              <Input.Word {...registerEx('environmentName')} />
+            </VForm.Item>
+            <VForm.Item label="色">
+              <Input.Word {...registerEx('environmentColor')} />
+            </VForm.Item>
+          </VForm.Container>
+          <VForm.Item label="APIサーバーURL" wide className="flex flex-col w-full p-1">
+            <Input.Word {...registerEx('apiDomain')} />
+            <span className="text-sm">
+              この値は基本的に未指定で問題ありませんが、
+              APIサーバーが動作しているにもかかわらず
+              接続できない場合は手入力してください。
+              <br />
+              未指定の場合の規定値は <span>{import.meta.env.VITE_BACKEND_API}</span> です。
+            </span>
           </VForm.Item>
           <VForm.Item wide>
             <Input.Button outlined submit>更新</Input.Button>

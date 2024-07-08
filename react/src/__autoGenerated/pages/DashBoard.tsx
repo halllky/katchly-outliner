@@ -44,7 +44,11 @@ const DashBoard = () => {
   }, [post, withDummyData, genereateDummyData, resetLocalRepository, dispatchMsg, dispatchToast])
 
   return (
-    <div className="page-content-root gap-4">
+    <div className="page-content-root gap-4 p-1">
+      <div className="flex gap-1">
+        <Util.SideMenuCollapseButton />
+        <span className="font-bold">Katchly</span>
+      </div>
 
       <Util.InlineMessageList />
 

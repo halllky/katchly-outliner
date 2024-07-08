@@ -82,18 +82,21 @@ const AfterLoaded = ({
   return (
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2" ref={formRef} onSubmit={handleSubmit(onSave)} onKeyDown={onKeyDown}>
-        <h1 className="flex text-base font-semibold select-none py-1">
+        <h1 className="flex items-center text-base font-semibold select-none py-1">
+          <Util.SideMenuCollapseButton />
           <Link to="/x32605e58c9870700a3a2652f36a5c4b5">RowType</Link>
           &nbsp;&#047;&nbsp;
           新規作成
           <div className="flex-1"></div>
+
+          <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
         </h1>
 
         <Util.InlineMessageList />
 
-        <RowTypeView />
-
-        <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
+        <div className="flex-1 p-1">
+          <RowTypeView />
+        </div>
       </form>
     </FormProvider>
   )
@@ -273,7 +276,7 @@ const ColumnsView = ({ }: {
         ref={dtRef}
         data={fields}
         {...options}
-        className="h-64 w-full"
+        className="h-64 w-full border-t border-color-3"
       />
     </VForm.Item>
   )

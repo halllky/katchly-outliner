@@ -617,12 +617,12 @@ export const useCommentRepository = (editRange?
     commit,
   }
 }
-/** Logデータの読み込みと保存を行います。 */
-export const useLogRepository = (editRange?
+/** ChangeLogデータの読み込みと保存を行います。 */
+export const useChangeLogRepository = (editRange?
   // データ新規作成の場合
   : ItemKey
   // 複数件編集の場合
-  | { filter: AggregateType.LogSearchCondition, skip?: number, take?: number }
+  | { filter: AggregateType.ChangeLogSearchCondition, skip?: number, take?: number }
   // 1件編集の場合
   | [ID: string | undefined]
 ) => {
@@ -632,52 +632,52 @@ export const useLogRepository = (editRange?
   const { reload: reloadContext } = useLocalRepositoryContext()
   const { ready: ready2, openCursor, queryToTable } = useIndexedDbLocalRepositoryTable()
 
-  const load = useCallback(async (): Promise<AggregateType.LogDisplayData[] | undefined> => {
+  const load = useCallback(async (): Promise<AggregateType.ChangeLogDisplayData[] | undefined> => {
     if (!ready2) return
     if (editRange === undefined) return // 画面表示直後の検索条件が決まっていない場合など
 
 
-    let remoteItems: AggregateType.LogDisplayData[]
-    let localItems: AggregateType.LogDisplayData[]
+    let remoteItems: AggregateType.ChangeLogDisplayData[]
+    let localItems: AggregateType.ChangeLogDisplayData[]
 
     if (typeof editRange === 'string') {
       // 新規作成データの検索。
       // まだリモートに存在しないためローカルにのみ検索をかける
       remoteItems = []
-      const found = await queryToTable(table => table.get(['Log', editRange]))
-      localItems = found ? [found.item as AggregateType.LogDisplayData] : []
+      const found = await queryToTable(table => table.get(['ChangeLog', editRange]))
+      localItems = found ? [found.item as AggregateType.ChangeLogDisplayData] : []
 
     } else if (Array.isArray(editRange)) {
       // 既存データのキーによる検索（リモートリポジトリ）
       if (editRange[0] === undefined) {
         remoteItems = []
       } else {
-        const res = await get(`/api/Log/detail/${window.encodeURI(editRange[0].toString())}`)
+        const res = await get(`/api/ChangeLog/detail/${window.encodeURI(editRange[0].toString())}`)
         remoteItems = res.ok
-          ? [res.data as AggregateType.LogDisplayData]
+          ? [res.data as AggregateType.ChangeLogDisplayData]
           : []
       }
 
       // 既存データのキーによる検索（ローカルリポジトリ）
       const itemKey = JSON.stringify(editRange)
-      const found = await queryToTable(table => table.get(['Log', itemKey]))
-      localItems = found ? [found.item as AggregateType.LogDisplayData] : []
+      const found = await queryToTable(table => table.get(['ChangeLog', itemKey]))
+      localItems = found ? [found.item as AggregateType.ChangeLogDisplayData] : []
 
     } else {
       // 既存データの検索条件による検索（リモートリポジトリ）
       const searchParam = new URLSearchParams()
       if (editRange.skip !== undefined) searchParam.append('skip', editRange.skip.toString())
       if (editRange.take !== undefined) searchParam.append('take', editRange.take.toString())
-      const url = `/api/Log/load?${searchParam}`
-      const res = await post<AggregateType.LogDisplayData[]>(url, editRange.filter)
+      const url = `/api/ChangeLog/load?${searchParam}`
+      const res = await post<AggregateType.ChangeLogDisplayData[]>(url, editRange.filter)
       remoteItems = res.ok ? res.data : []
 
       // 既存データの検索条件による検索（ローカルリポジトリ）
       localItems = []
       await openCursor('readonly', cursor => {
-        if (cursor.value.dataTypeKey !== 'Log') return
+        if (cursor.value.dataTypeKey !== 'ChangeLog') return
         // TODO: ローカルリポジトリのデータは参照先のキーと名前しか持っていないのでfilterでそれらが検索条件に含まれていると正確な範囲がとれない
-        // const item = cursor.value.item as AggregateType.LogDisplayData
+        // const item = cursor.value.item as AggregateType.ChangeLogDisplayData
         // if (editRange.filter.ID !== undefined
         //   && item.ID !== editRange.filter.ID) return
         //
@@ -689,7 +689,7 @@ export const useLogRepository = (editRange?
         //   && item.RowIdOrRowTypeId !== editRange.filter.RowIdOrRowTypeId) return
         // if (editRange.filter.Content !== undefined
         //   && item.Content !== editRange.filter.Content) return
-        localItems.push(cursor.value.item as AggregateType.LogDisplayData)
+        localItems.push(cursor.value.item as AggregateType.ChangeLogDisplayData)
       })
     }
 
@@ -697,21 +697,21 @@ export const useLogRepository = (editRange?
     const remoteAndLocal =  crossJoin(
       localItems, local => local.localRepositoryItemKey,
       remoteItems, remote => remote.localRepositoryItemKey,
-    ).map<AggregateType.LogDisplayData>(pair => pair.left ?? pair.right)
+    ).map<AggregateType.ChangeLogDisplayData>(pair => pair.left ?? pair.right)
 
     return remoteAndLocal
 
   }, [editRange, get, post, queryToTable, openCursor])
 
   /** 引数に渡されたデータをローカルリポジトリに登録します。 */
-  const commit = useCallback(async (...items: AggregateType.LogDisplayData[]) => {
+  const commit = useCallback(async (...items: AggregateType.ChangeLogDisplayData[]) => {
     for (const newValue of items) {
       if (newValue.willBeDeleted && !newValue.existsInRemoteRepository) {
-        await queryToTable(table => table.delete(['Log', newValue.localRepositoryItemKey]))
+        await queryToTable(table => table.delete(['ChangeLog', newValue.localRepositoryItemKey]))
 
       } else if (newValue.willBeChanged || newValue.willBeDeleted) {
         await queryToTable(table => table.put({
-          dataTypeKey: 'Log',
+          dataTypeKey: 'ChangeLog',
           itemKey: newValue.localRepositoryItemKey,
           itemName: `${newValue.own_members?.Content}`,
           item: newValue,

@@ -93,18 +93,21 @@ const AfterLoaded = ({
   return (
     <FormProvider {...reactHookFormMethods}>
       <form className="page-content-root gap-2" ref={formRef} onSubmit={handleSubmit(onSave)} onKeyDown={onKeyDown}>
-        <h1 className="flex text-base font-semibold select-none py-1">
+        <h1 className="flex items-center text-base font-semibold select-none py-1">
+          <Util.SideMenuCollapseButton />
           <Link to="/x1827ce8197ce65dd7400e6eeb2155790">RowOrder</Link>
           &nbsp;&#047;&nbsp;
           <span className="select-all">{instanceName}</span>
           <div className="flex-1"></div>
+
+          <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
         </h1>
 
         <Util.InlineMessageList />
 
-        <RowOrderView />
-
-        <Input.IconButton submit fill className="self-start" icon={BookmarkSquareIcon}>一時保存</Input.IconButton>
+        <div className="flex-1 p-1">
+          <RowOrderView />
+        </div>
       </form>
     </FormProvider>
   )

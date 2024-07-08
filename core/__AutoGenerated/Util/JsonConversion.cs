@@ -22,7 +22,7 @@
             option.Converters.Add(new CustomJsonConverters.RowTypeKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.ColumnsKeysJsonValueConverter());
             option.Converters.Add(new CustomJsonConverters.CommentKeysJsonValueConverter());
-            option.Converters.Add(new CustomJsonConverters.LogKeysJsonValueConverter());
+            option.Converters.Add(new CustomJsonConverters.ChangeLogKeysJsonValueConverter());
         }
         public static JsonSerializerOptions GetJsonSrializerOptions() {
             var option = new System.Text.Json.JsonSerializerOptions();
@@ -428,25 +428,25 @@ namespace Katchly.CustomJsonConverters {
     }
 
     /// <summary>
-    /// <see cref="LogKeys"/> 型のプロパティの値が
+    /// <see cref="ChangeLogKeys"/> 型のプロパティの値が
     /// C#とHTTPリクエスト・レスポンスの間で変換されるときの処理を定義します。
     /// </summary>
-    public class LogKeysJsonValueConverter : JsonConverter<LogKeys?> {
-        public override LogKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+    public class ChangeLogKeysJsonValueConverter : JsonConverter<ChangeLogKeys?> {
+        public override ChangeLogKeys? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
             var jsonArray = reader.GetString();
             if (jsonArray == null) return null;
             var objArray = Util.ParseJsonAsObjectArray(jsonArray);
     
             var IDValue = objArray.ElementAtOrDefault(0);
             if (IDValue != null && IDValue is not string)
-                throw new InvalidOperationException($"LogKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
+                throw new InvalidOperationException($"ChangeLogKeysの値の変換に失敗しました。IDの位置の値がstring型ではありません: {IDValue}");
     
-            return new LogKeys {
+            return new ChangeLogKeys {
                 ID = (string?)IDValue,
             };
         }
     
-        public override void Write(Utf8JsonWriter writer, LogKeys? value, JsonSerializerOptions options) {
+        public override void Write(Utf8JsonWriter writer, ChangeLogKeys? value, JsonSerializerOptions options) {
             if (value == null) {
                 writer.WriteNullValue();
     
