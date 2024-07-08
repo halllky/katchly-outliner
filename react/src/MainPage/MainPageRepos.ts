@@ -12,7 +12,7 @@ export const useKatchlyRepository = () => {
   /** 保存 */
   const [nowSaving, setNowSaving] = useState(false)
   const { batchUpdateImmediately } = useBatchUpdate()
-  const saveAll = useCallback(async ({ rows, rowTypes }: { rows: RowObject[], rowTypes: RowType[] }): Promise<void> => {
+  const saveAll = useCallback(async ({ rows, rowTypes }: { rows?: RowObject[], rowTypes: RowType[] }): Promise<void> => {
     if (nowSaving) return
     setNowSaving(true)
     try {
@@ -21,17 +21,19 @@ export const useKatchlyRepository = () => {
       const rowsForRowOrder: { Action: 'ADD' | 'MOD' | 'DEL' | '', Data: AggregateType.RowSaveCommand }[] = []
 
       // サーバーAPI型に変換しメタデータを更新（RowObject）
-      for (const rowObject of rows) {
-        const [state, Data] = RowObjectConverter.toServerApiType(rowObject)
-        if (state === '+') {
-          Data.CreateUser = userName
-          Data.UpdateUser = userName
-        } else if (state === '*') {
-          Data.UpdateUser = userName
+      if (rows !== undefined) {
+        for (const rowObject of rows) {
+          const [state, Data] = RowObjectConverter.toServerApiType(rowObject)
+          if (state === '+') {
+            Data.CreateUser = userName
+            Data.UpdateUser = userName
+          } else if (state === '*') {
+            Data.UpdateUser = userName
+          }
+          const Action = toBatchUpdateAction(state)
+          if (Action) items.push({ DataType: 'Row', Action, Data })
+          rowsForRowOrder.push({ Action, Data })
         }
-        const Action = toBatchUpdateAction(state)
-        if (Action) items.push({ DataType: 'Row', Action, Data })
-        rowsForRowOrder.push({ Action, Data })
       }
 
       // サーバーAPI型に変換しメタデータを更新（RowType）
@@ -49,7 +51,7 @@ export const useKatchlyRepository = () => {
 
       // サーバーAPI型に変換しメタデータを更新（Comment）
       const commentSaveCommands = [
-        ...rows.flatMap(CommentConverter.toServerApiTypeFromRow),
+        ...(rows ?? []).flatMap(CommentConverter.toServerApiTypeFromRow),
         ...rowTypes.flatMap(CommentConverter.toServerApiTypeFromRowType),
       ]
       for (const [state, comment] of commentSaveCommands) {
@@ -67,9 +69,14 @@ export const useKatchlyRepository = () => {
         .join('\n')
 
       // 更新実行
-      await post(`/api/RowOrder/delete-all-row-order`, {}) // Row削除前に消さないと外部キー制約に引っかかる
-      await batchUpdateImmediately(items)
-      await post(`/api/RowOrder/insert-all-row-order`, { RowObjectIdList })
+      if (rows === undefined) {
+        await batchUpdateImmediately(items)
+
+      } else {
+        await post(`/api/RowOrder/delete-all-row-order`, {}) // Row削除前に消さないと外部キー制約に引っかかる
+        await batchUpdateImmediately(items)
+        await post(`/api/RowOrder/insert-all-row-order`, { RowObjectIdList })
+      }
 
     } finally {
       // 保存中の旨のメッセージが一瞬で消えると本当に保存できているか不安なので少し待つ

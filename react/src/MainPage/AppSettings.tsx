@@ -167,7 +167,7 @@ const useRowTypeEditor = () => {
 
   const saveRowTypes = useCallback(async () => {
     const rowTypes = convertToSaveType(getValues())
-    await saveAll({ rows: [], rowTypes })
+    await saveAll({ rowTypes })
     const { rowTypes: afterSave } = await loadAll()
     reset(convertToEditorTable(afterSave))
   }, [saveAll, loadAll, reset, getValues])
