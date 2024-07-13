@@ -1,10 +1,10 @@
-import React, { useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import * as RT from '@tanstack/react-table'
 import * as Util from '../util'
 import { ColumnDefEx, DataTableProps, DataTableRef } from './DataTable.Public'
 import { TABLE_ZINDEX, CellEditorRef } from './DataTable.Parts'
 import { CellEditor } from './DataTable.Editing'
-import { useSelection } from './DataTable.Selecting'
+import { SelectTarget, useSelection } from './DataTable.Selecting'
 import { getColumnResizeOption, useColumnResizing } from './DataTable.ColResize'
 import { useCopyPaste } from './DataTable.CopyPaste'
 
@@ -49,17 +49,24 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
   const cellEditorRef = useRef<CellEditorRef<T>>(null)
   const [editing, setEditing] = useState(false)
 
+  // <td>のrefの二重配列
+  const tdRefs = useRef<React.RefObject<HTMLTableCellElement>[][]>([])
+  useLayoutEffect(() => {
+    tdRefs.current = data?.map(() =>
+      Array.from({ length: columns.length }).map(() => React.createRef())
+    ) ?? []
+  }, [data, columns.length, tdRefs])
+
   const {
     caretCell,
     caretTdRef,
     selectObject,
     handleSelectionKeyDown,
-    caretTdRefCallback,
     ActiveCellBorder,
     activeCellBorderProps,
     getSelectedRows,
     getSelectedColumns,
-  } = useSelection<T>(api, data?.length ?? 0, columns.length, onActiveRowChanged, cellEditorRef)
+  } = useSelection<T>(api, data?.length ?? 0, columns, tdRefs, onActiveRowChanged, cellEditorRef)
 
   const {
     columnSizeVars,
@@ -169,23 +176,19 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
 
         {/* ボディ */}
         <tbody className="bg-color-0">
-          {api.getRowModel().flatRows.map(row => (
+          {api.getRowModel().flatRows.map((row, rowIndex) => (
             <tr
               key={row.id}
               className="leading-tight"
             >
-              {row.getVisibleCells().filter(c => !(c.column.columnDef as ColumnDefEx<T>).hidden).map(cell => (
-                <td key={cell.id}
-                  ref={td => caretTdRefCallback(td, cell)}
-                  className="relative overflow-hidden align-top p-0 border-r border-b border-1 border-color-3"
-                  style={{ ...getTdStickeyStyle(false), maxWidth: getColWidth(cell.column) }}
-                  onMouseDown={e => selectObject({ target: 'cell', cell: { rowIndex: cell.row.index, colId: cell.column.id }, shiftKey: e.shiftKey })}
-                  onDoubleClick={() => cellEditorRef.current?.startEditing(cell)}
-                >
-                  {RT.flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext())}
-                </td>
+              {row.getVisibleCells().filter(c => !(c.column.columnDef as ColumnDefEx<T>).hidden).map((cell, colIndex) => (
+                <MemorizedTd key={cell.id}
+                  ref={tdRefs.current[rowIndex]?.[colIndex]}
+                  cell={cell}
+                  cellEditorRef={cellEditorRef}
+                  getColWidth={getColWidth}
+                  selectObject={selectObject}
+                />
               ))}
 
             </tr>
@@ -213,6 +216,40 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
     </div>
   )
 })
+
+type MemorizedCellArgs<T> = {
+  cell: RT.Cell<T, unknown>
+  getColWidth: (column: RT.Column<T, unknown>) => string
+  selectObject: (obj: SelectTarget) => void
+  cellEditorRef: React.RefObject<CellEditorRef<T>>
+}
+type MemorizedCellComponent = <T>(props: MemorizedCellArgs<T> & { ref: React.Ref<HTMLTableCellElement> }) => JSX.Element
+
+const MemorizedTd: MemorizedCellComponent = React.memo(React.forwardRef(<T,>({
+  cell,
+  getColWidth,
+  selectObject,
+  cellEditorRef,
+}: MemorizedCellArgs<T>, ref: React.ForwardedRef<HTMLTableCellElement>) => {
+  return (
+    <td
+      ref={ref}
+      className="relative overflow-hidden align-top p-0 border-r border-b border-1 border-color-3"
+      style={{ ...getTdStickeyStyle(false), maxWidth: getColWidth(cell.column) }}
+      onMouseDown={e => selectObject({ target: 'cell', cell: { rowIndex: cell.row.index, colId: cell.column.id }, shiftKey: e.shiftKey })}
+      onDoubleClick={() => cellEditorRef.current?.startEditing(cell)}
+    >
+      {RT.flexRender(
+        cell.column.columnDef.cell,
+        cell.getContext())}
+    </td>
+  )
+}), (prev, next) => {
+  return Object.is(prev.cell.row.original, next.cell.row.original)
+    && Object.is(prev.getColWidth, next.getColWidth)
+    && Object.is(prev.selectObject, next.selectObject)
+    && Object.is(prev.cellEditorRef, next.cellEditorRef)
+}) as <T>(props: MemorizedCellArgs<T>) => JSX.Element
 
 // -----------------------------------------------
 // 行列ヘッダ固定
