@@ -50,3 +50,5 @@ export const menuItems: { url: string, text: string }[] = [
   { url: '/x6940e80bcd51a8fd2f00f79328cf4efc', text: 'Comment' },
   { url: '/x47b5f00277c2259dcff89672135f20e3', text: 'ChangeLog' },
 ]
+
+export const SHOW_LOCAL_REPOSITORY_MENU = true

@@ -89,6 +89,7 @@ const Page = () => {
     append(newRow)
   }, [append])
 
+  // データ編集
   const handleUpdateRow = useCallback(async (index: number, row: GridRow) => {
     update(index, { ...row, willBeChanged: true })
   }, [update])
@@ -262,7 +263,7 @@ const Page = () => {
         <Panel ref={searchConditionPanelRef} defaultSize={30} collapsible onCollapse={setCollapsed}>
           <div className="h-full overflow-auto">
             <FormProvider {...rhfSearchMethods}>
-              <VForm.Container leftColumnMinWidth="10rem" className="p-1">
+              <VForm.Container estimatedLabelWidth="10rem" className="p-1">
                 <VForm.Item label="RowTypeName">
                   <Input.Word {...registerExCondition(`RowTypeName`)} />
                 </VForm.Item>

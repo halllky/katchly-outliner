@@ -171,7 +171,7 @@ const Page = () => {
         <Panel ref={searchConditionPanelRef} defaultSize={30} collapsible onCollapse={setCollapsed}>
           <div className="h-full overflow-auto">
             <FormProvider {...rhfSearchMethods}>
-              <VForm.Container leftColumnMinWidth="10rem" className="p-1">
+              <VForm.Container estimatedLabelWidth="10rem" className="p-1">
                 <VForm.Item label="Order">
                   <Input.Num {...registerExCondition(`Order.From`)} />
                   <span className="select-none">～</span>

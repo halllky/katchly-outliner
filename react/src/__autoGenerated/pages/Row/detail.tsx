@@ -111,7 +111,7 @@ const RowView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="12.8rem">
+      <VForm.Container estimatedLabelWidth="12.8rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="Text">
           <Input.Description {...registerEx(`own_members.Text`)} readOnly />
@@ -173,10 +173,14 @@ const Row_RowOrderView = ({ }: {
   return (
     <>
       <VForm.Container
-        leftColumnMinWidth="10.4rem"
-        label="RowOrder"
-        labelSide={(state === '' || state === '+' || state === '*') && (
-          <Input.Button icon={XMarkIcon} onClick={handleDelete}>削除</Input.Button>
+        estimatedLabelWidth="10.4rem"
+        label={(
+          <div className="flex justify-start items-center gap-2">
+            <VForm.LabelText>RowOrder</VForm.LabelText>
+            {(state === '' || state === '+' || state === '*') && (
+              <Input.Button icon={XMarkIcon} onClick={handleDelete}>削除</Input.Button>
+            )}
+          </div>
         )}
         className="pt-4"
       >
@@ -211,16 +215,17 @@ const AttrsView = ({ }: {
   })
 
   return (
-    <VForm.Container labelSide={(
+    <VForm.Container label={(
       <div className="flex gap-2 justify-start">
-        <h1 className="text-base font-semibold select-none py-1">
-          Attrs
-        </h1>
-        <div className="flex-1"></div>
+        <VForm.LabelText>Attrs</VForm.LabelText>
       </div>
     )}>
       {fields.map((item, index_0) => (
-        <VForm.Container key={index_0}>
+        <VForm.Container key={index_0} labelPosition="left" label={(
+          <div className="overflow-hidden w-[2rem] px-1">
+            <VForm.LabelText>{index_0}</VForm.LabelText>
+          </div>
+        )}>
           <input type="hidden" {...register(`child_Attrs.${index_0}.own_members.ColType`)} />
           <VForm.Item label="Value">
             <Input.Description {...registerEx(`child_Attrs.${index_0}.own_members.Value`)} readOnly />

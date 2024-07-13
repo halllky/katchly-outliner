@@ -111,7 +111,7 @@ const RowOrderView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="10.4rem">
+      <VForm.Container estimatedLabelWidth="10.4rem">
         <VForm.Item label="Row">
           <Link className="text-link" to={Util.getRowSingleViewUrl(getValues('own_members.Row.__instanceKey'), 'view')}>
             {`${item.own_members?.Row?.Text ?? ''}`}

@@ -109,7 +109,7 @@ const CommentView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="15.2rem">
+      <VForm.Container estimatedLabelWidth="15.2rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="Text">
           <Input.Description {...registerEx(`own_members.Text`)} />

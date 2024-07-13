@@ -109,7 +109,7 @@ const RowTypeView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="15.2rem">
+      <VForm.Container estimatedLabelWidth="15.2rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="RowTypeName">
           <Input.Word {...registerEx(`own_members.RowTypeName`)} />
@@ -258,19 +258,21 @@ const ColumnsView = ({ }: {
 
   return (
     <VForm.Item wide
-      label="Columns"
-      labelSide={<>
-        <Input.Button
-          icon={PlusIcon}
-          onClick={onAdd}>
-          追加
-        </Input.Button>
-        <Input.Button
-          icon={XMarkIcon}
-          onClick={onRemove}>
-          削除
-        </Input.Button>
-      </>}
+      label={(
+        <div className="flex items-center gap-2">
+          <VForm.LabelText>Columns</VForm.LabelText>
+          <Input.Button
+            icon={PlusIcon}
+            onClick={onAdd}>
+            追加
+          </Input.Button>
+          <Input.Button
+            icon={XMarkIcon}
+            onClick={onRemove}>
+            削除
+          </Input.Button>
+        </div>
+      )}
       >
       <Layout.DataTable
         ref={dtRef}

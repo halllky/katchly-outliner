@@ -111,7 +111,7 @@ const ChangeLogView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="17.6rem">
+      <VForm.Container estimatedLabelWidth="17.6rem">
         <input type="hidden" {...register(`own_members.ID`)} />
         <VForm.Item label="LogTime">
           <Input.Date {...registerEx(`own_members.LogTime`)} readOnly />

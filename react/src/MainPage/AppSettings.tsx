@@ -82,12 +82,12 @@ export const AppSttingsDialog = ({ open, onClose }: {
 
   return (
     <ModalDialog title="設定" open={open} onClose={onClose} onKeyDown={onKeyDown}>
-      <div className="h-full flex flex-col">
-        <div className="flex-1 flex flex-col gap-4 pb-4 overflow-auto">
+      <div className="h-full flex flex-col gap-1">
+        <div className="flex-1 flex flex-col gap-4 p-px overflow-auto">
           <VerticalForm.Container
-            label="行タイプ設定"
-            labelSide={(
-              <div className="flex gap-1">
+            label={(
+              <div className="flex gap-1 items-center p-px w-full">
+                <VerticalForm.LabelText>行タイプ設定</VerticalForm.LabelText>
                 <Input.IconButton icon={PlusIcon} onClick={appendNewRowType} outline>タイプ追加</Input.IconButton>
                 <Input.IconButton icon={MinusIcon} onClick={removeRowType} outline>タイプ削除</Input.IconButton>
                 <div className="basis-4"></div>
@@ -104,14 +104,21 @@ export const AppSttingsDialog = ({ open, onClose }: {
             </VerticalForm.Item>
           </VerticalForm.Container>
 
-          <VerticalForm.Container label="アプリ設定" leftColumnMinWidth="14rem">
+          <VerticalForm.Container label="アプリ設定" estimatedLabelWidth="14rem">
             <VerticalForm.Item label="ウィンドウ表示名">
               <Input.Word {...registerEx(`windowTitle`)} />
             </VerticalForm.Item>
             <VerticalForm.Item label="ユーザー名">
               <Input.Word {...registerEx(`userName`)} />
             </VerticalForm.Item>
-            <VerticalForm.Item label="詳細表示パネルの位置" labelSide={<span className="text-xs select-none text-color-6">(Ctrl + B でも変更可能)</span>}>
+            <VerticalForm.Item
+              label={(
+                <div className="flex flex-col">
+                  <VerticalForm.LabelText>詳細表示パネルの位置</VerticalForm.LabelText>
+                  <span className="text-xs select-none text-color-6">(Ctrl + B でも変更可能)</span>
+                </div>
+              )}
+            >
               <RadioGroupBase
                 {...registerEx(`detailViewPosition`)}
                 options={DETAIL_VIEW_POSITION}

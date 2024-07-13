@@ -11,6 +11,8 @@ import { AppSetting, AppSettingContext, AppSttingsDialog, useAppSettings } from 
 import { RowStateBar } from './RowStateBar'
 import { DetailView, DetailViewRef } from './DetailView'
 
+import './main-page-style.css'
+
 export default function () {
 
   const divRef = useRef<HTMLDivElement>(null)
@@ -23,7 +25,7 @@ export default function () {
       <Util.ToastContextProvider>
         <Util.MsgContextProvider>
           <AppSettingContext>
-            <div className="relative h-full w-full flex flex-col" ref={divRef} style={appStyle}>
+            <div className="relative h-full w-full flex flex-col bg-color-2" ref={divRef} style={appStyle}>
               <Util.InlineMessageList />
               <Page />
             </div>
@@ -83,7 +85,7 @@ export const Page = () => {
       rowData={rows}
       onSave={handleSave}
       nowSaving={nowSaving}
-      className="p-1 flex-1 overflow-hidden"
+      className="flex-1 overflow-hidden"
     >
       <Input.IconButton hideText icon={ArrowPathIcon} onClick={handleLoad} className="p-1">再読み込み</Input.IconButton>
       <Input.IconButton hideText icon={Cog6ToothIcon} onClick={openDialog} className="p-1">設定</Input.IconButton>
@@ -153,7 +155,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
     // ラベルの列
     {
       id: 'col0',
-      header: '　',
+      header: '',
       size: 640,
       cell: cellProps => {
         const bgColor = cellProps.row.original.type === 'rowType' ? `border-l border-color-4 ${ROWTYPE_STYLE}` : ''
@@ -201,7 +203,7 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
       cell: cellProps => {
         const bgColor = cellProps.row.original.type === 'rowType' ? ROWTYPE_STYLE : ''
         return (
-          <span className={`block w-full px-1 overflow-hidden whitespace-normal ${bgColor}`}>
+          <span className={`block w-full px-1 overflow-hidden whitespace-nowrap text-ellipsis ${bgColor}`}>
             {getAttrCellValue(cellProps.row.original, rowTypeMap, i)}&nbsp;
           </span>
         )
@@ -396,8 +398,8 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
         className="w-full h-full"
         style={style}
       >
-        <Panel className="flex flex-col gap-1">
-          <div className="flex gap-1 items-center">
+        <Panel className="flex flex-col">
+          <div className="flex gap-1 items-center px-px h-main-page-header border-b border-color-3">
             <div className="basis-44">
               <Input.IconButton icon={InboxIcon} onClick={handleSave} className="p-1" outline>
                 {nowSaving ? '保存中...' : '保存（Ctrl + S）'}
@@ -421,7 +423,12 @@ const AfterLoaded = ({ rowData, rowTypeData, onSave, nowSaving, className, style
           />
 
         </Panel>
-        <PanelResizeHandle className={getDetailViewResizeHandleClass(detailViewPosition)} />
+        <PanelResizeHandle className={getDetailViewResizeHandleClass(detailViewPosition)}>
+          {/* アクションボタン欄とテーブルの間の境目 */}
+          {detailViewPosition === 'right' && (
+            <div className="h-main-page-header border-b border-color-3">&nbsp;</div>
+          )}
+        </PanelResizeHandle>
 
         {/* 詳細ビュー */}
         <Panel defaultSize={25} className={`${detailViewPosition ? '' : 'hidden'}`}>
@@ -497,7 +504,7 @@ const NewRowTypeDialog = ({ open, onClose, onCreate }: {
 }
 
 const getDetailViewResizeHandleClass = (state: AppSetting['detailViewPosition']): string => {
-  if (state === 'bottom') return 'h-2'
-  if (state === 'right') return 'w-2'
+  if (state === 'bottom') return 'h-1'
+  if (state === 'right') return 'w-1'
   return 'hidden'
 }

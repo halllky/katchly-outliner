@@ -27,11 +27,12 @@ export const DetailView = Util.forwardRefEx<DetailViewRef, DetailViewProp>(({ ro
   }, [row, rowIndex, changeRowType])
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="flex pb-1">
-        <span className="flex-1 inline-block overflow-hidden text-ellipsis whitespace-nowrap border border-color-0">
+    <div className="flex flex-col gap-1 w-full h-full">
+      <div className="flex items-center px-px h-main-page-header border-b border-color-3">
+        <span className="flex-1 inline-block overflow-hidden text-ellipsis whitespace-nowrap border border-transparent">
           {row?.type === 'row' && row.item.text}
           {row?.type === 'rowType' && rowTypeMap.get(row.rowTypeId)?.name}
+          &nbsp;
         </span>
         {row?.type === 'row' && (
           <RowTypeComboBox dataSource={rowTypeMap} value={row.item.type} onChange={handleChangeRowType} className="flex-1" />

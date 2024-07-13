@@ -109,7 +109,7 @@ const RowOrderView = ({ }: {
 
   return (
     <>
-      <VForm.Container leftColumnMinWidth="10.4rem">
+      <VForm.Container estimatedLabelWidth="10.4rem">
         <VForm.Item label="Row">
           <Input.ComboBoxRow {...registerEx(`own_members.Row`)} className='w-full' />
         </VForm.Item>
