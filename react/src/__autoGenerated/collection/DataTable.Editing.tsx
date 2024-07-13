@@ -7,7 +7,7 @@ import * as Util from '../util'
 
 export type CellEditorProps<T> = {
   api: RT.Table<T>
-  caretCell: CellPosition | undefined
+  caretCell: React.RefObject<CellPosition | undefined>
   caretTdRef: React.RefObject<HTMLTableCellElement | undefined>
   onChangeEditing: (editing: boolean) => void
   onChangeRow: DataTableProps<T>['onChangeRow']
@@ -41,8 +41,8 @@ export const CellEditor = Util.forwardRefEx(<T,>({
   const containerRef = useRef<HTMLLabelElement>(null)
   const editorRef = useRef<Input.CustomComponentRef<string | unknown>>(null)
   useEffect(() => {
-    if (caretCell) {
-      const columnDef = api.getColumn(caretCell.colId)?.columnDef as ColumnDefEx<T> | undefined
+    if (caretCell.current) {
+      const columnDef = api.getColumn(caretCell.current.colId)?.columnDef as ColumnDefEx<T> | undefined
       setCaretCellEditingInfo(columnDef?.editSetting)
 
       // エディタを編集対象セルの位置に移動させる
@@ -52,18 +52,12 @@ export const CellEditor = Util.forwardRefEx(<T,>({
         containerRef.current.style.minWidth = `${caretTdRef.current.clientWidth}px`
         containerRef.current.style.minHeight = `${caretTdRef.current.clientHeight}px`
       }
-      // エディタにスクロール
-      containerRef.current?.scrollIntoView({
-        behavior: 'instant',
-        block: 'nearest',
-        inline: 'nearest',
-      })
       // 前のセルで入力した値をクリアする
       setUnComittedText('')
     } else {
       setCaretCellEditingInfo(undefined)
     }
-  }, [caretCell, api, caretTdRef, containerRef])
+  }, [caretCell.current, api, caretTdRef, containerRef])
   useEffect(() => {
     editorRef.current?.focus()
   }, [caretCellEditingInfo])
@@ -97,7 +91,13 @@ export const CellEditor = Util.forwardRefEx(<T,>({
       const selectedValue = columnDef.editSetting.getValueFromRow(cell.row.original)
       setComboSelectedItem(selectedValue)
     }
-  }, [setEditingCellInfo, onChangeEditing, onChangeRow])
+    // エディタにスクロール
+    containerRef.current?.scrollIntoView({
+      behavior: 'instant',
+      block: 'nearest',
+      inline: 'nearest',
+    })
+  }, [setEditingCellInfo, onChangeEditing, onChangeRow, containerRef])
 
   /** 編集確定 */
   const commitEditing = useCallback((value?: string | unknown | undefined) => {
@@ -150,7 +150,7 @@ export const CellEditor = Util.forwardRefEx(<T,>({
       }
     } else {
       // 編集を始める
-      if (caretCell && (
+      if (caretCell.current && (
         e.key === 'F2'
 
         // クイック編集（編集モードでない状態でいきなり文字入力して編集を開始する）
@@ -163,8 +163,8 @@ export const CellEditor = Util.forwardRefEx(<T,>({
         && e.altKey
         && e.key === 'ArrowDown'
       )) {
-        const row = api.getCoreRowModel().flatRows[caretCell.rowIndex]
-        const cell = row.getAllCells().find(cell => cell.column.id === caretCell.colId)
+        const row = api.getCoreRowModel().flatRows[caretCell.current.rowIndex]
+        const cell = row.getAllCells().find(cell => cell.column.id === caretCell.current!.colId)
         if (cell) startEditing(cell)
         return
       }
