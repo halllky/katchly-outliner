@@ -87,6 +87,31 @@ namespace FlexTree.Migrations
                     b.ToTable("NIJOBackgroundTaskEntityDbSet");
                 });
 
+            modelBuilder.Entity("Katchly.ChangeLogDbEntity", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LogTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RowIdOrRowTypeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UpdateType")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UpdatedObject")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("ChangeLogDbSet");
+                });
+
             modelBuilder.Entity("Katchly.ColumnsDbEntity", b =>
                 {
                     b.Property<string>("Columns_ID")
@@ -164,31 +189,6 @@ namespace FlexTree.Migrations
                     b.HasIndex("TargetCell_Attrs_ID", "TargetCell_ColType_Columns_ID", "TargetCell_ColType_ColumnId");
 
                     b.ToTable("CommentDbSet");
-                });
-
-            modelBuilder.Entity("Katchly.LogDbEntity", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("LogTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RowIdOrRowTypeId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UpdateType")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UpdatedObject")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("LogDbSet");
                 });
 
             modelBuilder.Entity("Katchly.RowAttrsRefsDbEntity", b =>
