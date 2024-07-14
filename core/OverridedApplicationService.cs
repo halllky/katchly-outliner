@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using NPOI.HSSF.Util;
+using NPOI.XSSF.UserModel;
 
 namespace Katchly {
     /// <summary>
@@ -105,5 +107,184 @@ namespace Katchly {
             });
         }
         #endregion ROW TYPE
+
+        #region Excelダンプ
+        /// <summary>
+        /// xlsxファイルのバイナリを返します。
+        /// </summary>
+        /// <param name="stream">結果はこのストリームに書き込まれます。</param>
+        public void DumpExcelBinary(Stream stream) {
+
+            // 行型
+            var rowTypeDict = DbContext.RowTypeDbSet
+                .Select(r => new {
+                    r.ID,
+                    r.RowTypeName,
+                    Columns = r.Columns
+                        .OrderBy(c => c.ColumnName)
+                        .Select(c => new {
+                            c.ColumnId,
+                            c.ColumnName,
+                        })
+                        .ToArray(),
+                })
+                .ToDictionary(r => r.ID ?? string.Empty, r => r);
+
+            // 行
+            var rows = DbContext.RowDbSet
+                .Select(row => new {
+                    row.Indent,
+                    row.Text,
+                    row.RowType_ID,
+                    row.UpdatedOn,
+                    row.UpdateUser,
+                    Order = row.RefferedBy_RowOrderDbEntity_Row == null
+                        ? int.MaxValue
+                        : row.RefferedBy_RowOrderDbEntity_Row.Order,
+                    Comments = row.RefferedBy_CommentDbEntity_TargetRow
+                        .OrderBy(comment => comment.Order)
+                        .Select(comment => new {
+                            comment.Indent,
+                            comment.Text,
+                            comment.Author,
+                            comment.UpdatedOn,
+                        }),
+                    Attrs = row.Attrs.Select(attr => new {
+                        attr.ColType_ColumnId,
+                        attr.Value,
+                        // Attrへのコメントの表示は可能ではあるが面倒なので割愛
+                    }),
+                })
+                .AsEnumerable()
+                .OrderBy(row => row.Order ?? decimal.MaxValue)
+                .ToArray();
+
+            // 行とAttrsの境目の列のインデックス
+            var attrsStartColIndex = Math.Max(MIN_ATTRS_START_COL, rows.DefaultIfEmpty().Max(r => r.Indent ?? 0) * INDENT_SIZE);
+
+            // レンダリング領域の最も右端の列のインデックス
+            var endColIndex = attrsStartColIndex + rowTypeDict.DefaultIfEmpty().Max(x => x.Value.Columns.Length);
+
+            // ブックとシートを用意
+            using var book = new XSSFWorkbook();
+            var sheet = book.CreateSheet("Sheet1");
+
+            // スタイル: 行型（背景色未指定の部分）
+            var rowTypeStyle = book.CreateCellStyle();
+            var rowTypeFont = book.CreateFont();
+            rowTypeFont.FontName = BIZ_UD_GOTHIC;
+            rowTypeFont.Color = HSSFColor.Grey50Percent.Index;
+            rowTypeStyle.SetFont(rowTypeFont);
+
+            // スタイル: 行型（背景色がある部分）
+            var fillRowTypeStyle = book.CreateCellStyle();
+            fillRowTypeStyle.FillForegroundColor = HSSFColor.Grey25Percent.Index;
+            fillRowTypeStyle.FillPattern = NPOI.SS.UserModel.FillPattern.SolidForeground;
+            fillRowTypeStyle.SetFont(rowTypeFont);
+
+            // スタイル: 行
+            var rowStyle = book.CreateCellStyle();
+            var rowFont = book.CreateFont();
+            rowFont.FontName = BIZ_UD_GOTHIC;
+            rowStyle.SetFont(rowFont);
+
+            // スタイル: コメント行
+            var commentStyle = book.CreateCellStyle();
+            var commentFont = book.CreateFont();
+            commentFont.FontName = BIZ_UD_GOTHIC;
+            commentFont.Color = HSSFColor.Orange.Index;
+            commentStyle.SetFont(commentFont);
+
+            // Attrsより左側は方眼紙
+            for (int i = 0; i < attrsStartColIndex; i++) {
+                sheet.SetColumnWidth(i, 256d * 2.2d);
+            }
+
+            // レンダリング開始
+            var previousRowTypeId = (string?)null;
+            var sheetRowIndex = 0;
+            foreach (var rowData in rows) {
+                var indentSize = (rowData.Indent ?? 0) * INDENT_SIZE;
+                var rowType = rowTypeDict.GetValueOrDefault(rowData.RowType_ID ?? string.Empty);
+
+                // 行型
+                if (rowData.RowType_ID != previousRowTypeId) {
+                    previousRowTypeId = rowData.RowType_ID;
+
+                    var rowTypeRow = sheet.CreateRow(sheetRowIndex);
+                    rowTypeRow.RowStyle = rowTypeStyle;
+                    sheetRowIndex++;
+
+                    for (int i = indentSize; i <= endColIndex; i++) {
+                        rowTypeRow.GetOrCreateCell(i).CellStyle = fillRowTypeStyle;
+                    }
+
+                    // 行型の名前
+                    var rowTypeNameCell = rowTypeRow.GetOrCreateCell(indentSize);
+                    rowTypeNameCell.SetCellValue(rowType?.RowTypeName ?? "？？？");
+
+                    // Columnの名前
+                    if (rowType != null) {
+                        var sheetCol = attrsStartColIndex;
+                        foreach (var column in rowType.Columns) {
+                            var colNameCell = rowTypeRow.GetOrCreateCell(sheetCol);
+                            colNameCell.SetCellValue(column.ColumnName);
+                            sheetCol++;
+                        }
+                    }
+                }
+
+                // 行
+                var sheetRow = sheet.CreateRow(sheetRowIndex);
+                sheetRow.RowStyle = rowStyle;
+
+                var rowTextCell = sheetRow.GetOrCreateCell(indentSize);
+                rowTextCell.SetCellValue(rowData.Text);
+
+                sheetRowIndex++;
+
+                // Attrs
+                if (rowType != null) {
+                    var sheetCol = attrsStartColIndex;
+                    foreach (var col in rowType.Columns) {
+                        var attrValue = rowData.Attrs.SingleOrDefault(a => a.ColType_ColumnId == col.ColumnId);
+                        var colNameCell = sheetRow.GetOrCreateCell(sheetCol);
+                        colNameCell.SetCellValue(attrValue?.Value);
+                        sheetCol++;
+                    }
+                }
+
+                // 行コメント
+                foreach (var c in rowData.Comments) {
+                    var commentRow = sheet.CreateRow(sheetRowIndex);
+                    var commentCell = commentRow.GetOrCreateCell(indentSize + ((c.Indent ?? 0) * INDENT_SIZE));
+                    commentRow.RowStyle = commentStyle;
+                    commentCell.SetCellValue($"↑ {c.Text}（{c.Author} {c.UpdatedOn:yyyy-MM-dd HH:mm:ss}）");
+
+                    sheetRowIndex++;
+                }
+            }
+
+            book.Write(stream);
+        }
+        /// <summary>インデント1段あたりExcel方眼紙のセル何個分使うか</summary>
+        private const int INDENT_SIZE = 2;
+        /// <summary>Attrsの列の開始地点の最小値</summary>
+        private const int MIN_ATTRS_START_COL = 40;
+        /// <summary>フォント</summary>
+        private const string BIZ_UD_GOTHIC = "BIZ UDGothic";
+        #endregion Excelダンプ
+    }
+
+    /// <summary>
+    /// NPOI拡張メソッド
+    /// </summary>
+    public static class NpoiExtensions {
+        /// <summary>
+        /// GetCellして無ければCreateCellする
+        /// </summary>
+        public static NPOI.SS.UserModel.ICell GetOrCreateCell(this NPOI.SS.UserModel.IRow row, int index) {
+            return row.GetCell(index) ?? row.CreateCell(index);
+        }
     }
 }

@@ -4,6 +4,20 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace Katchly {
+
+    #region ダンプ
+    partial class RowController {
+        [HttpGet("dump-excel")]
+        public IActionResult DumpExcel() {
+            var appSrv = (OverridedApplicationService)_applicationService;
+            using var ms = new MemoryStream();
+            appSrv.DumpExcelBinary(ms);
+            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+    }
+    #endregion ダンプ
+
+
     #region 行の並び順の洗い替え（ちゃんとした仕組みができるまでの暫定措置）
     public class DeleteInsertAllParam {
         public string? RowObjectIdList { get; set; }
