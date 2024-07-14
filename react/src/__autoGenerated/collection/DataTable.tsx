@@ -4,7 +4,7 @@ import * as Util from '../util'
 import { ColumnDefEx, DataTableProps, DataTableRef } from './DataTable.Public'
 import { TABLE_ZINDEX, CellEditorRef } from './DataTable.Parts'
 import { CellEditor } from './DataTable.Editing'
-import { SelectTarget, useSelection } from './DataTable.Selecting'
+import { ActiveCellBorder, SelectTarget, useSelection } from './DataTable.Selecting'
 import { getColumnResizeOption, useColumnResizing } from './DataTable.ColResize'
 import { useCopyPaste } from './DataTable.CopyPaste'
 
@@ -43,7 +43,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
     columns,
     getCoreRowModel: RT.getCoreRowModel(),
     ...(tableWidth === 'fit' ? {} : getColumnResizeOption()),
-  }), [data, columns])
+  }), [tableWidth, data, columns])
 
   const api = RT.useReactTable(optoins)
   const cellEditorRef = useRef<CellEditorRef<T>>(null)
@@ -62,7 +62,6 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
     caretTdRef,
     selectObject,
     handleSelectionKeyDown,
-    ActiveCellBorder,
     activeCellBorderProps,
     getSelectedRows,
     getSelectedColumns,
@@ -158,7 +157,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
                 {headerGroup.headers.filter(h => !(h.column.columnDef as ColumnDefEx<T>).hidden).map((header, thX) => (
                   <th key={header.id}
                     colSpan={header.colSpan}
-                    className="relative overflow-hidden whitespace-nowrap px-1 py-0 text-start bg-color-2 text-color-6"
+                    className="relative overflow-hidden whitespace-nowrap px-1 py-0 text-start bg-color-2 text-color-6 border-b border-color-3"
                     style={getThStyle(false, thX, thY)}>
                     {!header.isPlaceholder && RT.flexRender(
                       header.column.columnDef.header,
@@ -200,9 +199,7 @@ export const DataTable = Util.forwardRefEx(<T,>(props: DataTableProps<T>, ref: R
       {/* 4remは ヘッダ2行 + ボディ1行 + スクロールバー の縦幅のおおよその合計。 */}
       <div className="h-[calc(100%-4rem)]"></div>
 
-      {isActive && !editing && (
-        <ActiveCellBorder api={api} {...activeCellBorderProps} />
-      )}
+      <ActiveCellBorder hidden={!isActive || editing} {...activeCellBorderProps} />
 
       <CellEditor
         ref={cellEditorRef}
